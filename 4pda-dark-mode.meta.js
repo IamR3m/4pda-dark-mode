@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.2.2
+// @version      0.2.3
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
