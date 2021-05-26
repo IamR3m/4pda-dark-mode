@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.2.2
+// @version      0.2.3
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -251,7 +251,8 @@ userStyle += `
     .night #twocolumns,
     .night #q1a1WedtXihl9z2,
     .night .price-slider .ui-slider,
-    .night .comment-box .comment-list li {
+    .night .comment-box .comment-list li,
+    .night .dipt {
         background: #22272B;
     }
 
@@ -339,6 +340,11 @@ userStyle += `
         color: #DDD;
     }
 
+    .night .content-box a:link,
+    .night .content-box a:visited {
+        color: #5c94c8 !important;
+    }
+
     .night a.btn.noborder.iblock.rounded.green,
     .night .comment-box .wrap-menu a {
         color: #DDD !important;
@@ -358,6 +364,21 @@ userStyle += `
         background: -webkit-linear-gradient(top, #3f5364 0%, #7eb8e5 100%);
         background: linear-gradient(to bottom, #3f5364 0%, #7eb8e5 100%);
         color: #303040 !important;
+    }
+
+    .night .g-btn.red {
+        background: #ff494c;
+        background: -moz-linear-gradient(top, #924e4f 0%, #ff494c 100%);
+        background: -webkit-linear-gradient(top, #924e4f 0%, #ff494c 100%);
+        background: linear-gradient(to bottom, #924e4f 0%, #ff494c 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#924e4f', endColorstr='#ff494c',GradientType=0);
+    }
+
+    .night .g-btn.green {
+        background: -moz-linear-gradient(top, #5b6b3b 0%, #84a544 100%);
+        background: -webkit-linear-gradient(top, #5b6b3b 0%, #84a544 100%);
+        background: linear-gradient(to bottom, #5b6b3b 0%, #84a544 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5b6b3b', endColorstr='#84a544',GradientType=0);
     }
 
     .night .g-btn.red,
@@ -389,6 +410,14 @@ userStyle += `
     .night .post-block > .block-title {
         background-color: #22272B;
         color: #9e9e9e;
+    }
+
+    .night .post-block.quote > .block-title {
+        background-image: url(data:image/gif;base64,R0lGODlhNQAZAIQBAAAAAP///zZz1D551kqB2FSI21+Q3WmX34er5ZO06J276qbB7MfY83Oe4X2l47LK77zR8f///////////////////////////////////////////////////////////yH5BAEKAB8ALAAAAAA1ABkAAAWp4CeOZGmeqCms7Jq+MNkK5jCzca7as3y3OhSt9ht+irhgybVEjpDMk1EV9TmP0OlTu+WKst3izvsZDFLgsI2ntaGrxOuXCRy5hfAT+/aeJqV5gEN1gGdzZIdKiX1dfYiMeH6Bh4OTTYh/hFRiL3+bVpWXnJFvogI8d1hyn4Kbo2k1hqymM7J7fLGdkVdQs4qqr6Nbv6C4YSuyxC+3noepyp03ydDUPdTKIQA7);
+    }
+
+    .night .post-block.code > .block-title {
+        background-image: url(data:image/gif;base64,R0lGODlhNQAZAOMPAP2Rkf/39/7Ly/2Zmf6urv7i4v2np/2goP7T0/69vf/p6f7a2v7Fxf/w8P62tv///yH5BAEKAA8ALAAAAAA1ABkAAASv8MlJq714gj2y/+A1bEBontmGrqzKvuFRyuQBk+WNk++eZ7YLTxM0jVxHzM7CobhSTkDxMZocj8to5Sn8PWRMTfbL5T7MlKQzLBlLZEW0N422gLXMn1xUz2/nbV6AgGeEeR14f2tbiGIhQ4mRcziOj4aEAI2FOTQuTY8pkz+delGaH4abO41Yp4FSMH+rKFiwsYWbMLVTK30suxkjvIG3FsB5mKmxWBiuGsXBykq3EQA7);
     }
 
     .night .post-block > .block-body {
@@ -428,7 +457,7 @@ userStyle += `
     .night .borderwrap table th,
     .night .subtitle,
     .night .subtitlediv,
-    .night .postlinksbar {
+    .night .postlinksbar{
         background-color: #4c678d;
         color: #8faed8;
     }
@@ -484,8 +513,14 @@ userStyle += `
     .night .fosy-div,
     .night .fosy-form input,
     .night .fosy-form textarea,
-    .night .fosy-form select {
+    .night .fosy-form select,
+    .night .qr-maintitle .sel-btn {
         border-color: #395179;
+    }
+
+    .night .ed-wrap td,
+    .night .ed-wrap td table {
+        border-color: #395179 !important;
     }
 
     .night .post-block {
@@ -523,6 +558,18 @@ userStyle += `
         -webkit-box-shadow: 0 0 0 1px #395179;
         -moz-box-shadow: 0 0 0 1px #395179;
         box-shadow: 0 0 0 1px #395179;
+    }
+
+    .night .dipt:after {
+        -webkit-box-shadow: 0 1px 0 0 #395179 inset;
+        -moz-box-shadow: 0 1px 0 0 #395179 inset;
+        box-shadow: 0 1px 0 0 #395179 inset;
+    }
+
+    .night .dipt .dfrml {
+        -webkit-box-shadow: -1px 0 0 0 #395179 inset;
+        -moz-box-shadow: -1px 0 0 0 #395179 inset;
+        box-shadow: -1px 0 0 0 #395179 inset;
     }
 
     .night .fosy-form input,
