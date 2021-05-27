@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.3.2
+// @version      0.3.3
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -376,6 +376,11 @@ userStyle += `
         color: #8faed8;
     }
 
+    .night .pp-title {
+        background: #4c678d;
+        color: #ddd;
+    }
+
     .night .darkrow1 {
         background: #5f80af;
         color: #1d2735;
@@ -460,7 +465,8 @@ userStyle += `
     .night .fosy-form select,
     .night .qr-maintitle .sel-btn,
     .night .navbar,
-    .night .form-input {
+    .night .form-input,
+    .night fieldset {
         border-color: #395179;
     }
 
