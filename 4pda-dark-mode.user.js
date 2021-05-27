@@ -301,6 +301,13 @@ userStyle += `
         background-color: #3A4F6C;
     }
 
+    .night .deletedpostlight .row2,
+    .night .deletedpostlight .post1shaded,
+    .night .deletedpostlight .post2shaded,
+    .night .deletedpostlight td.formbuttonrow {
+        background: #3a4f6c !important;
+    }
+
     .night .row4shaded2,
     .night .post1shaded2,
     .night .post2shaded2 {
