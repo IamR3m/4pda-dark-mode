@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.3.3
+// @version      0.3.4
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -299,6 +299,12 @@ userStyle += `
     .night .ed-wrap .ed-panel,
     .night .dropdown-menu .divider {
         background-color: #3A4F6C;
+    }
+
+    .night .row4shaded2,
+    .night .post1shaded2,
+    .night .post2shaded2 {
+        background-color: #fa052a5c;
     }
 
     .night p.copyright,
