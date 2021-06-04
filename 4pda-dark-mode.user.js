@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.3.5
+// @version      0.3.6
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -156,7 +156,8 @@ userStyle += `
     .night .thread-list .date .text,
     .night .pwLRWWLQ2bWn3ByIrSeTn4g .select-field:before,
     .night #ucpmenu,
-    .night #ucpcontent {
+    .night #ucpcontent,
+    .night .check_list_div {
         background: #171c20;
     }
 
@@ -203,7 +204,7 @@ userStyle += `
     .night .form-bg,
     .night .bar,
     .night .barb,
-    .night .barc {
+    .night .barc{
         background: #22272B;
     }
 
@@ -537,7 +538,8 @@ userStyle += `
         box-shadow: 0 0 0 1px #395179;
     }
 
-    .night .dipt:after {
+    .night .dipt:after,
+    .night .dipt-hor-border {
         -webkit-box-shadow: 0 1px 0 0 #395179 inset;
         -moz-box-shadow: 0 1px 0 0 #395179 inset;
         box-shadow: 0 1px 0 0 #395179 inset;
