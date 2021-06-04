@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.3.7
+// @version      0.3.8
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -219,7 +219,6 @@ userStyle += `
         background: #22272B !important;
     }
 
-    .night .list-group .our-message,
     .night .rz1gXXZ5pRH .list-group .list-group-item.active,
     .night .sidebar .list-group .list-group-item.active,
     .night .comment-box .comment-list.level-1 > li,
@@ -229,6 +228,10 @@ userStyle += `
     .night .comment-box .comment-list.level-9 > li,
     .night .comment-box .comment-list.level-11 > li {
         background: #31383e;
+    }
+
+    .night .list-group .our-message {
+        background: #31383e !important;
     }
 
     .night .twWqGD1Fem94z0ltz2wnz1 h4,
