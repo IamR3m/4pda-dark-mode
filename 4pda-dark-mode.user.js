@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.4.0
+// @version      0.4.1
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -150,7 +150,6 @@ userStyle += `
     .night form[action*="//4pda.to/forum/index.php"] ul .select-field select,
     .night .container,
     .night .side-box,
-    .night .z2Iuiq37TBOm,
     .night .navbar,
     .night .footer,
     .night .thread-list .date .text,
@@ -184,21 +183,18 @@ userStyle += `
     .night .menu-main-item:hover,
     .night .menu-sub,
     .night .events-popup,
-    /*.night rZWx6mPEjRxO .dropdown-menu,*/
     .night .menu-user > a:hover,
     .night .menu-user:hover > a,
     .night .menu-user.open > a,
     .night .plainborder,
     .night .tablefill,
     .night .tablepad,
-    .night .advanced-area .z2Iuiq37TBOm,
     .night .poll-frame,
     .night .second-menu .menu-brands,
     .night .second-menu .menu-brands li a:hover,
     .night .second-menu .menu-brands li a:focus,
     .night .product-detail,
     .night #twocolumns,
-    .night #q1a1WedtXihl9z2,
     .night .price-slider .ui-slider,
     .night .comment-box .comment-list li,
     .night .dipt,
@@ -220,8 +216,8 @@ userStyle += `
         background: #22272B !important;
     }
 
-    .night .rz1gXXZ5pRH .list-group .list-group-item.active,
-    .night .sidebar .list-group .list-group-item.active,
+    .night .list-group .list-group-item.active,
+    .night .list-group .list-group-item.active,
     .night .comment-box .comment-list.level-1 > li,
     .night .comment-box .comment-list.level-3 > li,
     .night .comment-box .comment-list.level-5 > li,
@@ -246,7 +242,6 @@ userStyle += `
     .night #gfooter,
     .night .ac_over,
     .night .footer-panel,
-    /* .night rZWx6mPEjRxO.menu,*/
     .night body > div:first-of-type > :nth-child(2) > :first-child > :nth-child(4),
     .night .menu-sub-item:hover,
     .night .menu-sub-item:active,
@@ -290,7 +285,7 @@ userStyle += `
         background: linear-gradient(to right, rgba(255,255,255,0) 0%, #22272b 20%, #22272b 100%);
     }
 
-    .night .rz1gXXZ5pRH .list-group .list-group-item.active .bage,
+    .night .list-group .list-group-item.active .bage,
     .night .sidebar .list-group .list-group-item.active .bage {
         background: #31383e;
         background: -moz-linear-gradient(left, rgba(0,0,0,0) 0%, #31383e 20%, #31383e 100%);
