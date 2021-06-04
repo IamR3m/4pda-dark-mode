@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.3.8
+// @version      0.3.9
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -165,7 +165,8 @@ userStyle += `
     .night #userlinksguest,
     .night .upopupmenu-new,
     .night .popupmenu-new,
-    .night .twWqGD1Fem94z0ltz2wnz1,
+    .night #gc_1,
+    .night #go_1,
     .night .borderwrap p,
     .night .row1,
     .night .row2,
@@ -234,7 +235,7 @@ userStyle += `
         background: #31383e !important;
     }
 
-    .night .twWqGD1Fem94z0ltz2wnz1 h4,
+    .night h4,
     .night .borderwrap h3,
     .night .maintitle,
     .night .maintitlecollapse,
@@ -257,6 +258,10 @@ userStyle += `
     .night .dropdown-menu > li > a:hover,
     .night .dropdown-menu > li > a:focus {
         background: #3A4F6C;
+    }
+
+    .night h4 {
+        background: #3A4F6C !important;
     }
 
     td.row1[style*="background:#FFE87F"] {
@@ -471,8 +476,6 @@ userStyle += `
     .night #userlinksguest,
     .night .usercp_menu,
     .night .usercp_menu_out,
-    .night .twWqGD1Fem94z0ltz2wnz1,
-    .night .twWqGD1Fem94z0ltz2wnz1 h4,
     .night .post-edit-reason,
     .night .pagelink,
     .night .pagelinklast,
@@ -496,6 +499,9 @@ userStyle += `
         border-color: #395179;
     }
 
+    .night h4,
+    .night #gc_1,
+    .night #go_1,
     .night .ed-wrap td,
     .night .ed-wrap td table {
         border-color: #395179 !important;
