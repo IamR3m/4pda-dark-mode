@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.3.6
+// @version      0.3.7
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -919,7 +919,7 @@ userStyle += `
         color: #9e9e9e;
     }
 
-    /* hide ads */
+    /* EXPERIMENTAL! hide ads. If not needed comment next selectors */
     .night body > div:first-of-type > :nth-child(2) > :first-child > :nth-child(2),
     .night article > :first-child:not(div) {
         display: none !important;
