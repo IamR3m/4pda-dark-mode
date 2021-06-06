@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.4.2
+// @version      0.5.0
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -12,12 +12,46 @@
 // @grant        none
 // ==/UserScript==
 
-const BUTTON_SIZE = 32;
+const FLAGS = {};
+
+FLAGS.SMALL_BUTTONS = false;
+FLAGS.AUTO_NIGHT_MODE = false;
+FLAGS.AUTO_NIGHT_START = 20;
+FLAGS.AUTO_NIGHT_END = 8;
+
+const configOptions = [
+    ['SMALL_BUTTONS', 'маленькие кнопки настроек и ночного режима'],
+    ['AUTO_NIGHT_MODE', 'aвтоматически включать ночной режим'],
+    ['AUTO_NIGHT_START', 'начало ночного режима'],
+    ['AUTO_NIGHT_END', 'окончание ночного режима']
+]
+
+if(!localStorage.getItem('4pdafixFlags')) {
+    localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS))
+} else {
+    const jsonString = localStorage.getItem('4pdafixFlags');
+    const loadedConfig = jsonString ? JSON.parse(jsonString) : {};
+    const loadedKeys = Object.keys(loadedConfig);
+    Object.keys(FLAGS).forEach((key) => {
+        if (
+            loadedKeys.includes(key) &&
+            configOptions.find(arr => arr[0] === key)
+        ) {
+            FLAGS[key] = loadedConfig[key]
+        }
+    });
+}
+
+const BUTTON_SIZE = FLAGS.SMALL_BUTTONS ? 16 : 32;
+const BUTTON_SIZE2 = 25;
+const BUTTON_SIZE4 = FLAGS.SMALL_BUTTONS ? 48 : 88;
 
 const userConfig = {
     key: '4pdafix',
     model: {
-        night_mode: [false, true]
+        night_mode: [false, true],
+        night_start: [FLAGS.AUTO_NIGHT_START],
+        night_end: [FLAGS.AUTO_NIGHT_END]
     },
     config: {},
     init() {
@@ -62,6 +96,8 @@ const userStyleEl = document.createElement('style');
 let userStyle = '';
 
 userStyle += `
+    /* Night mode Swhitcher */
+
     .night_mode_switcher {
         box-sizing: border-box;
         position: fixed;
@@ -92,6 +128,8 @@ userStyle += `
     .night .night_mode_switcher:hover {
         border-color: #9e9e9e;
     }
+
+    /* Scrollbar */
 
     .night ::-webkit-scrollbar,
     .night ::-webkit-scrollbar-corner,
@@ -933,14 +971,103 @@ userStyle += `
     }
 `
 
+/* Config button and frame*/
+userStyle += `
+  .config_button {
+    box-sizing: border-box;
+    position: fixed;
+    width: ${BUTTON_SIZE}px;
+    height: ${BUTTON_SIZE2}px;
+    right: ${BUTTON_SIZE}px;
+    bottom: ${BUTTON_SIZE4}px;
+    z-index: 10000;
+    background: -webkit-linear-gradient(top, #aaa 50%, transparent 50%);
+    background: -moz-linear-gradient(top, #aaa 50%, transparent 50%);
+    background: -moz-linear-gradient(top, #aaa 50%, transparent 50%);
+    background-size: 10px 10px;
+    transition: background 0.1s ease-out;
+  }
+
+  .config_button:hover {
+    background: -webkit-linear-gradient(top, #333 50%, transparent 50%);
+    background: -moz-linear-gradient(top, #333 50%, transparent 50%);
+    background: -moz-linear-gradient(top, #333 50%, transparent 50%);
+    background-size: 10px 10px;
+  }
+
+  .night .config_button {
+    background: -webkit-linear-gradient(top, #515151 50%, transparent 50%);
+    background: -moz-linear-gradient(top, #515151 50%, transparent 50%);
+    background: -moz-linear-gradient(top, #515151 50%, transparent 50%);
+    background-size: 10px 10px;
+  }
+
+  .night .config_button:hover {
+    background: -webkit-linear-gradient(top, #9e9e9e 50%, transparent 50%);
+    background: -moz-linear-gradient(top, #9e9e9e 50%, transparent 50%);
+    background: -moz-linear-gradient(top, #9e9e9e 50%, transparent 50%);
+    background-size: 10px 10px;
+  }
+
+  .config_frame {
+    box-sizing: border-box;
+    position: fixed;
+    right: 80px;
+    bottom: 32px;
+    z-index: 10000;
+    border: 1px solid #aaa;
+    padding: 8px;
+    background: #f7f7f7;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    overflow-y: auto;
+    max-height: calc(100vh - 64px);
+    min-width: 390px;
+    text-align: left;
+  }
+  .config_frame label:hover {
+    cursor: pointer;
+    background: rgba(128, 128, 128, 0.3);
+  }
+  .config_frame input {
+    cursor: pointer;
+    position: absolute;
+    opacity: 0;
+  }
+  .config_frame input[type="number"] {
+    opacity: 1;
+    margin: 0 3px 0 3px;
+    position: initial;
+    width: 30px;
+  }
+  .config_frame input + span:before {
+    content: '';
+    display: inline-block;
+    width: 0.5em;
+    height: 0.5em;
+    margin: 0 0.4em 0.1em 0.3em;
+    outline: 1px solid currentcolor;
+    outline-offset: 1px;
+  }
+  .config_frame input:checked + span:before {
+    background: currentcolor;
+  }
+  .night .config_frame {
+    background: #22272B;
+    border-color: #393d41;
+  }
+`
+
 userStyleEl.innerHTML = userStyle;
 
 const navigatorEdge = /Edge/.test(navigator.userAgent);
 
 function readyHead(fn) {
-	if (document.body) {
-			fn();
-	} else if (document.documentElement && !navigatorEdge) {
+    if (document.body) {
+        fn();
+    } else if (document.documentElement && !navigatorEdge) {
 		const observer = new MutationObserver(() => {
 			if (document.body) {
 				observer.disconnect();
@@ -975,6 +1102,15 @@ function ready(fn) {
 ready(() => {
 	if (document.getElementById('4pdafixmarker')) return;
 
+    //Auto night mode
+    if(FLAGS.AUTO_NIGHT_MODE) {
+        setInterval(() => {
+            const currentHours = new Date().getHours();
+            userConfig.setItem('night_mode', currentHours < FLAGS.AUTO_NIGHT_END || currentHours >= FLAGS.AUTO_NIGHT_START);
+        }, 500);
+    }
+
+    // Night mode switcher
 	const switcherEl = document.createElement('div');
 	switcherEl.classList.add('night_mode_switcher');
 	switcherEl.onclick = () => {
@@ -988,7 +1124,89 @@ ready(() => {
 		if (boolClass !== isNightMode) {
 			document.documentElement.classList.toggle('night', isNightMode);
 		}
-	}, 1000);
+	}, 500);
+
+    // Config frame
+    const configFrame = document.createElement('div');
+    configOptions.forEach(([key, text]) => {
+        if (typeof FLAGS[key] !== 'boolean') return;
+        const inputEl = document.createElement('input');
+        inputEl.type = 'checkbox';
+        inputEl.value = key;
+        inputEl.checked = FLAGS[key];
+        const labelEl = document.createElement('label');
+        labelEl.setAttribute('unselectable', 'on');
+        labelEl.setAttribute('onselectstart', 'return false');
+        const spanEl = document.createElement('span');
+        spanEl.innerHTML = text;
+        configFrame.appendChild(labelEl);
+        labelEl.appendChild(inputEl);
+        labelEl.appendChild(spanEl);
+        inputEl.onchange = () => {
+            FLAGS[key] = inputEl.checked;
+            localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS));
+        };
+        configFrame.appendChild(document.createElement('br'));
+    });
+    const inputNightStart = document.createElement('input');
+    inputNightStart.type = 'number';
+    inputNightStart.value = FLAGS.AUTO_NIGHT_START;
+    inputNightStart.min = 0;
+    inputNightStart.max = 23;
+    const labelNightStart = document.createElement('label');
+    labelNightStart.setAttribute('unselectable', 'on');
+    labelNightStart.setAttribute('onselectstart', 'return false');
+    const spanNightStart = document.createElement('span');
+    spanNightStart.innerHTML = "от (ч)";
+    configFrame.appendChild(labelNightStart);
+    labelNightStart.appendChild(spanNightStart);
+    configFrame.appendChild(inputNightStart);
+    inputNightStart.oninput = () => {
+        FLAGS.AUTO_NIGHT_START = inputNightStart.value;
+        localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS));
+    };
+
+    const inputNightEnd = document.createElement('input');
+    inputNightEnd.type = 'number';
+    inputNightEnd.value = FLAGS.AUTO_NIGHT_END;
+    inputNightEnd.min = 0;
+    inputNightEnd.max = 23;
+    const labelNightEnd = document.createElement('label');
+    labelNightEnd.setAttribute('unselectable', 'on');
+    labelNightEnd.setAttribute('onselectstart', 'return false');
+    const spanNightEnd = document.createElement('span');
+    spanNightEnd.innerHTML = "до (ч)";
+    configFrame.appendChild(labelNightEnd);
+    labelNightEnd.appendChild(spanNightEnd);
+    configFrame.appendChild(inputNightEnd);
+    inputNightEnd.oninput = () => {
+        FLAGS.AUTO_NIGHT_END = inputNightEnd.value;
+        localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS));
+    };
+
+    const reloadText = document.createElement('div');
+    reloadText.style.textAlign = 'right';
+    reloadText.innerHTML = `
+    * чтобы увидеть изменения
+    <a href="#" onclick="location.reload(); return false">
+    обновите страницу
+    </a>`;
+    configFrame.appendChild(reloadText);
+    configFrame.classList.add('config_frame');
+    configFrame.style.display = 'none';
+    document.body.appendChild(configFrame);
+
+    // Config button
+    const configButton = document.createElement('div');
+    configButton.classList.add('config_button');
+    document.body.appendChild(configButton);
+    configButton.onclick = () => {
+        if (configFrame.style.display) {
+            configFrame.style.display = '';
+        } else {
+            configFrame.style.display = 'none';
+        }
+    };
 
 	setTimeout(() => {
 		const marker = document.createElement('meta');
