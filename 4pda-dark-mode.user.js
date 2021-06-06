@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.5.2
+// @version      0.5.3
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -468,7 +468,8 @@ userStyle += `
         border-color: #395179;
     }
 
-    .night .navbar .btn {
+    .night .navbar .btn,
+    .night .bb-codes {
         background-color: #3A4F6C;
         border-color: #395179;
     }
@@ -500,6 +501,11 @@ userStyle += `
 
     .night .ed-wrap .ed-bbcode-hover {
         filter: brightness(0.7) contrast(1.3);
+    }
+
+    .night input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 30px #31383e inset !important;
+        -webkit-text-fill-color: #9e9e9e !important;
     }
 
     /* Border Color */
@@ -1056,7 +1062,10 @@ userStyle += `
     opacity: 1;
     margin: 0 3px 0 3px;
     position: initial;
-    width: 30px;
+    width: 40px;
+  }
+  .config_frame input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
   }
   .config_frame input + span:before {
     content: '';
