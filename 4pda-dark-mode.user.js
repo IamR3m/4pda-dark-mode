@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         4pda Dark Mode
 // @namespace    https://4pda.to/forum/index.php
-// @version      0.5.1
+// @version      0.5.2
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -414,8 +414,16 @@ userStyle += `
     }
 
     .night .post-block > .block-title {
-        background-color: #22272B;
+        background-color: #29394e;
         color: #9e9e9e;
+    }
+
+    .night .post-block.code > .block-title {
+        background-color: #6d3f2c;
+    }
+
+    .night .post-block.quote > .block-title {
+        background-color: #3A4F6C;
     }
 
     .night .comment-box .heading .btn {
@@ -426,12 +434,6 @@ userStyle += `
     .night .price-slider .ui-slider .ui-slider-handle {
         background: #4c80a0;
         color: #DDD !important;
-    }
-
-    .night .ed-wrap .ed-bbcode-hover,
-    .night .ed-wrap .ed-color-hover {
-        background-color: #4c678d;
-        color: #6f85a3;
     }
 
     .night table th,
@@ -486,8 +488,18 @@ userStyle += `
     }
 
     .night .post-block.spoil.open > .block-body:after {
-        background: #22272B;
-        outline-color: #22272B;
+        background: #29394e;
+        outline-color: #29394e;
+    }
+
+    /* Filters */
+
+    .night .ed-wrap .ed-bbcode-normal {
+        filter: brightness(1.3);
+    }
+
+    .night .ed-wrap .ed-bbcode-hover {
+        filter: brightness(0.7) contrast(1.3);
     }
 
     /* Border Color */
@@ -572,7 +584,10 @@ userStyle += `
 
     .night .post-block {
         border-color: #29394e;
-        border-left-color: #395179;
+    }
+
+    .night .post-block.code {
+        border-left-color: #863411;
     }
 
     /* Box Shadow */
@@ -756,7 +771,7 @@ userStyle += `
     /* Post block Image */
 
     .night .post-block.quote > .block-title {
-        background-image: url(data:image/gif;base64,R0lGODlhNQAZAIQBAAAAAP///zZz1D551kqB2FSI21+Q3WmX34er5ZO06J276qbB7MfY83Oe4X2l47LK77zR8f///////////////////////////////////////////////////////////yH5BAEKAB8ALAAAAAA1ABkAAAWp4CeOZGmeqCms7Jq+MNkK5jCzca7as3y3OhSt9ht+irhgybVEjpDMk1EV9TmP0OlTu+WKst3izvsZDFLgsI2ntaGrxOuXCRy5hfAT+/aeJqV5gEN1gGdzZIdKiX1dfYiMeH6Bh4OTTYh/hFRiL3+bVpWXnJFvogI8d1hyn4Kbo2k1hqymM7J7fLGdkVdQs4qqr6Nbv6C4YSuyxC+3noepyp03ydDUPdTKIQA7);
+        background-image: url(data:image/gif;base64,R0lGODlhNQAZAIQBAAAAAP///zZz1D551kqB2FSI21+Q3WmX34er5ZO06J276qbB7MfY83Oe4X2l47LK77zR8f///////////////////////////////////////////////////////////yH5BAEKAB8ALAAAAAA1ABkAAAWe4CeOZGmeaKqubEsOQiwLbv3OdInPdg3vul2sZ8oFhSThkChaFpVJpbGYcj6RUaxukBpwq9LjoPEzwVTT00+Lsn7OYNZaYJCt3Gkq060f8aNMH39JOnd5LoeAfomLe4xNQYYCBTwsg01pl5hsbWh5Mz9fi1BxbYdho5wvon1XQFmvZqw2UlOohYGCt7qxuaacO7O+JXN2w77Bx8rLgSEAOw==);
     }
 
     .night .post-block.code > .block-title {
