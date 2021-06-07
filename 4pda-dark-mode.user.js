@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.5.5
+// @version      0.5.6
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -294,7 +294,8 @@ userStyle += `
     .night .comment-box .comment-list .karma .num-wrap,
     .night .comment-box .comment-list .karma .num,
     .night .dropdown-menu > li > a:hover,
-    .night .dropdown-menu > li > a:focus {
+    .night .dropdown-menu > li > a:focus,
+    .night .menu-right #events-count {
         background: #3A4F6C;
     }
 
@@ -463,6 +464,11 @@ userStyle += `
     .night .dropdown-menu {
         background: #22272B;
         border-color: #29394e;
+    }
+
+    .night .events-popup {
+        background: #22272B;
+        border: 1px #395179 solid;
     }
 
     .night .profile-textarea {
