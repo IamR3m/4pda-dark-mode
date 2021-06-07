@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name         4pda Dark Mode
-// @namespace    https://4pda.to/forum/index.php
-// @version      0.5.3
+// @namespace    4PDA
+// @homepage     https://4pda.to/forum/index.php?showtopic=1026245
+// @version      0.5.4
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -419,7 +420,7 @@ userStyle += `
     }
 
     .night .post-block.code > .block-title {
-        background-color: #6d3f2c;
+        background-color: #fd919170;
     }
 
     .night .post-block.quote > .block-title {
@@ -593,7 +594,7 @@ userStyle += `
     }
 
     .night .post-block.code {
-        border-left-color: #863411;
+        border-left-color: #ff43436e;
     }
 
     /* Box Shadow */
