@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.5.6
+// @version      0.6.0
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -20,12 +20,17 @@ FLAGS.SMALL_BUTTONS = false;
 FLAGS.AUTO_NIGHT_MODE = false;
 FLAGS.AUTO_NIGHT_START = 20;
 FLAGS.AUTO_NIGHT_END = 8;
+FLAGS.FAV_UNREAD_DARK_COLOR = "#111d27";
+FLAGS.FAV_UNREAD_LIGHT_COLOR = "#ACD6F7";
+
+const favURL = '4pda.to/forum/index.php?act=fav'
 
 const configOptions = [
     ['SMALL_BUTTONS', 'маленькие кнопки настроек и ночного режима'],
     ['AUTO_NIGHT_MODE', 'aвтоматически включать ночной режим'],
     ['AUTO_NIGHT_START', 'начало ночного режима'],
-    ['AUTO_NIGHT_END', 'окончание ночного режима']
+    ['AUTO_NIGHT_END', 'окончание ночного режима'],
+    ['FAV_COLOR', 'фон непрочитанных в избранном']
 ]
 
 if(!localStorage.getItem('4pdafixFlags')) {
@@ -52,8 +57,8 @@ const userConfig = {
     key: '4pdafix',
     model: {
         night_mode: [false, true],
-        night_start: [FLAGS.AUTO_NIGHT_START],
-        night_end: [FLAGS.AUTO_NIGHT_END]
+        fav_unread_dark_color: [FLAGS.FAV_UNREAD_DARK_COLOR],
+        fav_unread_light_color: [FLAGS.FAV_UNREAD_LIGHT_COLOR]
     },
     config: {},
     init() {
@@ -164,6 +169,14 @@ userStyle += `
 
     .night .activeusers {
         background: transparent;
+    }
+
+    .unread_row > td {
+        background: ${userConfig.getItem('fav_unread_light_color')};
+    }
+
+    .night .unread_row > td {
+        background: ${userConfig.getItem('fav_unread_dark_color')};
     }
 
     .night .popupmenu,
@@ -1075,6 +1088,14 @@ userStyle += `
   .config_frame input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
+  .config_frame input[type="color"] {
+    opacity: 1;
+    position: initial;
+    width: 30px;
+    height: 19px;
+    margin: 0 3px 3px 0;
+    padding: 0;
+  }
   .config_frame input + span:before {
     content: '';
     display: inline-block;
@@ -1086,6 +1107,14 @@ userStyle += `
   }
   .config_frame input:checked + span:before {
     background: currentcolor;
+  }
+  .config_frame .reset {
+    margin: -1px 3px 0 0;
+    padding: 0 2px;
+    font-weight: bold;
+    border-radius: 8px;
+    opacity: 1;
+    position: initial;
   }
   .night .config_frame {
     background: #22272B;
@@ -1162,6 +1191,7 @@ ready(() => {
     // Config frame
     const configFrame = document.createElement('div');
     configOptions.forEach(([key, text]) => {
+        // boolean flags
         if (typeof FLAGS[key] !== 'boolean') return;
         const inputEl = document.createElement('input');
         inputEl.type = 'checkbox';
@@ -1181,6 +1211,7 @@ ready(() => {
         };
         configFrame.appendChild(document.createElement('br'));
     });
+    // Auto night mode time
     const inputNightStart = document.createElement('input');
     inputNightStart.type = 'number';
     inputNightStart.value = FLAGS.AUTO_NIGHT_START;
@@ -1216,6 +1247,60 @@ ready(() => {
         FLAGS.AUTO_NIGHT_END = inputNightEnd.value;
         localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS));
     };
+    configFrame.appendChild(document.createElement('br'));
+
+    // Fav color picker
+    const inputFavColorDark = document.createElement('input');
+    inputFavColorDark.type = 'color';
+    inputFavColorDark.value = userConfig.getItem('fav_unread_dark_color');
+    const labelFavColorDark = document.createElement('label');
+    labelFavColorDark.setAttribute('unselectable', 'on');
+    labelFavColorDark.setAttribute('onselectstart', 'return false');
+    configFrame.appendChild(inputFavColorDark);
+    const inputResetDark = document.createElement('input');
+    inputResetDark.type = 'button';
+    inputResetDark.value = "X";
+    inputResetDark.className = 'reset';
+    inputResetDark.title = 'сбросить';
+    configFrame.appendChild(inputResetDark);
+    const spanFavColorDark = document.createElement('span');
+    spanFavColorDark.innerHTML = "цвет фона непрочитанных тем в избранном (темный режим)";
+    configFrame.appendChild(labelFavColorDark);
+    labelFavColorDark.appendChild(spanFavColorDark);
+    inputResetDark.onclick = () => {
+        userConfig.setItem('fav_unread_dark_color', FLAGS.FAV_UNREAD_DARK_COLOR);
+        inputFavColorDark.value = FLAGS.FAV_UNREAD_DARK_COLOR;
+    };
+    inputFavColorDark.oninput = () => {
+        userConfig.setItem('fav_unread_dark_color', inputFavColorDark.value);
+    };
+    configFrame.appendChild(document.createElement('br'));
+
+    const inputFavColorLight = document.createElement('input');
+    inputFavColorLight.type = 'color';
+    inputFavColorLight.value = userConfig.getItem('fav_unread_light_color');
+    const labelFavColorLight = document.createElement('label');
+    labelFavColorLight.setAttribute('unselectable', 'on');
+    labelFavColorLight.setAttribute('onselectstart', 'return false');
+    configFrame.appendChild(inputFavColorLight);
+    const inputResetLight = document.createElement('input');
+    inputResetLight.type = 'button';
+    inputResetLight.value = "X";
+    inputResetLight.className = 'reset';
+    inputResetLight.title = 'сбросить';
+    configFrame.appendChild(inputResetLight);
+    const spanFavColorLight = document.createElement('span');
+    spanFavColorLight.innerHTML = "цвет фона непрочитанных тем в избранном (светлый режим)";
+    configFrame.appendChild(labelFavColorLight);
+    labelFavColorLight.appendChild(spanFavColorLight);
+    inputResetLight.onclick = () => {
+        userConfig.setItem('fav_unread_light_color', FLAGS.FAV_UNREAD_LIGHT_COLOR);
+        inputFavColorLight.value = FLAGS.FAV_UNREAD_LIGHT_COLOR;
+    };
+    inputFavColorLight.oninput = () => {
+        userConfig.setItem('fav_unread_light_color', inputFavColorLight.value);
+    };
+    configFrame.appendChild(document.createElement('br'));
 
     const reloadText = document.createElement('div');
     reloadText.style.textAlign = 'right';
@@ -1240,6 +1325,23 @@ ready(() => {
             configFrame.style.display = 'none';
         }
     };
+
+    const URL = window.document.URL;
+
+    if (~URL.indexOf(favURL)) {
+        const tbl = document.getElementsByClassName('ipbtable')[0];
+        const tr = tbl.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+        for (let i = 0; i < tr.length; i++) {
+            if (tr[i].hasAttribute('data-item-fid')) {
+                const td = tr[i].getElementsByTagName('td');
+                if (td[1].getElementsByTagName('a')[0].getElementsByTagName('img')[0].alt === ">N") {
+                    //for (let j = 0; j < td.length; j++) {
+                        tr[i].setAttribute("class", "unread_row");
+                    //}
+                }
+            }
+        }
+    }
 
 	setTimeout(() => {
 		const marker = document.createElement('meta');
