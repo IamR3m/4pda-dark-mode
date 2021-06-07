@@ -1261,6 +1261,7 @@ ready(() => {
     inputResetDark.type = 'button';
     inputResetDark.value = "X";
     inputResetDark.className = 'reset';
+    inputResetDark.title = 'сбросить';
     configFrame.appendChild(inputResetDark);
     const spanFavColorDark = document.createElement('span');
     spanFavColorDark.innerHTML = "цвет фона непрочитанных тем в избранном (темный режим)";
@@ -1286,6 +1287,7 @@ ready(() => {
     inputResetLight.type = 'button';
     inputResetLight.value = "X";
     inputResetLight.className = 'reset';
+    inputResetLight.title = 'сбросить';
     configFrame.appendChild(inputResetLight);
     const spanFavColorLight = document.createElement('span');
     spanFavColorLight.innerHTML = "цвет фона непрочитанных тем в избранном (светлый режим)";
