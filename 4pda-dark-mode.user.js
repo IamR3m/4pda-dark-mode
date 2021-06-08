@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.6.0
+// @version      0.6.1
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -266,7 +266,8 @@ userStyle += `
     .night .borderwrap.read td.formbuttonrow,
     .night .post,
     .night .postcolor[style*="background-color: #F0F7FF"],
-    .night .ed-emo-panel div:last-of-type {
+    .night .ed-emo-panel div:last-of-type,
+    .night body > div:first-of-type > :nth-child(2) > :first-child > :nth-child(7) > :nth-child(2) > :nth-child(4) {
         background: #22272B !important;
     }
 
@@ -278,7 +279,10 @@ userStyle += `
     .night .comment-box .comment-list.level-7 > li,
     .night .comment-box .comment-list.level-9 > li,
     .night .comment-box .comment-list.level-11 > li,
-    .night #events-list > a:hover {
+    .night #events-list > a:hover,
+    .night #print h3,
+    .night .paginator a:hover,
+    .night .paginator .active a {
         background: #31383e;
     }
 
@@ -368,7 +372,8 @@ userStyle += `
     .night .ed-wrap .ed-vtoggle-hover,
     .night .ed-wrap .ed-vtoggle-down,
     .night .ed-wrap .ed-panel,
-    .night .dropdown-menu .divider {
+    .night .dropdown-menu .divider,
+    .night .pp-contentbox-back {
         background-color: #3A4F6C;
     }
 
@@ -479,9 +484,22 @@ userStyle += `
         border-color: #29394e;
     }
 
+    .night .pp-contentbox-entry,
+    .night .pp-contentbox-entry-noheight,
+    .night .pp-contentbox-entry-noheight-mod,
+    .night .pp-contentbox-entry-noheight-sel {
+        background-color: #22272b;
+        border-color: #29394e;
+    }
+
     .night .events-popup {
         background: #22272B;
         border: 1px #395179 solid;
+    }
+
+    div[style*="background:#dff0d8"] {
+        background: #26351f !important;
+        border-color: #597540 !important;
     }
 
     .night .profile-textarea {
@@ -531,6 +549,10 @@ userStyle += `
 
     /* Border Color */
 
+    .night .p-i-goto {
+        border-color: revert;
+    }
+
     .night .popupmenu,
     .night .popupmenu-new,
     .night .borderwrap,
@@ -543,7 +565,8 @@ userStyle += `
     .night .barc,
     .night .toplinks span,
     .night .subtitlediv,
-    .night .container {
+    .night .container,
+    .night .post-block {
         border-color: #29394e;
     }
 
@@ -570,7 +593,9 @@ userStyle += `
     .night .qr-maintitle .sel-btn,
     .night .navbar,
     .night .form-input,
-    .night fieldset {
+    .night fieldset,
+    .night #t-content .paginator a,
+    .night .paginator span.static {
         border-color: #395179;
     }
 
@@ -598,6 +623,12 @@ userStyle += `
         border-left-color: #29394e;
     }
 
+    .night #print h2,
+    .night #print h3,
+    .night #print p {
+        border-bottom-color: #29394e;
+    }
+
     .night .borderwrap h3,
     .night .maintitle,
     .night .maintitlecollapse,
@@ -607,10 +638,6 @@ userStyle += `
     .night .rz1gXXZ5pRH .clear-members-form,
     .night .sidebar .clear-members-form {
         border-bottom-color: #395179;
-    }
-
-    .night .post-block {
-        border-color: #29394e;
     }
 
     .night .post-block.code {
@@ -807,7 +834,8 @@ userStyle += `
 
     /* Image fixes */
 
-    .night .postdetails img[alt="*"] {
+    .night .postdetails img[alt="*"],
+    .night .pp-contentbox-entry-noheight img[alt="*"] {
         content: url('data:image/gif;base64,R0lGODlhCwAKAMIHAAcqZlB1tFN5uF6KymST1Gqc3YW49f///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAcALAAAAAALAAoAAAMgeLqs8PAtIKoF0+iN3fhgdwBEaYpAoa5o4L5oBDW0kgAAOw==');
     }
 
@@ -1326,6 +1354,7 @@ ready(() => {
         }
     };
 
+    // Highlight unread topics on fav page
     const URL = window.document.URL;
 
     if (~URL.indexOf(favURL)) {
@@ -1335,11 +1364,23 @@ ready(() => {
             if (tr[i].hasAttribute('data-item-fid')) {
                 const td = tr[i].getElementsByTagName('td');
                 if (td[1].getElementsByTagName('a')[0].getElementsByTagName('img')[0].alt === ">N") {
-                    //for (let j = 0; j < td.length; j++) {
-                        tr[i].setAttribute("class", "unread_row");
-                    //}
+                    tr[i].setAttribute("class", "unread_row");
                 }
             }
+        }
+    }
+
+    const fixedButton = "data:image/gif;base64,R0lGODlhHgAVAOeCAAcpWgcpZRI0bBg5cSRIhSRLiC9OgS9VkztXh0NVhzRalzRbmThfnDpfnThgnj5hmzpjoD1jojtkoTxkojxnpUFmoD1npD9npj1opj9op0Fopj5ppj9pqEBqqE5okkNrpEFsqkFtrEJtq1FrlUVtrEZuqEdvrEhxsElyrE5xp1BzqE12tUt3tkx3tlN5rll4qVN5uVV6sE98uVV9vVF/vlWAv1aAv1OBwVeBwFWDwlWEw1mDw1uGxlaIyGOGuGiFslyHx12KyluLyl+NzF+NzWyLuWCOzmGOzmGR0WOR0WGT0naQuWKV1maW13iTvGuX1mWZ2WeZ2mmZ2XqWwGea22ib3Gmb3Wic3Gmd3mqd3mue322g4G2h4m2i42+j42+m53Gm53Gn6YmjyHKo6XKp63Op6pGmx3Ws7nWt75Opynev8ZSrzJatzpeu0J+xzoW59aK107HD27rH27zK377N4cnT5MnU5MrW5svW58vX59ff7Nfg7OPo8eTp8fH0+PL0+PL0+fL1+f///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEKAP8ALAAAAAAeABUAAAj+AP8JHEiwoMGDAxMEWMiwocOHDgcGeEOxosWLGC8GEBjgicePIEOKDLnxXwAYKFOqXMlyZckAM2LKnEmzJs2XOHLq1EliwQISFw5MWLGz6MsdSJMitfGAD58HLwTJiaC06ksgWLNi5aFhiSAzDdwI+nFCq9aXRNKqTTukhoI6glJU8NPHQZC1al8m2cuX7xETKv7YYeBEUJoWffm+bMK4CZPGjI1AmCPowwdAejBAbvwyiucoUj57vlFEEJwMawRNYSH680stsGPHrhJiT6ASLgTdkYBEduySAqx4GU58uA42gsRswCMohowtxYmXNNADjPXrYLigoBPHgo88bUROZMGOveQ/AmHKqF8/RgiIDjlocBChZMz6+2XMe6CApr//M19QccUXXUCBBRn+Jdifef+MUEAPXKgh4YQUVmghAAYhMABEHD6E0IcgFhQQADs=";
+    const goButtons = document.getElementsByClassName('gobutton');
+    for (let i = 0; i < goButtons.length; i++) {
+        goButtons[i].src = fixedButton;
+        goButtons[i].style.backgroundColor = 'transparent';
+    }
+    const searchButtons = document.getElementsByClassName('button');
+    for (let i = 0; i < searchButtons.length; i++) {
+        if (searchButtons[i].getAttribute('type') == 'image') {
+            searchButtons[i].src = fixedButton;
+            searchButtons[i].style.backgroundColor = 'transparent';
         }
     }
 
