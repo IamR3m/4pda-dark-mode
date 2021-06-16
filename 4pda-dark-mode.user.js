@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.6.3
+// @version      0.6.4
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -330,7 +330,7 @@ userStyle += `
 
     .night .popmenubutton-new,
     .night .popmenubutton {
-        background: #4c80a0;
+        background-color: #4c80a0;
     }
 
     .night .list-group .list-group-item .bage,
@@ -864,12 +864,22 @@ userStyle += `
         content: url(data:image/gif;base64,R0lGODlhCgAKAOMIAAAAACdmB3G0UHW4U4bKXo/UZJjdarT1hf///////////////////////////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAgALAAAAAAKAAoAAAQjEMlJUbj4yjC6D9txAIAIWgRJEmdQqEDRGgZJt0KutxlW/REAOw==);
     }
 
-    .night img[alt=">"] {
+    .night img[alt=">"],
+    .night .popupmenu-item img[alt="V"],
+    .night .popupmenu-item-last img[alt="V"] {
         content: url(data:image/gif;base64,R0lGODlhCAAIAIABAAAAAP///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAIAAgAAAIMjI+JoAGcHjxPzWYKADs=);
     }
 
     .night #navstrip img {
         content: url(data:image/gif;base64,R0lGODlhCgAKAMIGAAoKCi0tLTo6OnR0dHV1dZmZmf///////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAcALAAAAAAKAAoAAAMceLp8E22VQWArQJDKMMib5YHcgWmlMqXLE71MAgA7);
+    }
+
+    .night .popmenubutton-new {
+        background-image: url(data:image/gif;base64,R0lGODlhDQAFAOMLAD8/P0FBQUJCQkZGRkdHR0hISElJSUxMS01NTVFQUFBRUf///////////////////yH5BAEKAA8ALAAAAAANAAUAAAQW8ElSqpX4AUuGyVgSjAqYIQJigocZAQA7);
+    }
+
+    .night .popmenubutton img[alt="V"] {
+        content: url(data:image/gif;base64,R0lGODlhDQAFAOMLAD8/P0FBQUJCQkZGRkdHR0hISElJSUxMS01NTVFQUFBRUf///////////////////yH5BAEKAA8ALAAAAAANAAUAAAQW8ElSqpX4AUuGyVgSjAqYIQJigocZAQA7);
     }
 
     /* Post Smiles */
