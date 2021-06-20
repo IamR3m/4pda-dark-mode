@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.6.5
+// @version      0.7.0
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -10,8 +10,8 @@
 // @icon         https://ds-assets.cdn.devapps.ru/cQMtfz1ctAlz1Rhz2XO6lH.png
 // @downloadURL  https://github.com/IamR3m/4pda-dark-mode/raw/main/4pda-dark-mode.user.js
 // @updateURL    https://github.com/IamR3m/4pda-dark-mode/raw/main/4pda-dark-mode.meta.js
-// @run-at document-start
-// @grant        none
+// @run-at       document-start
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
 const FLAGS = {};
@@ -22,15 +22,16 @@ FLAGS.AUTO_NIGHT_START = 20;
 FLAGS.AUTO_NIGHT_END = 8;
 FLAGS.FAV_UNREAD_DARK_COLOR = "#111d27";
 FLAGS.FAV_UNREAD_LIGHT_COLOR = "#ACD6F7";
+FLAGS.SHOW_NEW_VERSIONS = false;
 
 const favURL = '4pda.to/forum/index.php?act=fav'
 
 const configOptions = [
     ['SMALL_BUTTONS', 'маленькие кнопки настроек и ночного режима'],
+    ['SHOW_NEW_VERSIONS', 'показывать новые версии в избранном'],
     ['AUTO_NIGHT_MODE', 'aвтоматически включать ночной режим'],
     ['AUTO_NIGHT_START', 'начало ночного режима'],
-    ['AUTO_NIGHT_END', 'окончание ночного режима'],
-    ['FAV_COLOR', 'фон непрочитанных в избранном']
+    ['AUTO_NIGHT_END', 'окончание ночного режима']
 ]
 
 if(!localStorage.getItem('4pdafixFlags')) {
@@ -269,6 +270,13 @@ userStyle += `
     .night .ed-emo-panel div:last-of-type,
     .night body > div:first-of-type > :nth-child(2) > :first-child > :nth-child(7) > :nth-child(2) > :nth-child(4) {
         background: #22272B !important;
+    }
+
+    .night .deletedpost .row2,
+    .night .deletedpost .post1shaded,
+    .night .deletedpost .post2shaded,
+    .night .deletedpost td.formbuttonrow {
+        background: #2c0707 !important;
     }
 
     .night .list-group .list-group-item.active,
@@ -1058,7 +1066,7 @@ userStyle += `
     }
 `
 
-/* Config button and frame*/
+/* Кнопка и фрейм настроек */
 userStyle += `
   .config_button {
     box-sizing: border-box;
@@ -1208,7 +1216,7 @@ function ready(fn) {
 ready(() => {
 	if (document.getElementById('4pdafixmarker')) return;
 
-    //Auto night mode
+    // Автоматичский ночной режим
     if(FLAGS.AUTO_NIGHT_MODE) {
         setInterval(() => {
             const currentHours = new Date().getHours();
@@ -1216,7 +1224,7 @@ ready(() => {
         }, 500);
     }
 
-    // Night mode switcher
+    // Переключатель дневного/ночного режима
 	const switcherEl = document.createElement('div');
 	switcherEl.classList.add('night_mode_switcher');
 	switcherEl.onclick = () => {
@@ -1232,10 +1240,10 @@ ready(() => {
 		}
 	}, 500);
 
-    // Config frame
+    // Фрейм настроек
     const configFrame = document.createElement('div');
     configOptions.forEach(([key, text]) => {
-        // boolean flags
+        // булевые флаги
         if (typeof FLAGS[key] !== 'boolean') return;
         const inputEl = document.createElement('input');
         inputEl.type = 'checkbox';
@@ -1255,7 +1263,7 @@ ready(() => {
         };
         configFrame.appendChild(document.createElement('br'));
     });
-    // Auto night mode time
+    // Время автоматического переключения ночного режима
     const inputNightStart = document.createElement('input');
     inputNightStart.type = 'number';
     inputNightStart.value = FLAGS.AUTO_NIGHT_START;
@@ -1293,7 +1301,7 @@ ready(() => {
     };
     configFrame.appendChild(document.createElement('br'));
 
-    // Fav color picker
+    // Настройка цвета непрочитанных тем в избранном
     const inputFavColorDark = document.createElement('input');
     inputFavColorDark.type = 'color';
     inputFavColorDark.value = userConfig.getItem('fav_unread_dark_color');
@@ -1357,8 +1365,9 @@ ready(() => {
     configFrame.classList.add('config_frame');
     configFrame.style.display = 'none';
     document.body.appendChild(configFrame);
+    // Конец фрейма настроек
 
-    // Config button
+    // Кнопка настроек
     const configButton = document.createElement('div');
     configButton.classList.add('config_button');
     document.body.appendChild(configButton);
@@ -1370,7 +1379,7 @@ ready(() => {
         }
     };
 
-    // Highlight unread topics on fav page
+    // Подсветка непрочитанных тем в избранном
     const URL = window.document.URL;
 
     if (~URL.indexOf(favURL)) {
@@ -1386,6 +1395,270 @@ ready(() => {
         }
     }
 
+    /* Автор Azat-777 https://4pda.to/forum/index.php?showuser=917143
+       Мной только адаптировано и слегка оптимизировано
+    */
+    if (FLAGS.SHOW_NEW_VERSIONS) {
+        const head = document.getElementsByTagName('head')[0];
+        let counter = 0; // счетчик
+
+        // Избранное
+        if (~URL.indexOf(favURL)) {
+            // находим таблицу
+            const _tr = document.getElementsByClassName('ipbtable')[0].getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            // запихиваем в tr нужные нам строки таблицы
+            const tr = [];
+            for(let i = 0; i < _tr.length; i++) {
+                if (_tr[i].hasAttribute('data-item-fid')) { // отсортировываем из таблицы только темы
+                    tr.push(_tr[i]); // запихиваем в массив tr
+                }
+            }
+            const trLength = tr.length;
+            const name = []; // названия тем
+            for (let i = 0; i < trLength; i++) {
+                const tmp = tr[i].getElementsByTagName('td')[1].getElementsByTagName('span')[0].getElementsByTagName('a')[0];
+                getVersion(tmp.getAttribute('href'), i);
+                name.push(tmp);
+            }
+            //=====================================================
+            // добавление счетчика с количеством новых версий приложений
+            let count = 0;
+            const _span = document.createElement('span');
+            _span.id = 'count';
+            const navstrip = document.getElementById('navstrip');
+            //=====================================================
+            let app_name,
+                saveToHideName = [],
+                saveToHideVer = [];
+
+            function getVersion(link, i) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', link, true);
+                xhr.send();
+                xhr.onload = () => {
+                    if (this.readyState === 4 && this.status === 200) {
+                        const response = xhr.responseText;
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(response, 'text/html');
+                        const tbl = doc.getElementsByClassName('ipbtable');
+                        for (let j = 0; j < tbl.length; j++) {
+                            if (tbl[j].hassAttribute('data-post')) {
+                                const span = tbl[j].getElementsByTagName('tbody')[0]
+                                    .getElementsByTagName('tr')[1]
+                                    .getElementsByTagName('td')[1]
+                                    .getElementsByclassName('postcolor')[0]
+                                    .getelementsByTagName('span');
+                                for (let k = 0; k < span.length; k++) {
+                                    // версии приложений
+                                    if (span[k].getAttribute('style') == 'font-size:12pt;line-height:100%') {
+                                        if (~span[k].innerHTML.toLowerCase().indexOf('верси')) {
+                                            // замена
+                                            let replace_ver = span[k].innerHTML,
+                                                alt_ver;
+                                            // если тема не была открыта
+                                            if (~name[i].innerHTML.indexOf('<strong>')) {
+                                                replace_ver = replace_ver.toLowerCase().replace(/[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b[r]*>/g, '').trim();
+                                                alt_ver = replace_ver;
+                                                const alt_name = name[i].innerHTML.replace(/<[\/]*strong>/g, '');
+                                                // сравнение версий: текущей полученной и сохраненной в локальном хранилище
+                                                if (alt_ver.localeCompare(localStorage.getItem(alt_name)) !== 0) {
+                                                    showNotif(alt_name, alt_ver, link);
+                                                }
+                                            // если тема была открыта и просмотрена
+                                            } else {
+                                                replace_ver = replace_ver.toLowerCase().replace(/<b>[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b>/g, '').trim();
+                                                alt_ver = replace_ver;
+                                                if (replace_ver.localeCompare(localStorage.getItem(name[i].innerHTML)) !== 0) {
+                                                    showNotif(name[i].innerHTML, alt_ver, link);
+                                                }
+                                            }
+                                            // добавление цвета для наглядности
+                                            replace_ver = '<font color="#bb72ff"> ' + replace_ver + '</font>';
+                                            name[i].innerHTML += replace_ver;
+                                        }
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                };
+                xhr.onerror = () => {
+                    console.log('onerror')
+                };
+                xhr.onloadend = (event) => {
+                    if (++counter === trLength) {
+                        // вешаем обработчик событий строки (появление/скрытие кноки "Скрыть")
+                        addEvent();
+                        // скрытие строки с обновленным приложением
+                        hideApp();
+                    }
+                };
+            }
+
+            // переопределяем стиль для кнопок
+            const btnStyle = document.createElement('style');
+            btnStyle.type = 'text/css';
+            const _s = `
+.myBtn {
+    display: inline-block;
+    font-family: arial,sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    color: rgb(68,68,68);
+    text-decoration: none;
+    user-select: none;
+    padding: .1em 1.2em;
+    outline: none;
+    border: 1px solid rgba(0,0,0,.1);
+    border-radius: 2px;
+    background: rgb(245,245,245) linear-gradient(#f4f4f4, #f1f1f1);
+    transition: all .218s ease 0s;
+}
+.myBtn:hover {
+    color: rgb(24,24,24);
+    border: 1px solid rgb(198,198,198);
+    background: #f7f7f7 linear-gradient(#f7f7f7, #f1f1f1);
+    box-shadow: 0 1px 2px rgba(0,0,0,.1);
+}
+.myBtn:active {
+    color: rgb(51,51,51);
+    border: 1px solid rgb(204,204,204);
+    background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgb(224,224,224));
+    box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
+}
+.night .myBtn {
+    border: 1px solid rgba(0,0,0,.1) !important;
+    background: #777 linear-gradient(#777, #616161) !important;
+}
+.night .myBtn:hover {
+    border: 1px solid #7d7d7d !important;
+    background: #6d6d6d linear-gradient(#6d6d6d, #525252) !important;
+}`;
+            const _st = document.createTextNode(_s);
+            btnStyle.appendChild(_st);
+            head.appendChild(btnStyle);
+
+            navstrip.appendChild(_span);
+            _span.innerHTML = '<br/><br/>Обновлений: <font id="_cnt" color="red">' + count + '</font> <input id="hideBtn" class="myBtn" type="button" value="Скрыть обновления" style="display: none;" /><br/>' +
+                `<table id="_tbl" style="border-collapse: collapse; border: 0px"><thead><tr><th class="one">#</th><th class="two">Название</th><th>Версия</th></tr></thead><tbody></tbody></table>`;
+            const _tbl = document.querySelector('#_tbl'),
+                _tbody = _tbl.querySelector('tbody'),
+                _cnt = document.querySelector('#_cnt'),
+                n = 0;
+            _tbl.style.display = 'none';
+
+            const tblStyle = document.createElement('style');
+            tblStyle.type = 'text/css';
+            const s = `
+#_tbl th {
+    color: brown;
+    background-color: white;
+    text-align: center;
+    padding: 2px;
+    letter-spacing: 0px;
+}
+.night #_tbl th {
+    color: sandybrown;
+    background-color: darkslategrey;
+}
+#_tbl td {
+    font-size: 10px;
+    padding: 0 5px;
+}
+#_tbl .one, .two {
+    border-right: 1px solid
+}`;
+            const st = document.createTextNode(s);
+            tblStyle.appendChild(st);
+            head.appendChild(tblStyle);
+
+            // кнопка скрытия обновлений вручную
+            const hideBtn = document.querySelector('#hideBtn');
+            hideBtn.onclick = () => {
+                hideBtn.style.display = 'none';
+                // сразу сохраняем обновленные версии в память, чтобы при следующем обновлении не всплыли в таблице обновлений
+                for(let i = 0; i < saveToHideName.length; i++) {
+                    localStorage.setItem(saveToHideName[i], saveToHideVer[i]);
+                }
+                // скрываем таблицу с обновлениями и обнуляем счетчик
+                _tbl.style.display = 'none';
+                count = 0;
+                _cnt.innerHTML = count;
+                for(; _tbody.querySelectorAll('tr').length > 0;) {
+                    _tbl.deleteRow(1);
+                }
+            }
+
+            // вывод обновленных приложений вверху
+            function showNotif(alt_name, alt_ver, link) {
+                // показываем скрытую кнопку, если есть обновления
+                hideBtn.style.display = 'inline';
+                count++;
+                const goto = '<a href="' + link + '&amp;view=getnewpost"><img src="//s.4pda.to/kkRMw9H6PDJH2O7aOGE4gWJpHLz0xXN6ymhvGxkFLXM.gif" alt=">N" title="Перейти к первому непрочитанному" border="0"></a> ';
+                app_name = goto + '<a href="' + link + '" title="Перейти к первому сообщению">' + alt_name + '</a>';
+                saveToHideName.push(alt_name);
+                saveToHideVer.push(alt_ver);
+                showUpdates(app_name, alt_ver);
+            }
+
+            // показ количества обновлений и вывод их в таблице
+            function showUpdates(app_name, ver) {
+                _tbl.style.display = 'block';
+                n++;
+                const row = _tbody.insertRow(-1),
+                      cell1 = row.insertCell(-1),
+                      cell2 = row.insertCell(-1),
+                      cell3 = row.insertCell(-1),
+                      cell4 = row.insertCell(-1);
+                row.className = 'myTr';
+                cell1.className = 'one';
+                cell2.className = 'two';
+                cell1.innerHTML = n; _cnt.innerHTML = count;
+                cell2.innerHTML = app_name;
+                cell3.innerHTML = ver;
+                cell4.innerHTML = '<input class="myBtn hidden" type="button" value="Скрыть" style="display: none;">';
+            }
+            function addEvent() {
+                const myTr = document.querySelectorAll('.myTr');
+                for(let i = 0; i < myTr.length; i++) {
+                    myTr[i].addEventListener('mouseover', function showButton() {
+                        this.querySelector('.hidden').style.display = 'block';
+                    });
+                    myTr[i].addEventListener('mouseout', function hideButton() {
+                        this.querySelector('.hidden').style.display = 'none';
+                    });
+                }
+            }
+            function hideApp() {
+                var hBut = document.querySelectorAll('.myBtn.hidden');
+                for(var i=0; i<hBut.length; i++) {
+                    hBut[i].onclick = function() {
+                        var n = this.parentNode.parentNode.firstChild.innerHTML,
+                            name = this.parentNode.parentNode.children[1].children[1].innerHTML,
+                            ver = this.parentNode.parentNode.children[2].innerHTML;
+                        localStorage.setItem(name, ver);
+                        // сброс # таблицы и удаление строк(и)
+                        _tbl.deleteRow(n);
+                        var num = _tbl.querySelectorAll('td.one');
+                        // если было скрыто последнее обновление, скрываем шапку таблицы и кнопку "Скрыть обновления"
+                        if(num.length === 0) {
+                            _tbl.style.display = 'none';
+                            hideBtn.style.display = 'none';
+                        }
+                        for(var j=0; j<num.length; j++) {
+                            //console.log(num[j].innerHTML);
+                            num[j].innerHTML = j+1;
+                        }
+                        _cnt.innerHTML = j;
+                    }
+                }
+            }
+        }
+    }
+
+    // Исправление кнопок
     const fixedButton = "data:image/gif;base64,R0lGODlhHgAVAOeCAAcpWgcpZRI0bBg5cSRIhSRLiC9OgS9VkztXh0NVhzRalzRbmThfnDpfnThgnj5hmzpjoD1jojtkoTxkojxnpUFmoD1npD9npj1opj9op0Fopj5ppj9pqEBqqE5okkNrpEFsqkFtrEJtq1FrlUVtrEZuqEdvrEhxsElyrE5xp1BzqE12tUt3tkx3tlN5rll4qVN5uVV6sE98uVV9vVF/vlWAv1aAv1OBwVeBwFWDwlWEw1mDw1uGxlaIyGOGuGiFslyHx12KyluLyl+NzF+NzWyLuWCOzmGOzmGR0WOR0WGT0naQuWKV1maW13iTvGuX1mWZ2WeZ2mmZ2XqWwGea22ib3Gmb3Wic3Gmd3mqd3mue322g4G2h4m2i42+j42+m53Gm53Gn6YmjyHKo6XKp63Op6pGmx3Ws7nWt75Opynev8ZSrzJatzpeu0J+xzoW59aK107HD27rH27zK377N4cnT5MnU5MrW5svW58vX59ff7Nfg7OPo8eTp8fH0+PL0+PL0+fL1+f///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEKAP8ALAAAAAAeABUAAAj+AP8JHEiwoMGDAxMEWMiwocOHDgcGeEOxosWLGC8GEBjgicePIEOKDLnxXwAYKFOqXMlyZckAM2LKnEmzJs2XOHLq1EliwQISFw5MWLGz6MsdSJMitfGAD58HLwTJiaC06ksgWLNi5aFhiSAzDdwI+nFCq9aXRNKqTTukhoI6glJU8NPHQZC1al8m2cuX7xETKv7YYeBEUJoWffm+bMK4CZPGjI1AmCPowwdAejBAbvwyiucoUj57vlFEEJwMawRNYSH680stsGPHrhJiT6ASLgTdkYBEduySAqx4GU58uA42gsRswCMohowtxYmXNNADjPXrYLigoBPHgo88bUROZMGOveQ/AmHKqF8/RgiIDjlocBChZMz6+2XMe6CApr//M19QccUXXUCBBRn+Jdifef+MUEAPXKgh4YQUVmghAAYhMABEHD6E0IcgFhQQADs=";
     const goButtons = document.getElementsByClassName('gobutton');
     for (let i = 0; i < goButtons.length; i++) {
