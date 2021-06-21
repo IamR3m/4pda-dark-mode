@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.7.0
+// @version      0.7.1
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -256,7 +256,8 @@ userStyle += `
     .night .bar,
     .night .barb,
     .night .barc,
-    .night #events-wrapper {
+    .night #events-wrapper,
+    .night ul.status, .night .load_frame {
         background: #22272B;
     }
 
@@ -290,7 +291,9 @@ userStyle += `
     .night #events-list > a:hover,
     .night #print h3,
     .night .paginator a:hover,
-    .night .paginator .active a {
+    .night .paginator .active a,
+    .night .td-description,
+    .night .td-comment {
         background: #31383e;
     }
 
@@ -372,6 +375,10 @@ userStyle += `
 
     /* Background Color */
 
+    .night .status-1 {
+        background-color: #0f480f;
+    }
+
     .night .usercp_menu {
         background-color: #171c20;
     }
@@ -390,6 +397,14 @@ userStyle += `
     .night .deletedpostlight .post2shaded,
     .night .deletedpostlight td.formbuttonrow {
         background: #3a4f6c !important;
+    }
+
+    .night .t-row.row-open.row-1, .night .t-row.row-open.row-2 {
+        background-color: #5a5a0a;
+    }
+
+    .night .status-0 {
+        background-color: #992a2a;
     }
 
     .night .row4shaded2,
@@ -484,6 +499,18 @@ userStyle += `
         color: #1d2735;
     }
 
+    .night textarea.t-comment-text {
+        background: #31383e;
+        background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, #31383e 50%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255,255,255,0)), color-stop(50%, #31383e));
+        background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, #31383e 50%);
+        background: -o-linear-gradient(top, rgba(255,255,255,0) 0%, #31383e 50%);
+        background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%, #31383e 50%);
+        background: linear-gradient(top, rgba(255,255,255,0) 0%, #31383e 50%);
+        border-color: #395179;
+        color: #9e9e9e;
+    }
+
     /* Background + Border Color */
 
     .night .list-group .list-group-item,
@@ -515,6 +542,12 @@ userStyle += `
         border-color: #395179;
     }
 
+    .night .t-row.row-1.row-status-2,
+    .night .t-row.row-2.row-status-2 {
+        background: #31383e;
+        border-top-color: #395179;
+    }
+
     .night .navbar .btn,
     .night .bb-codes {
         background-color: #3A4F6C;
@@ -527,6 +560,11 @@ userStyle += `
     .night .borderwrap p.formbuttonrow1 {
         background-color: #3A4F6C !important;
         border-color: #395179;
+    }
+
+    .night .t-row.row-1 {
+        background-color: #446a80;
+        border-top-color: #395179;
     }
 
     .night .rz1gXXZ5pRH,
@@ -644,7 +682,10 @@ userStyle += `
     .night .popupmenu-item,
     .night .product-detail,
     .night .rz1gXXZ5pRH .clear-members-form,
-    .night .sidebar .clear-members-form {
+    .night .sidebar .clear-members-form,
+    .night .t-row,
+    .night .t-row-content,
+    .night .t-form-post {
         border-bottom-color: #395179;
     }
 
@@ -761,6 +802,10 @@ userStyle += `
     .night .desc,
     .night .lastaction {
         color: #5f6772;
+    }
+
+    .night #t-content {
+        color: #9e9e9e;
     }
 
     .night a:link,
@@ -1052,6 +1097,11 @@ userStyle += `
     /* QMS Plus fix */
     .night .qms-search-form .btn.blue {
         color: #9e9e9e;
+    }
+
+    /* Ticket paginator fix */
+    .paginator form {
+        margin: -1px !important;
     }
 
     /* EXPERIMENTAL! hide ads. If not needed comment next selectors */
