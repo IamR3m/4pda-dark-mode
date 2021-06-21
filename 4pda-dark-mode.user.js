@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.7.1
+// @version      0.7.2
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1485,19 +1485,19 @@ ready(() => {
                 const xhr = new XMLHttpRequest();
                 xhr.open('GET', link, true);
                 xhr.send();
-                xhr.onload = () => {
+                xhr.onload = function() {
                     if (this.readyState === 4 && this.status === 200) {
                         const response = xhr.responseText;
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(response, 'text/html');
                         const tbl = doc.getElementsByClassName('ipbtable');
                         for (let j = 0; j < tbl.length; j++) {
-                            if (tbl[j].hassAttribute('data-post')) {
+                            if (tbl[j].hasAttribute('data-post')) {
                                 const span = tbl[j].getElementsByTagName('tbody')[0]
                                     .getElementsByTagName('tr')[1]
                                     .getElementsByTagName('td')[1]
-                                    .getElementsByclassName('postcolor')[0]
-                                    .getelementsByTagName('span');
+                                    .getElementsByClassName('postcolor')[0]
+                                    .getElementsByTagName('span');
                                 for (let k = 0; k < span.length; k++) {
                                     // версии приложений
                                     if (span[k].getAttribute('style') == 'font-size:12pt;line-height:100%') {
@@ -1595,8 +1595,8 @@ ready(() => {
                 `<table id="_tbl" style="border-collapse: collapse; border: 0px"><thead><tr><th class="one">#</th><th class="two">Название</th><th>Версия</th></tr></thead><tbody></tbody></table>`;
             const _tbl = document.querySelector('#_tbl'),
                 _tbody = _tbl.querySelector('tbody'),
-                _cnt = document.querySelector('#_cnt'),
-                n = 0;
+                _cnt = document.querySelector('#_cnt');
+            let n = 0;
             _tbl.style.display = 'none';
 
             const tblStyle = document.createElement('style');
