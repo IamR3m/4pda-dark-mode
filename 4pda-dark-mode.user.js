@@ -1352,7 +1352,7 @@ ready(() => {
     };
     configFrame.appendChild(document.createElement('br'));
 
-    // Настройка цвета непрочитанных тем в избранном
+    // Настройка цвета непрочитанных тем
     const inputFavColorDark = document.createElement('input');
     inputFavColorDark.type = 'color';
     inputFavColorDark.value = userConfig.getItem('fav_unread_dark_color');
@@ -1367,7 +1367,7 @@ ready(() => {
     inputResetDark.title = 'сбросить';
     configFrame.appendChild(inputResetDark);
     const spanFavColorDark = document.createElement('span');
-    spanFavColorDark.innerHTML = "цвет фона непрочитанных тем в избранном (темный режим)";
+    spanFavColorDark.innerHTML = "цвет фона непрочитанных тем (темный режим)";
     configFrame.appendChild(labelFavColorDark);
     labelFavColorDark.appendChild(spanFavColorDark);
     inputResetDark.onclick = () => {
@@ -1393,7 +1393,7 @@ ready(() => {
     inputResetLight.title = 'сбросить';
     configFrame.appendChild(inputResetLight);
     const spanFavColorLight = document.createElement('span');
-    spanFavColorLight.innerHTML = "цвет фона непрочитанных тем в избранном (светлый режим)";
+    spanFavColorLight.innerHTML = "цвет фона непрочитанных тем (светлый режим)";
     configFrame.appendChild(labelFavColorLight);
     labelFavColorLight.appendChild(spanFavColorLight);
     inputResetLight.onclick = () => {
