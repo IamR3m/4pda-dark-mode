@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.7.2
+// @version      0.7.3
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -24,7 +24,8 @@ FLAGS.FAV_UNREAD_DARK_COLOR = "#111d27";
 FLAGS.FAV_UNREAD_LIGHT_COLOR = "#ACD6F7";
 FLAGS.SHOW_NEW_VERSIONS = false;
 
-const favURL = '4pda.to/forum/index.php?act=fav'
+const favURL = '/forum/index.php?act=fav'
+const forumURL = '/forum/index.php?showforum='
 
 const configOptions = [
     ['SMALL_BUTTONS', 'маленькие кнопки настроек и ночного режима'],
@@ -1429,17 +1430,24 @@ ready(() => {
         }
     };
 
-    // Подсветка непрочитанных тем в избранном
+    // Подсветка непрочитанных тем в избранном и форумах
     const URL = window.document.URL;
 
-    if (~URL.indexOf(favURL)) {
-        const tbl = document.getElementsByClassName('ipbtable')[0];
-        const tr = tbl.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-        for (let i = 0; i < tr.length; i++) {
-            if (tr[i].hasAttribute('data-item-fid')) {
-                const td = tr[i].getElementsByTagName('td');
-                if (td[1].getElementsByTagName('a')[0].getElementsByTagName('img')[0].alt === ">N") {
-                    tr[i].setAttribute("class", "unread_row");
+    if (~URL.indexOf(favURL) || ~URL.indexOf(forumURL)) {
+        const tbl = document.getElementsByClassName('ipbtable');
+        for (let i = 0; i < tbl.length; i++) {
+            const tr = tbl[i].getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            for (let j = 0; j < tr.length; j++) {
+                if (tr[j].hasAttribute('data-item-fid') || (
+                    tr[j].getElementsByTagName('td') &&
+                    tr[j].getElementsByTagName('td')[0] &&
+                    tr[j].getElementsByTagName('td')[0].className === 'row2'
+                )) {
+                    const td = tr[j].getElementsByTagName('td');
+                    const tdIndex = ~URL.indexOf(favURL) ? 1 : 2;
+                    if (td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img')[0].alt === ">N") {
+                        tr[j].setAttribute("class", "unread_row");
+                    }
                 }
             }
         }
