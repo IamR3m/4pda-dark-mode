@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.7.6
+// @version      0.8.0
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -23,13 +23,16 @@ FLAGS.AUTO_NIGHT_END = 8;
 FLAGS.FAV_UNREAD_DARK_COLOR = "#111d27";
 FLAGS.FAV_UNREAD_LIGHT_COLOR = "#ACD6F7";
 FLAGS.SHOW_NEW_VERSIONS = false;
+FLAGS.SHOW_USER_INFO = false;
 
-const favURL = '/forum/index.php?act=fav'
-const forumURL = '/forum/index.php?showforum='
+const favURL = '/forum/index.php?act=fav';
+const forumURL = '/forum/index.php?showforum=';
+const topicURL = '/forum/index.php?showtopic=';
 
 const configOptions = [
     ['SMALL_BUTTONS', 'маленькие кнопки настроек и ночного режима'],
     ['SHOW_NEW_VERSIONS', 'показывать новые версии в избранном'],
+    ['SHOW_USER_INFO', 'показывать доп. информацию о пользователях в теме'],
     ['AUTO_NIGHT_MODE', 'aвтоматически включать ночной режим'],
     ['AUTO_NIGHT_START', 'начало ночного режима'],
     ['AUTO_NIGHT_END', 'окончание ночного режима']
@@ -1464,7 +1467,6 @@ ready(() => {
        Мной только адаптировано и слегка оптимизировано
     */
     if (FLAGS.SHOW_NEW_VERSIONS) {
-        const head = document.getElementsByTagName('head')[0];
         let counter = 0; // счетчик
 
         // Избранное
@@ -1603,7 +1605,7 @@ ready(() => {
 }`;
             const _st = document.createTextNode(_s);
             btnStyle.appendChild(_st);
-            head.appendChild(btnStyle);
+            document.head.appendChild(btnStyle);
 
             navstrip.appendChild(_span);
             _span.innerHTML = '<br/><br/>Обновлений: <font id="_cnt" color="red">' + count + '</font> <input id="hideBtn" class="myBtn" type="button" value="Скрыть обновления" style="display: none;" /><br/>' +
@@ -1637,7 +1639,7 @@ ready(() => {
 }`;
             const st = document.createTextNode(s);
             tblStyle.appendChild(st);
-            head.appendChild(tblStyle);
+            document.head.appendChild(tblStyle);
 
             // кнопка скрытия обновлений вручную
             const hideBtn = document.querySelector('#hideBtn');
@@ -1719,6 +1721,82 @@ ready(() => {
                         _cnt.innerHTML = j;
                     }
                 }
+            }
+        }
+    }
+
+    if (FLAGS.SHOW_USER_INFO) {
+        if (~URL.indexOf(topicURL)) {
+            let totalKB = 0,
+                totalMB = 0,
+                counter = 0;
+            const post = document.querySelectorAll('.postdetails > center'),
+                  userLink = document.getElementsByClassName('normalname'),
+                  link = [], // собираем все ссылки на профили
+                  ulLength = userLink.length;
+
+            for (let i = 0; i < ulLength; i++) {
+                getUserData(userLink[i].querySelector('a').getAttribute('href'), i);
+            }
+            // создание области для новых данных
+            const div = document.createElement('div');
+            div.id = 'myDiv';
+            // Стиль для новой области
+            const style = document.createElement('style');
+            style.type = 'text/css';
+            const styleData = `
+#myDiv {
+    border: 1px solid lightblue;
+    padding: 5px;
+    margin-top: 8px;
+    margin-bottom: -10px;
+}
+.night #myDiv {
+    border-color: #395179;
+}
+#myDiv:hover {
+    background: PaleTurquoise;
+    color: blue;
+    font-size: 10pt;
+}
+.night #myDiv:hover {
+    background: #3A4F6C;
+    color: #9e9e9e;
+}`;
+            const styleNode = document.createTextNode(styleData);
+            style.appendChild(styleNode);
+            document.head.appendChild(style);
+
+            function getUserData(link, index) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', link, true);
+                xhr.send();
+                xhr.onload = function() {
+                    if (this.readyState === 4 && this.status === 200) {
+                        const response = xhr.responseText;
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(response, 'text/html');
+                        const main = doc.getElementsByClassName('info-list width1 black-link')[0];
+                        main.style.marginLeft = 0;
+                        main.style.paddingLeft = 0;
+                        main.style.display = 'block';
+                        main.style.listStyle = 'none';
+                        const list = main.querySelectorAll('li');
+                        let userData = '';
+                        for (let i = 0; i < list.length; i++) {
+                            userData += list[i].innerHTML.replace(/<[^>]+>/g,'').replace(/(Город:)/, '$1 ').replace(/(юзера:)/, '$1 ').replace(/(рождения:)/, '$1 ') + '<br/>';
+                        }
+                        insertData(userData, index);
+                    }
+                };
+                xhr.onerror = () => {
+                    console.log('error');
+                };
+            }
+
+            function insertData(userData, index) {
+                div.innerHTML = userData;
+                post[index].appendChild(div.cloneNode(true));
             }
         }
     }
