@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.8.0
+// @version      0.8.1
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -24,6 +24,7 @@ FLAGS.FAV_UNREAD_DARK_COLOR = "#111d27";
 FLAGS.FAV_UNREAD_LIGHT_COLOR = "#ACD6F7";
 FLAGS.SHOW_NEW_VERSIONS = false;
 FLAGS.SHOW_USER_INFO = false;
+FLAGS.ADS_CLEANER = false;
 
 const favURL = '/forum/index.php?act=fav';
 const forumURL = '/forum/index.php?showforum=';
@@ -33,6 +34,7 @@ const configOptions = [
     ['SMALL_BUTTONS', 'маленькие кнопки настроек и ночного режима'],
     ['SHOW_NEW_VERSIONS', 'показывать новые версии в избранном'],
     ['SHOW_USER_INFO', 'показывать доп. информацию о пользователях в теме'],
+    ['ADS_CLEANER', 'удалять рекламу'],
     ['AUTO_NIGHT_MODE', 'aвтоматически включать ночной режим'],
     ['AUTO_NIGHT_START', 'начало ночного режима'],
     ['AUTO_NIGHT_END', 'окончание ночного режима']
@@ -1109,14 +1111,11 @@ userStyle += `
         margin: -1px !important;
     }
 
-    /* EXPERIMENTAL! hide ads. If not needed comment next selectors */
-    .night body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(2):not(div),
-    .night article > :first-child:not(div) {
-        display: none !important;
-        cursor: default;
+    #ad {
+        background: white !important;
     }
 
-    .night body #rkgrKCNWoK>.sWq>.rdu>#rkgmEjiy+#fcsFYH#fcsFYH#fcsFYH#fcsFYH {
+    .night #ad {
         background: black !important;
     }
 `
@@ -1799,6 +1798,20 @@ ready(() => {
                 post[index].appendChild(div.cloneNode(true));
             }
         }
+    }
+
+    if (FLAGS.ADS_CLEANER) {
+        let div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(2):not(div)');
+        div && div.remove();
+
+        div = document.querySelector('article > :first-child:not(div)');
+        div && div.remove();
+
+        div = document.querySelector('div[itemprop="description"]');
+        div && div.remove();
+
+        div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(6):not(div)');
+        div.id = 'ad';
     }
 
     // Исправление кнопок
