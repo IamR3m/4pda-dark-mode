@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.8.1
+// @version      0.8.2
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -419,6 +419,14 @@ userStyle += `
         background-color: #fa052a5c;
     }
 
+    .night .post-block.code > .block-title {
+        background-color: #fd919170;
+    }
+
+    .night .post-block.quote > .block-title {
+        background-color: #3A4F6C;
+    }
+
     .night p.copyright,
     .night .submit-wrapper,
     .night .fosy-captcha-load {
@@ -426,6 +434,11 @@ userStyle += `
     }
 
     /* Background + Color */
+
+    .night .wr.va-m .content {
+        background: #22272B;
+        color: #9f9f9f;
+    }
 
     .night .g-btn.blue /*,
     .night .g-btn.red,
@@ -466,14 +479,6 @@ userStyle += `
     .night .post-block:not(.cur):not(.mod):not(.code) > .block-title {
         background-color: #29394e;
         color: #9e9e9e;
-    }
-
-    .night .post-block.code > .block-title {
-        background-color: #fd919170;
-    }
-
-    .night .post-block.quote > .block-title {
-        background-color: #3A4F6C;
     }
 
     .night .comment-box .heading .btn {
@@ -811,7 +816,8 @@ userStyle += `
         color: #5f6772;
     }
 
-    .night #t-content {
+    .night #t-content,
+    .night .wr-t + .footer {
         color: #9e9e9e;
     }
 
@@ -1811,7 +1817,7 @@ ready(() => {
         div && div.remove();
 
         div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(6):not(div)');
-        div.id = 'ad';
+        if (div) div.id = 'ad';
     }
 
     // Исправление кнопок
