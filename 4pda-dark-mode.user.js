@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.8.2
+// @version      0.8.3
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -824,6 +824,12 @@ userStyle += `
     .night a:link,
     .night a:visited,
     .night a:active,
+    .night .advanced-area .post .list-post-title a,
+    .night .advanced-area .post .list-post-title a:visited,
+    .night .advanced-area .post .list-post-title a:active {
+        color: #b2b2b2;
+    }
+
     .night table.ipbtable,
     .night tr.ipbtable,
     .night td.ipbtable,
