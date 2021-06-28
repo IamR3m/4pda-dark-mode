@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.8.3
+// @version      0.8.4
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1242,6 +1242,34 @@ userStyle += `
 
 userStyleEl.innerHTML = userStyle;
 
+const frameStyleEl = document.createElement('style');
+const frameStyle = `
+body > :nth-child(2) > :nth-child(4) {
+    display: none;
+}
+
+.night body > :nth-child(3) {
+    background-color: #22272B !important;
+    border-color: #393d41 !important;
+    color: #9e9e9e;
+}
+
+
+.night .dw-fname,
+.night .dw-fsize,
+.night .dw-fdwlink,
+.night .dw-descr,
+.night body > :nth-child(3) > :last-child {
+    text-shadow: 0 0 4px black !important;
+}
+
+.night a {
+    color: #468cf7 !important;
+}
+`;
+
+frameStyleEl.innerHTML = frameStyle;
+
 const navigatorEdge = /Edge/.test(navigator.userAgent);
 
 function readyHead(fn) {
@@ -1262,7 +1290,11 @@ function readyHead(fn) {
 
 readyHead(() => {
 	if (document.getElementById('4pdafixmarker')) return;
-	document.head.appendChild(userStyleEl);
+    if (window.top === window.self) {
+        document.head.appendChild(userStyleEl)
+    } else {
+        document.head.appendChild(frameStyleEl)
+    }
 	if (userConfig.getItem('night_mode')) {
 		document.documentElement.classList.add('night');
 	}
@@ -1296,6 +1328,7 @@ ready(() => {
 	switcherEl.onclick = () => {
 		const isNightMode = userConfig.shiftItem('night_mode');
 		document.documentElement.classList.toggle('night', isNightMode);
+        lbIframe && lbIframe.document.documentElement.classList.toggle('night', isNightMode);
 	};
 	document.body.appendChild(switcherEl);
 	setInterval(() => {
@@ -1303,282 +1336,286 @@ ready(() => {
 		const isNightMode = userConfig.getItem('night_mode');
 		if (boolClass !== isNightMode) {
 			document.documentElement.classList.toggle('night', isNightMode);
+            lbIframe && lbIframe.document.documentElement.classList.toggle('night', isNightMode);
 		}
 	}, 500);
 
-    // Фрейм настроек
-    const configFrame = document.createElement('div');
-    configOptions.forEach(([key, text]) => {
-        // булевые флаги
-        if (typeof FLAGS[key] !== 'boolean') return;
-        const inputEl = document.createElement('input');
-        inputEl.type = 'checkbox';
-        inputEl.value = key;
-        inputEl.checked = FLAGS[key];
-        const labelEl = document.createElement('label');
-        labelEl.setAttribute('unselectable', 'on');
-        labelEl.setAttribute('onselectstart', 'return false');
-        const spanEl = document.createElement('span');
-        spanEl.innerHTML = text;
-        configFrame.appendChild(labelEl);
-        labelEl.appendChild(inputEl);
-        labelEl.appendChild(spanEl);
-        inputEl.onchange = () => {
-            FLAGS[key] = inputEl.checked;
+    // проверяем, скрипт запустился во фрейме или основном окне
+    if (window.top === window.self) {
+
+        // Фрейм настроек
+        const configFrame = document.createElement('div');
+        configOptions.forEach(([key, text]) => {
+            // булевые флаги
+            if (typeof FLAGS[key] !== 'boolean') return;
+            const inputEl = document.createElement('input');
+            inputEl.type = 'checkbox';
+            inputEl.value = key;
+            inputEl.checked = FLAGS[key];
+            const labelEl = document.createElement('label');
+            labelEl.setAttribute('unselectable', 'on');
+            labelEl.setAttribute('onselectstart', 'return false');
+            const spanEl = document.createElement('span');
+            spanEl.innerHTML = text;
+            configFrame.appendChild(labelEl);
+            labelEl.appendChild(inputEl);
+            labelEl.appendChild(spanEl);
+            inputEl.onchange = () => {
+                FLAGS[key] = inputEl.checked;
+                localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS));
+            };
+            configFrame.appendChild(document.createElement('br'));
+        });
+        // Время автоматического переключения ночного режима
+        const inputNightStart = document.createElement('input');
+        inputNightStart.type = 'number';
+        inputNightStart.value = FLAGS.AUTO_NIGHT_START;
+        inputNightStart.min = 0;
+        inputNightStart.max = 23;
+        const labelNightStart = document.createElement('label');
+        labelNightStart.setAttribute('unselectable', 'on');
+        labelNightStart.setAttribute('onselectstart', 'return false');
+        const spanNightStart = document.createElement('span');
+        spanNightStart.innerHTML = "от (ч)";
+        configFrame.appendChild(labelNightStart);
+        labelNightStart.appendChild(spanNightStart);
+        configFrame.appendChild(inputNightStart);
+        inputNightStart.oninput = () => {
+            FLAGS.AUTO_NIGHT_START = inputNightStart.value;
+            localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS));
+        };
+
+        const inputNightEnd = document.createElement('input');
+        inputNightEnd.type = 'number';
+        inputNightEnd.value = FLAGS.AUTO_NIGHT_END;
+        inputNightEnd.min = 0;
+        inputNightEnd.max = 23;
+        const labelNightEnd = document.createElement('label');
+        labelNightEnd.setAttribute('unselectable', 'on');
+        labelNightEnd.setAttribute('onselectstart', 'return false');
+        const spanNightEnd = document.createElement('span');
+        spanNightEnd.innerHTML = "до (ч)";
+        configFrame.appendChild(labelNightEnd);
+        labelNightEnd.appendChild(spanNightEnd);
+        configFrame.appendChild(inputNightEnd);
+        inputNightEnd.oninput = () => {
+            FLAGS.AUTO_NIGHT_END = inputNightEnd.value;
             localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS));
         };
         configFrame.appendChild(document.createElement('br'));
-    });
-    // Время автоматического переключения ночного режима
-    const inputNightStart = document.createElement('input');
-    inputNightStart.type = 'number';
-    inputNightStart.value = FLAGS.AUTO_NIGHT_START;
-    inputNightStart.min = 0;
-    inputNightStart.max = 23;
-    const labelNightStart = document.createElement('label');
-    labelNightStart.setAttribute('unselectable', 'on');
-    labelNightStart.setAttribute('onselectstart', 'return false');
-    const spanNightStart = document.createElement('span');
-    spanNightStart.innerHTML = "от (ч)";
-    configFrame.appendChild(labelNightStart);
-    labelNightStart.appendChild(spanNightStart);
-    configFrame.appendChild(inputNightStart);
-    inputNightStart.oninput = () => {
-        FLAGS.AUTO_NIGHT_START = inputNightStart.value;
-        localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS));
-    };
 
-    const inputNightEnd = document.createElement('input');
-    inputNightEnd.type = 'number';
-    inputNightEnd.value = FLAGS.AUTO_NIGHT_END;
-    inputNightEnd.min = 0;
-    inputNightEnd.max = 23;
-    const labelNightEnd = document.createElement('label');
-    labelNightEnd.setAttribute('unselectable', 'on');
-    labelNightEnd.setAttribute('onselectstart', 'return false');
-    const spanNightEnd = document.createElement('span');
-    spanNightEnd.innerHTML = "до (ч)";
-    configFrame.appendChild(labelNightEnd);
-    labelNightEnd.appendChild(spanNightEnd);
-    configFrame.appendChild(inputNightEnd);
-    inputNightEnd.oninput = () => {
-        FLAGS.AUTO_NIGHT_END = inputNightEnd.value;
-        localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS));
-    };
-    configFrame.appendChild(document.createElement('br'));
+        // Настройка цвета непрочитанных тем
+        const inputFavColorDark = document.createElement('input');
+        inputFavColorDark.type = 'color';
+        inputFavColorDark.value = userConfig.getItem('fav_unread_dark_color');
+        const labelFavColorDark = document.createElement('label');
+        labelFavColorDark.setAttribute('unselectable', 'on');
+        labelFavColorDark.setAttribute('onselectstart', 'return false');
+        configFrame.appendChild(inputFavColorDark);
+        const inputResetDark = document.createElement('input');
+        inputResetDark.type = 'button';
+        inputResetDark.value = "X";
+        inputResetDark.className = 'reset';
+        inputResetDark.title = 'сбросить';
+        configFrame.appendChild(inputResetDark);
+        const spanFavColorDark = document.createElement('span');
+        spanFavColorDark.innerHTML = "цвет фона непрочитанных тем (темный режим)";
+        configFrame.appendChild(labelFavColorDark);
+        labelFavColorDark.appendChild(spanFavColorDark);
+        inputResetDark.onclick = () => {
+            userConfig.setItem('fav_unread_dark_color', FLAGS.FAV_UNREAD_DARK_COLOR);
+            inputFavColorDark.value = FLAGS.FAV_UNREAD_DARK_COLOR;
+        };
+        inputFavColorDark.oninput = () => {
+            userConfig.setItem('fav_unread_dark_color', inputFavColorDark.value);
+        };
+        configFrame.appendChild(document.createElement('br'));
 
-    // Настройка цвета непрочитанных тем
-    const inputFavColorDark = document.createElement('input');
-    inputFavColorDark.type = 'color';
-    inputFavColorDark.value = userConfig.getItem('fav_unread_dark_color');
-    const labelFavColorDark = document.createElement('label');
-    labelFavColorDark.setAttribute('unselectable', 'on');
-    labelFavColorDark.setAttribute('onselectstart', 'return false');
-    configFrame.appendChild(inputFavColorDark);
-    const inputResetDark = document.createElement('input');
-    inputResetDark.type = 'button';
-    inputResetDark.value = "X";
-    inputResetDark.className = 'reset';
-    inputResetDark.title = 'сбросить';
-    configFrame.appendChild(inputResetDark);
-    const spanFavColorDark = document.createElement('span');
-    spanFavColorDark.innerHTML = "цвет фона непрочитанных тем (темный режим)";
-    configFrame.appendChild(labelFavColorDark);
-    labelFavColorDark.appendChild(spanFavColorDark);
-    inputResetDark.onclick = () => {
-        userConfig.setItem('fav_unread_dark_color', FLAGS.FAV_UNREAD_DARK_COLOR);
-        inputFavColorDark.value = FLAGS.FAV_UNREAD_DARK_COLOR;
-    };
-    inputFavColorDark.oninput = () => {
-        userConfig.setItem('fav_unread_dark_color', inputFavColorDark.value);
-    };
-    configFrame.appendChild(document.createElement('br'));
+        const inputFavColorLight = document.createElement('input');
+        inputFavColorLight.type = 'color';
+        inputFavColorLight.value = userConfig.getItem('fav_unread_light_color');
+        const labelFavColorLight = document.createElement('label');
+        labelFavColorLight.setAttribute('unselectable', 'on');
+        labelFavColorLight.setAttribute('onselectstart', 'return false');
+        configFrame.appendChild(inputFavColorLight);
+        const inputResetLight = document.createElement('input');
+        inputResetLight.type = 'button';
+        inputResetLight.value = "X";
+        inputResetLight.className = 'reset';
+        inputResetLight.title = 'сбросить';
+        configFrame.appendChild(inputResetLight);
+        const spanFavColorLight = document.createElement('span');
+        spanFavColorLight.innerHTML = "цвет фона непрочитанных тем (светлый режим)";
+        configFrame.appendChild(labelFavColorLight);
+        labelFavColorLight.appendChild(spanFavColorLight);
+        inputResetLight.onclick = () => {
+            userConfig.setItem('fav_unread_light_color', FLAGS.FAV_UNREAD_LIGHT_COLOR);
+            inputFavColorLight.value = FLAGS.FAV_UNREAD_LIGHT_COLOR;
+        };
+        inputFavColorLight.oninput = () => {
+            userConfig.setItem('fav_unread_light_color', inputFavColorLight.value);
+        };
+        configFrame.appendChild(document.createElement('br'));
 
-    const inputFavColorLight = document.createElement('input');
-    inputFavColorLight.type = 'color';
-    inputFavColorLight.value = userConfig.getItem('fav_unread_light_color');
-    const labelFavColorLight = document.createElement('label');
-    labelFavColorLight.setAttribute('unselectable', 'on');
-    labelFavColorLight.setAttribute('onselectstart', 'return false');
-    configFrame.appendChild(inputFavColorLight);
-    const inputResetLight = document.createElement('input');
-    inputResetLight.type = 'button';
-    inputResetLight.value = "X";
-    inputResetLight.className = 'reset';
-    inputResetLight.title = 'сбросить';
-    configFrame.appendChild(inputResetLight);
-    const spanFavColorLight = document.createElement('span');
-    spanFavColorLight.innerHTML = "цвет фона непрочитанных тем (светлый режим)";
-    configFrame.appendChild(labelFavColorLight);
-    labelFavColorLight.appendChild(spanFavColorLight);
-    inputResetLight.onclick = () => {
-        userConfig.setItem('fav_unread_light_color', FLAGS.FAV_UNREAD_LIGHT_COLOR);
-        inputFavColorLight.value = FLAGS.FAV_UNREAD_LIGHT_COLOR;
-    };
-    inputFavColorLight.oninput = () => {
-        userConfig.setItem('fav_unread_light_color', inputFavColorLight.value);
-    };
-    configFrame.appendChild(document.createElement('br'));
+        const reloadText = document.createElement('div');
+        reloadText.style.textAlign = 'right';
+        reloadText.innerHTML = `
+        * чтобы увидеть изменения
+        <a href="#" onclick="location.reload(); return false">
+        обновите страницу
+        </a>`;
+        configFrame.appendChild(reloadText);
+        configFrame.classList.add('config_frame');
+        configFrame.style.display = 'none';
+        document.body.appendChild(configFrame);
+        // Конец фрейма настроек
 
-    const reloadText = document.createElement('div');
-    reloadText.style.textAlign = 'right';
-    reloadText.innerHTML = `
-    * чтобы увидеть изменения
-    <a href="#" onclick="location.reload(); return false">
-    обновите страницу
-    </a>`;
-    configFrame.appendChild(reloadText);
-    configFrame.classList.add('config_frame');
-    configFrame.style.display = 'none';
-    document.body.appendChild(configFrame);
-    // Конец фрейма настроек
-
-    // Кнопка настроек
-    const configButton = document.createElement('div');
-    configButton.classList.add('config_button');
-    document.body.appendChild(configButton);
-    configButton.onclick = () => {
-        if (configFrame.style.display) {
-            configFrame.style.display = '';
-        } else {
-            configFrame.style.display = 'none';
-        }
-    };
-
-    // Подсветка непрочитанных тем в избранном и форумах
-    const URL = window.document.URL;
-
-    if (~URL.indexOf(favURL) || ~URL.indexOf(forumURL)) {
-        const tbl = document.getElementsByClassName('ipbtable');
-        for (let i = 0; i < tbl.length; i++) {
-            const tr = tbl[i].getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-            for (let j = 0; j < tr.length; j++) {
-                if (tr[j].hasAttribute('data-item-fid') || (
-                    tr[j].getElementsByTagName('td') &&
-                    tr[j].getElementsByTagName('td')[0] &&
-                    tr[j].getElementsByTagName('td')[0].className === 'row2'
-                )) {
-                    const td = tr[j].getElementsByTagName('td');
-                    const tdIndex = ~URL.indexOf(favURL) ? 1 : 2;
-                    if (
-                        td[tdIndex].getElementsByTagName('a') &&
-                        td[tdIndex].getElementsByTagName('a')[0] &&
-                        td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img') &&
-                        td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img')[0] &&
-                        td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img')[0].alt === ">N"
-                    ) {
-                        tr[j].setAttribute("class", "unread_row");
-                    }
-                }
+        // Кнопка настроек
+        const configButton = document.createElement('div');
+        configButton.classList.add('config_button');
+        document.body.appendChild(configButton);
+        configButton.onclick = () => {
+            if (configFrame.style.display) {
+                configFrame.style.display = '';
+            } else {
+                configFrame.style.display = 'none';
             }
-        }
-    }
+        };
 
-    /* Автор Azat-777 https://4pda.to/forum/index.php?showuser=917143
-       Мной только адаптировано и слегка оптимизировано
-    */
-    if (FLAGS.SHOW_NEW_VERSIONS) {
-        let counter = 0; // счетчик
+        // Подсветка непрочитанных тем в избранном и форумах
+        const URL = window.document.URL;
 
-        // Избранное
-        if (~URL.indexOf(favURL)) {
-            // находим таблицу
-            const _tr = document.getElementsByClassName('ipbtable')[0].getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-            // запихиваем в tr нужные нам строки таблицы
-            const tr = [];
-            for(let i = 0; i < _tr.length; i++) {
-                if (_tr[i].hasAttribute('data-item-fid')) { // отсортировываем из таблицы только темы
-                    tr.push(_tr[i]); // запихиваем в массив tr
-                }
-            }
-            const trLength = tr.length;
-            const name = []; // названия тем
-            for (let i = 0; i < trLength; i++) {
-                const tmp = tr[i].getElementsByTagName('td')[1].getElementsByTagName('span')[0].getElementsByTagName('a')[0];
-                getVersion(tmp.getAttribute('href'), i);
-                name.push(tmp);
-            }
-            //=====================================================
-            // добавление счетчика с количеством новых версий приложений
-            let count = 0;
-            const _span = document.createElement('span');
-            _span.id = 'count';
-            const navstrip = document.getElementById('navstrip');
-            //=====================================================
-            let app_name,
-                saveToHideName = [],
-                saveToHideVer = [];
-
-            function getVersion(link, i) {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', link, true);
-                xhr.send();
-                xhr.onload = function() {
-                    if (this.readyState === 4 && this.status === 200) {
-                        const response = xhr.responseText;
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(response, 'text/html');
-                        const tbl = doc.getElementsByClassName('ipbtable');
-                        for (let j = 0; j < tbl.length; j++) {
-                            if (tbl[j].hasAttribute('data-post')) {
-                                const span = tbl[j].getElementsByTagName('tbody')[0]
-                                    .getElementsByTagName('tr')[1]
-                                    .getElementsByTagName('td')[1]
-                                    .getElementsByClassName('postcolor')[0]
-                                    .getElementsByTagName('span');
-                                for (let k = 0; k < span.length; k++) {
-                                    // версии приложений
-                                    if (span[k].getAttribute('style') == 'font-size:12pt;line-height:100%') {
-                                        if (~span[k].innerHTML.toLowerCase().indexOf('верси')) {
-                                            // замена
-                                            let replace_ver = span[k].innerHTML,
-                                                alt_ver;
-                                            // если тема не была открыта
-                                            if (~name[i].innerHTML.indexOf('<strong>')) {
-                                                replace_ver = replace_ver.toLowerCase().replace(/[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b[r]*>/g, '').trim();
-                                                alt_ver = replace_ver;
-                                                const alt_name = name[i].innerHTML.replace(/<[\/]*strong>/g, '');
-                                                // сравнение версий: текущей полученной и сохраненной в локальном хранилище
-                                                if (alt_ver.localeCompare(localStorage.getItem(alt_name)) !== 0) {
-                                                    showNotif(alt_name, alt_ver, link);
-                                                }
-                                            // если тема была открыта и просмотрена
-                                            } else {
-                                                replace_ver = replace_ver.toLowerCase().replace(/<b>[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b>/g, '').trim();
-                                                alt_ver = replace_ver;
-                                                if (replace_ver.localeCompare(localStorage.getItem(name[i].innerHTML)) !== 0) {
-                                                    showNotif(name[i].innerHTML, alt_ver, link);
-                                                }
-                                            }
-                                            // добавление цвета для наглядности
-                                            replace_ver = '<font color="#bb72ff"> ' + replace_ver + '</font>';
-                                            name[i].innerHTML += replace_ver;
-                                        }
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
+        if (~URL.indexOf(favURL) || ~URL.indexOf(forumURL)) {
+            const tbl = document.getElementsByClassName('ipbtable');
+            for (let i = 0; i < tbl.length; i++) {
+                const tr = tbl[i].getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+                for (let j = 0; j < tr.length; j++) {
+                    if (tr[j].hasAttribute('data-item-fid') || (
+                        tr[j].getElementsByTagName('td') &&
+                        tr[j].getElementsByTagName('td')[0] &&
+                        tr[j].getElementsByTagName('td')[0].className === 'row2'
+                    )) {
+                        const td = tr[j].getElementsByTagName('td');
+                        const tdIndex = ~URL.indexOf(favURL) ? 1 : 2;
+                        if (
+                            td[tdIndex].getElementsByTagName('a') &&
+                            td[tdIndex].getElementsByTagName('a')[0] &&
+                            td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img') &&
+                            td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img')[0] &&
+                            td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img')[0].alt === ">N"
+                        ) {
+                            tr[j].setAttribute("class", "unread_row");
                         }
                     }
-                };
-                xhr.onerror = () => {
-                    console.log('onerror')
-                };
-                xhr.onloadend = (event) => {
-                    if (++counter === trLength) {
-                        // вешаем обработчик событий строки (появление/скрытие кноки "Скрыть")
-                        addEvent();
-                        // скрытие строки с обновленным приложением
-                        hideApp();
-                    }
-                };
+                }
             }
+        }
 
-            // переопределяем стиль для кнопок
-            const btnStyle = document.createElement('style');
-            btnStyle.type = 'text/css';
-            const _s = `
+        /* Автор Azat-777 https://4pda.to/forum/index.php?showuser=917143
+           Мной только адаптировано и слегка оптимизировано
+        */
+        if (FLAGS.SHOW_NEW_VERSIONS) {
+            let counter = 0; // счетчик
+
+            // Избранное
+            if (~URL.indexOf(favURL)) {
+                // находим таблицу
+                const _tr = document.getElementsByClassName('ipbtable')[0].getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+                // запихиваем в tr нужные нам строки таблицы
+                const tr = [];
+                for(let i = 0; i < _tr.length; i++) {
+                    if (_tr[i].hasAttribute('data-item-fid')) { // отсортировываем из таблицы только темы
+                        tr.push(_tr[i]); // запихиваем в массив tr
+                    }
+                }
+                const trLength = tr.length;
+                const name = []; // названия тем
+                for (let i = 0; i < trLength; i++) {
+                    const tmp = tr[i].getElementsByTagName('td')[1].getElementsByTagName('span')[0].getElementsByTagName('a')[0];
+                    getVersion(tmp.getAttribute('href'), i);
+                    name.push(tmp);
+                }
+                //=====================================================
+                // добавление счетчика с количеством новых версий приложений
+                let count = 0;
+                const _span = document.createElement('span');
+                _span.id = 'count';
+                const navstrip = document.getElementById('navstrip');
+                //=====================================================
+                let app_name,
+                    saveToHideName = [],
+                    saveToHideVer = [];
+
+                function getVersion(link, i) {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', link, true);
+                    xhr.send();
+                    xhr.onload = function() {
+                        if (this.readyState === 4 && this.status === 200) {
+                            const response = xhr.responseText;
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(response, 'text/html');
+                            const tbl = doc.getElementsByClassName('ipbtable');
+                            for (let j = 0; j < tbl.length; j++) {
+                                if (tbl[j].hasAttribute('data-post')) {
+                                    const span = tbl[j].getElementsByTagName('tbody')[0]
+                                        .getElementsByTagName('tr')[1]
+                                        .getElementsByTagName('td')[1]
+                                        .getElementsByClassName('postcolor')[0]
+                                        .getElementsByTagName('span');
+                                    for (let k = 0; k < span.length; k++) {
+                                        // версии приложений
+                                        if (span[k].getAttribute('style') == 'font-size:12pt;line-height:100%') {
+                                            if (~span[k].innerHTML.toLowerCase().indexOf('верси')) {
+                                                // замена
+                                                let replace_ver = span[k].innerHTML,
+                                                    alt_ver;
+                                                // если тема не была открыта
+                                                if (~name[i].innerHTML.indexOf('<strong>')) {
+                                                    replace_ver = replace_ver.toLowerCase().replace(/[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b[r]*>/g, '').trim();
+                                                    alt_ver = replace_ver;
+                                                    const alt_name = name[i].innerHTML.replace(/<[\/]*strong>/g, '');
+                                                    // сравнение версий: текущей полученной и сохраненной в локальном хранилище
+                                                    if (alt_ver.localeCompare(localStorage.getItem(alt_name)) !== 0) {
+                                                        showNotif(alt_name, alt_ver, link);
+                                                    }
+                                                // если тема была открыта и просмотрена
+                                                } else {
+                                                    replace_ver = replace_ver.toLowerCase().replace(/<b>[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b>/g, '').trim();
+                                                    alt_ver = replace_ver;
+                                                    if (replace_ver.localeCompare(localStorage.getItem(name[i].innerHTML)) !== 0) {
+                                                        showNotif(name[i].innerHTML, alt_ver, link);
+                                                    }
+                                                }
+                                                // добавление цвета для наглядности
+                                                replace_ver = '<font color="#bb72ff"> ' + replace_ver + '</font>';
+                                                name[i].innerHTML += replace_ver;
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    };
+                    xhr.onerror = () => {
+                        console.log('onerror')
+                    };
+                    xhr.onloadend = (event) => {
+                        if (++counter === trLength) {
+                            // вешаем обработчик событий строки (появление/скрытие кноки "Скрыть")
+                            addEvent();
+                            // скрытие строки с обновленным приложением
+                            hideApp();
+                        }
+                    };
+                }
+
+                // переопределяем стиль для кнопок
+                const btnStyle = document.createElement('style');
+                btnStyle.type = 'text/css';
+                const _s = `
 .myBtn {
     display: inline-block;
     font-family: arial,sans-serif;
@@ -1614,22 +1651,22 @@ ready(() => {
     border: 1px solid #7d7d7d !important;
     background: #6d6d6d linear-gradient(#6d6d6d, #525252) !important;
 }`;
-            const _st = document.createTextNode(_s);
-            btnStyle.appendChild(_st);
-            document.head.appendChild(btnStyle);
+                const _st = document.createTextNode(_s);
+                btnStyle.appendChild(_st);
+                document.head.appendChild(btnStyle);
 
-            navstrip.appendChild(_span);
-            _span.innerHTML = '<br/><br/>Обновлений: <font id="_cnt" color="red">' + count + '</font> <input id="hideBtn" class="myBtn" type="button" value="Скрыть обновления" style="display: none;" /><br/>' +
-                `<table id="_tbl" style="border-collapse: collapse; border: 0px"><thead><tr><th class="one">#</th><th class="two">Название</th><th>Версия</th></tr></thead><tbody></tbody></table>`;
-            const _tbl = document.querySelector('#_tbl'),
-                _tbody = _tbl.querySelector('tbody'),
-                _cnt = document.querySelector('#_cnt');
-            let n = 0;
-            _tbl.style.display = 'none';
+                navstrip.appendChild(_span);
+                _span.innerHTML = '<br/><br/>Обновлений: <font id="_cnt" color="red">' + count + '</font> <input id="hideBtn" class="myBtn" type="button" value="Скрыть обновления" style="display: none;" /><br/>' +
+                    `<table id="_tbl" style="border-collapse: collapse; border: 0px"><thead><tr><th class="one">#</th><th class="two">Название</th><th>Версия</th></tr></thead><tbody></tbody></table>`;
+                const _tbl = document.querySelector('#_tbl'),
+                    _tbody = _tbl.querySelector('tbody'),
+                    _cnt = document.querySelector('#_cnt');
+                let n = 0;
+                _tbl.style.display = 'none';
 
-            const tblStyle = document.createElement('style');
-            tblStyle.type = 'text/css';
-            const s = `
+                const tblStyle = document.createElement('style');
+                tblStyle.type = 'text/css';
+                const s = `
 #_tbl th {
     color: brown;
     background-color: white;
@@ -1648,114 +1685,114 @@ ready(() => {
 #_tbl .one, .two {
     border-right: 1px solid
 }`;
-            const st = document.createTextNode(s);
-            tblStyle.appendChild(st);
-            document.head.appendChild(tblStyle);
+                const st = document.createTextNode(s);
+                tblStyle.appendChild(st);
+                document.head.appendChild(tblStyle);
 
-            // кнопка скрытия обновлений вручную
-            const hideBtn = document.querySelector('#hideBtn');
-            hideBtn.onclick = () => {
-                hideBtn.style.display = 'none';
-                // сразу сохраняем обновленные версии в память, чтобы при следующем обновлении не всплыли в таблице обновлений
-                for(let i = 0; i < saveToHideName.length; i++) {
-                    localStorage.setItem(saveToHideName[i], saveToHideVer[i]);
+                // кнопка скрытия обновлений вручную
+                const hideBtn = document.querySelector('#hideBtn');
+                hideBtn.onclick = () => {
+                    hideBtn.style.display = 'none';
+                    // сразу сохраняем обновленные версии в память, чтобы при следующем обновлении не всплыли в таблице обновлений
+                    for(let i = 0; i < saveToHideName.length; i++) {
+                        localStorage.setItem(saveToHideName[i], saveToHideVer[i]);
+                    }
+                    // скрываем таблицу с обновлениями и обнуляем счетчик
+                    _tbl.style.display = 'none';
+                    count = 0;
+                    _cnt.innerHTML = count;
+                    for(; _tbody.querySelectorAll('tr').length > 0;) {
+                        _tbl.deleteRow(1);
+                    }
                 }
-                // скрываем таблицу с обновлениями и обнуляем счетчик
-                _tbl.style.display = 'none';
-                count = 0;
-                _cnt.innerHTML = count;
-                for(; _tbody.querySelectorAll('tr').length > 0;) {
-                    _tbl.deleteRow(1);
-                }
-            }
 
-            // вывод обновленных приложений вверху
-            function showNotif(alt_name, alt_ver, link) {
-                // показываем скрытую кнопку, если есть обновления
-                hideBtn.style.display = 'inline';
-                count++;
-                const goto = '<a href="' + link + '&amp;view=getnewpost"><img src="//s.4pda.to/kkRMw9H6PDJH2O7aOGE4gWJpHLz0xXN6ymhvGxkFLXM.gif" alt=">N" title="Перейти к первому непрочитанному" border="0"></a> ';
-                app_name = goto + '<a href="' + link + '" title="Перейти к первому сообщению">' + alt_name + '</a>';
-                saveToHideName.push(alt_name);
-                saveToHideVer.push(alt_ver);
-                showUpdates(app_name, alt_ver);
-            }
-
-            // показ количества обновлений и вывод их в таблице
-            function showUpdates(app_name, ver) {
-                _tbl.style.display = 'block';
-                n++;
-                const row = _tbody.insertRow(-1),
-                      cell1 = row.insertCell(-1),
-                      cell2 = row.insertCell(-1),
-                      cell3 = row.insertCell(-1),
-                      cell4 = row.insertCell(-1);
-                row.className = 'myTr';
-                cell1.className = 'one';
-                cell2.className = 'two';
-                cell1.innerHTML = n; _cnt.innerHTML = count;
-                cell2.innerHTML = app_name;
-                cell3.innerHTML = ver;
-                cell4.innerHTML = '<input class="myBtn hidden" type="button" value="Скрыть" style="display: none;">';
-            }
-            function addEvent() {
-                const myTr = document.querySelectorAll('.myTr');
-                for(let i = 0; i < myTr.length; i++) {
-                    myTr[i].addEventListener('mouseover', function showButton() {
-                        this.querySelector('.hidden').style.display = 'block';
-                    });
-                    myTr[i].addEventListener('mouseout', function hideButton() {
-                        this.querySelector('.hidden').style.display = 'none';
-                    });
+                // вывод обновленных приложений вверху
+                function showNotif(alt_name, alt_ver, link) {
+                    // показываем скрытую кнопку, если есть обновления
+                    hideBtn.style.display = 'inline';
+                    count++;
+                    const goto = '<a href="' + link + '&amp;view=getnewpost"><img src="//s.4pda.to/kkRMw9H6PDJH2O7aOGE4gWJpHLz0xXN6ymhvGxkFLXM.gif" alt=">N" title="Перейти к первому непрочитанному" border="0"></a> ';
+                    app_name = goto + '<a href="' + link + '" title="Перейти к первому сообщению">' + alt_name + '</a>';
+                    saveToHideName.push(alt_name);
+                    saveToHideVer.push(alt_ver);
+                    showUpdates(app_name, alt_ver);
                 }
-            }
-            function hideApp() {
-                var hBut = document.querySelectorAll('.myBtn.hidden');
-                for(var i=0; i<hBut.length; i++) {
-                    hBut[i].onclick = function() {
-                        var n = this.parentNode.parentNode.firstChild.innerHTML,
-                            name = this.parentNode.parentNode.children[1].children[1].innerHTML,
-                            ver = this.parentNode.parentNode.children[2].innerHTML;
-                        localStorage.setItem(name, ver);
-                        // сброс # таблицы и удаление строк(и)
-                        _tbl.deleteRow(n);
-                        var num = _tbl.querySelectorAll('td.one');
-                        // если было скрыто последнее обновление, скрываем шапку таблицы и кнопку "Скрыть обновления"
-                        if(num.length === 0) {
-                            _tbl.style.display = 'none';
-                            hideBtn.style.display = 'none';
+
+                // показ количества обновлений и вывод их в таблице
+                function showUpdates(app_name, ver) {
+                    _tbl.style.display = 'block';
+                    n++;
+                    const row = _tbody.insertRow(-1),
+                          cell1 = row.insertCell(-1),
+                          cell2 = row.insertCell(-1),
+                          cell3 = row.insertCell(-1),
+                          cell4 = row.insertCell(-1);
+                    row.className = 'myTr';
+                    cell1.className = 'one';
+                    cell2.className = 'two';
+                    cell1.innerHTML = n; _cnt.innerHTML = count;
+                    cell2.innerHTML = app_name;
+                    cell3.innerHTML = ver;
+                    cell4.innerHTML = '<input class="myBtn hidden" type="button" value="Скрыть" style="display: none;">';
+                }
+                function addEvent() {
+                    const myTr = document.querySelectorAll('.myTr');
+                    for(let i = 0; i < myTr.length; i++) {
+                        myTr[i].addEventListener('mouseover', function showButton() {
+                            this.querySelector('.hidden').style.display = 'block';
+                        });
+                        myTr[i].addEventListener('mouseout', function hideButton() {
+                            this.querySelector('.hidden').style.display = 'none';
+                        });
+                    }
+                }
+                function hideApp() {
+                    var hBut = document.querySelectorAll('.myBtn.hidden');
+                    for(var i=0; i<hBut.length; i++) {
+                        hBut[i].onclick = function() {
+                            var n = this.parentNode.parentNode.firstChild.innerHTML,
+                                name = this.parentNode.parentNode.children[1].children[1].innerHTML,
+                                ver = this.parentNode.parentNode.children[2].innerHTML;
+                            localStorage.setItem(name, ver);
+                            // сброс # таблицы и удаление строк(и)
+                            _tbl.deleteRow(n);
+                            var num = _tbl.querySelectorAll('td.one');
+                            // если было скрыто последнее обновление, скрываем шапку таблицы и кнопку "Скрыть обновления"
+                            if(num.length === 0) {
+                                _tbl.style.display = 'none';
+                                hideBtn.style.display = 'none';
+                            }
+                            for(var j=0; j<num.length; j++) {
+                                //console.log(num[j].innerHTML);
+                                num[j].innerHTML = j+1;
+                            }
+                            _cnt.innerHTML = j;
                         }
-                        for(var j=0; j<num.length; j++) {
-                            //console.log(num[j].innerHTML);
-                            num[j].innerHTML = j+1;
-                        }
-                        _cnt.innerHTML = j;
                     }
                 }
             }
         }
-    }
 
-    if (FLAGS.SHOW_USER_INFO) {
-        if (~URL.indexOf(topicURL)) {
-            let totalKB = 0,
-                totalMB = 0,
-                counter = 0;
-            const post = document.querySelectorAll('.postdetails > center'),
-                  userLink = document.getElementsByClassName('normalname'),
-                  link = [], // собираем все ссылки на профили
-                  ulLength = userLink.length;
+        if (FLAGS.SHOW_USER_INFO) {
+            if (~URL.indexOf(topicURL)) {
+                let totalKB = 0,
+                    totalMB = 0,
+                    counter = 0;
+                const post = document.querySelectorAll('.postdetails > center'),
+                      userLink = document.getElementsByClassName('normalname'),
+                      link = [], // собираем все ссылки на профили
+                      ulLength = userLink.length;
 
-            for (let i = 0; i < ulLength; i++) {
-                getUserData(userLink[i].querySelector('a').getAttribute('href'), i);
-            }
-            // создание области для новых данных
-            const div = document.createElement('div');
-            div.id = 'myDiv';
-            // Стиль для новой области
-            const style = document.createElement('style');
-            style.type = 'text/css';
-            const styleData = `
+                for (let i = 0; i < ulLength; i++) {
+                    getUserData(userLink[i].querySelector('a').getAttribute('href'), i);
+                }
+                // создание области для новых данных
+                const div = document.createElement('div');
+                div.id = 'myDiv';
+                // Стиль для новой области
+                const style = document.createElement('style');
+                style.type = 'text/css';
+                const styleData = `
 #myDiv {
     border: 1px solid lightblue;
     padding: 5px;
@@ -1774,70 +1811,71 @@ ready(() => {
     background: #3A4F6C;
     color: #9e9e9e;
 }`;
-            const styleNode = document.createTextNode(styleData);
-            style.appendChild(styleNode);
-            document.head.appendChild(style);
+                const styleNode = document.createTextNode(styleData);
+                style.appendChild(styleNode);
+                document.head.appendChild(style);
 
-            function getUserData(link, index) {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', link, true);
-                xhr.send();
-                xhr.onload = function() {
-                    if (this.readyState === 4 && this.status === 200) {
-                        const response = xhr.responseText;
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(response, 'text/html');
-                        const main = doc.getElementsByClassName('info-list width1 black-link')[0];
-                        main.style.marginLeft = 0;
-                        main.style.paddingLeft = 0;
-                        main.style.display = 'block';
-                        main.style.listStyle = 'none';
-                        const list = main.querySelectorAll('li');
-                        let userData = '';
-                        for (let i = 0; i < list.length; i++) {
-                            userData += list[i].innerHTML.replace(/<[^>]+>/g,'').replace(/(Город:)/, '$1 ').replace(/(юзера:)/, '$1 ').replace(/(рождения:)/, '$1 ') + '<br/>';
+                function getUserData(link, index) {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', link, true);
+                    xhr.send();
+                    xhr.onload = function() {
+                        if (this.readyState === 4 && this.status === 200) {
+                            const response = xhr.responseText;
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(response, 'text/html');
+                            const main = doc.getElementsByClassName('info-list width1 black-link')[0];
+                            main.style.marginLeft = 0;
+                            main.style.paddingLeft = 0;
+                            main.style.display = 'block';
+                            main.style.listStyle = 'none';
+                            const list = main.querySelectorAll('li');
+                            let userData = '';
+                            for (let i = 0; i < list.length; i++) {
+                                userData += list[i].innerHTML.replace(/<[^>]+>/g,'').replace(/(Город:)/, '$1 ').replace(/(юзера:)/, '$1 ').replace(/(рождения:)/, '$1 ') + '<br/>';
+                            }
+                            insertData(userData, index);
                         }
-                        insertData(userData, index);
-                    }
-                };
-                xhr.onerror = () => {
-                    console.log('error');
-                };
-            }
+                    };
+                    xhr.onerror = () => {
+                        console.log('error');
+                    };
+                }
 
-            function insertData(userData, index) {
-                div.innerHTML = userData;
-                post[index].appendChild(div.cloneNode(true));
+                function insertData(userData, index) {
+                    div.innerHTML = userData;
+                    post[index].appendChild(div.cloneNode(true));
+                }
             }
         }
-    }
 
-    if (FLAGS.ADS_CLEANER) {
-        let div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(2):not(div)');
-        div && div.remove();
+        if (FLAGS.ADS_CLEANER) {
+            let div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(2):not(div)');
+            div && div.remove();
 
-        div = document.querySelector('article > :first-child:not(div)');
-        div && div.remove();
+            div = document.querySelector('article > :first-child:not(div)');
+            div && div.remove();
 
-        div = document.querySelector('div[itemprop="description"]');
-        div && div.remove();
+            div = document.querySelector('div[itemprop="description"]');
+            div && div.remove();
 
-        div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(6):not(div)');
-        if (div) div.id = 'ad';
-    }
+            div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(6):not(div)');
+            if (div) div.id = 'ad';
+        }
 
-    // Исправление кнопок
-    const fixedButton = "data:image/gif;base64,R0lGODlhHgAVAOeCAAcpWgcpZRI0bBg5cSRIhSRLiC9OgS9VkztXh0NVhzRalzRbmThfnDpfnThgnj5hmzpjoD1jojtkoTxkojxnpUFmoD1npD9npj1opj9op0Fopj5ppj9pqEBqqE5okkNrpEFsqkFtrEJtq1FrlUVtrEZuqEdvrEhxsElyrE5xp1BzqE12tUt3tkx3tlN5rll4qVN5uVV6sE98uVV9vVF/vlWAv1aAv1OBwVeBwFWDwlWEw1mDw1uGxlaIyGOGuGiFslyHx12KyluLyl+NzF+NzWyLuWCOzmGOzmGR0WOR0WGT0naQuWKV1maW13iTvGuX1mWZ2WeZ2mmZ2XqWwGea22ib3Gmb3Wic3Gmd3mqd3mue322g4G2h4m2i42+j42+m53Gm53Gn6YmjyHKo6XKp63Op6pGmx3Ws7nWt75Opynev8ZSrzJatzpeu0J+xzoW59aK107HD27rH27zK377N4cnT5MnU5MrW5svW58vX59ff7Nfg7OPo8eTp8fH0+PL0+PL0+fL1+f///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEKAP8ALAAAAAAeABUAAAj+AP8JHEiwoMGDAxMEWMiwocOHDgcGeEOxosWLGC8GEBjgicePIEOKDLnxXwAYKFOqXMlyZckAM2LKnEmzJs2XOHLq1EliwQISFw5MWLGz6MsdSJMitfGAD58HLwTJiaC06ksgWLNi5aFhiSAzDdwI+nFCq9aXRNKqTTukhoI6glJU8NPHQZC1al8m2cuX7xETKv7YYeBEUJoWffm+bMK4CZPGjI1AmCPowwdAejBAbvwyiucoUj57vlFEEJwMawRNYSH680stsGPHrhJiT6ASLgTdkYBEduySAqx4GU58uA42gsRswCMohowtxYmXNNADjPXrYLigoBPHgo88bUROZMGOveQ/AmHKqF8/RgiIDjlocBChZMz6+2XMe6CApr//M19QccUXXUCBBRn+Jdifef+MUEAPXKgh4YQUVmghAAYhMABEHD6E0IcgFhQQADs=";
-    const goButtons = document.getElementsByClassName('gobutton');
-    for (let i = 0; i < goButtons.length; i++) {
-        goButtons[i].src = fixedButton;
-        goButtons[i].style.backgroundColor = 'transparent';
-    }
-    const searchButtons = document.getElementsByClassName('button');
-    for (let i = 0; i < searchButtons.length; i++) {
-        if (searchButtons[i].getAttribute('type') == 'image') {
-            searchButtons[i].src = fixedButton;
-            searchButtons[i].style.backgroundColor = 'transparent';
+        // Исправление кнопок
+        const fixedButton = "data:image/gif;base64,R0lGODlhHgAVAOeCAAcpWgcpZRI0bBg5cSRIhSRLiC9OgS9VkztXh0NVhzRalzRbmThfnDpfnThgnj5hmzpjoD1jojtkoTxkojxnpUFmoD1npD9npj1opj9op0Fopj5ppj9pqEBqqE5okkNrpEFsqkFtrEJtq1FrlUVtrEZuqEdvrEhxsElyrE5xp1BzqE12tUt3tkx3tlN5rll4qVN5uVV6sE98uVV9vVF/vlWAv1aAv1OBwVeBwFWDwlWEw1mDw1uGxlaIyGOGuGiFslyHx12KyluLyl+NzF+NzWyLuWCOzmGOzmGR0WOR0WGT0naQuWKV1maW13iTvGuX1mWZ2WeZ2mmZ2XqWwGea22ib3Gmb3Wic3Gmd3mqd3mue322g4G2h4m2i42+j42+m53Gm53Gn6YmjyHKo6XKp63Op6pGmx3Ws7nWt75Opynev8ZSrzJatzpeu0J+xzoW59aK107HD27rH27zK377N4cnT5MnU5MrW5svW58vX59ff7Nfg7OPo8eTp8fH0+PL0+PL0+fL1+f///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEKAP8ALAAAAAAeABUAAAj+AP8JHEiwoMGDAxMEWMiwocOHDgcGeEOxosWLGC8GEBjgicePIEOKDLnxXwAYKFOqXMlyZckAM2LKnEmzJs2XOHLq1EliwQISFw5MWLGz6MsdSJMitfGAD58HLwTJiaC06ksgWLNi5aFhiSAzDdwI+nFCq9aXRNKqTTukhoI6glJU8NPHQZC1al8m2cuX7xETKv7YYeBEUJoWffm+bMK4CZPGjI1AmCPowwdAejBAbvwyiucoUj57vlFEEJwMawRNYSH680stsGPHrhJiT6ASLgTdkYBEduySAqx4GU58uA42gsRswCMohowtxYmXNNADjPXrYLigoBPHgo88bUROZMGOveQ/AmHKqF8/RgiIDjlocBChZMz6+2XMe6CApr//M19QccUXXUCBBRn+Jdifef+MUEAPXKgh4YQUVmghAAYhMABEHD6E0IcgFhQQADs=";
+        const goButtons = document.getElementsByClassName('gobutton');
+        for (let i = 0; i < goButtons.length; i++) {
+            goButtons[i].src = fixedButton;
+            goButtons[i].style.backgroundColor = 'transparent';
+        }
+        const searchButtons = document.getElementsByClassName('button');
+        for (let i = 0; i < searchButtons.length; i++) {
+            if (searchButtons[i].getAttribute('type') == 'image') {
+                searchButtons[i].src = fixedButton;
+                searchButtons[i].style.backgroundColor = 'transparent';
+            }
         }
     }
 
