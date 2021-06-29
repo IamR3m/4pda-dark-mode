@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.8.4
+// @version      0.8.5
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -817,6 +817,7 @@ userStyle += `
     }
 
     .night #t-content,
+    .night #t-content a,
     .night .wr-t + .footer {
         color: #9e9e9e;
     }
@@ -897,6 +898,26 @@ userStyle += `
     .night .body-tbl path,
     .night .body-tbl circle {
         fill: #3A4F6C;
+    }
+
+    /* Fix download screen */
+
+    .night .download-container {
+        background-color: #22272B !important;
+        border-color: #393d41 !important;
+        color: #9e9e9e;
+    }
+
+    .night .dw-fname,
+    .night .dw-fsize,
+    .night .dw-fdwlink,
+    .night .dw-descr,
+    .night .download-container div:last-of-type {
+        text-shadow: 0 0 4px black !important;
+    }
+
+    .night .download-container div:last-of-type a {
+        color: #468cf7 !important;
     }
 
     /* Post block Image */
@@ -1244,29 +1265,23 @@ userStyleEl.innerHTML = userStyle;
 
 const frameStyleEl = document.createElement('style');
 const frameStyle = `
-body > :nth-child(2) > :nth-child(4) {
-    display: none;
-}
-
-.night body > :nth-child(3) {
+.night .download-container {
     background-color: #22272B !important;
     border-color: #393d41 !important;
     color: #9e9e9e;
 }
 
-
 .night .dw-fname,
 .night .dw-fsize,
 .night .dw-fdwlink,
 .night .dw-descr,
-.night body > :nth-child(3) > :last-child {
+.night .download-container div:last-of-type {
     text-shadow: 0 0 4px black !important;
 }
 
-.night a {
+.night .download-container div:last-of-type a {
     color: #468cf7 !important;
-}
-`;
+}`;
 
 frameStyleEl.innerHTML = frameStyle;
 
@@ -1328,7 +1343,6 @@ ready(() => {
 	switcherEl.onclick = () => {
 		const isNightMode = userConfig.shiftItem('night_mode');
 		document.documentElement.classList.toggle('night', isNightMode);
-        lbIframe && lbIframe.document.documentElement.classList.toggle('night', isNightMode);
 	};
 	document.body.appendChild(switcherEl);
 	setInterval(() => {
@@ -1336,9 +1350,11 @@ ready(() => {
 		const isNightMode = userConfig.getItem('night_mode');
 		if (boolClass !== isNightMode) {
 			document.documentElement.classList.toggle('night', isNightMode);
-            lbIframe && lbIframe.document.documentElement.classList.toggle('night', isNightMode);
 		}
 	}, 500);
+
+    // чиним страницу/фрейм с загрузкой файла
+    document.querySelector('div.dw-fname').parentNode.className = 'download-container';
 
     // проверяем, скрипт запустился во фрейме или основном окне
     if (window.top === window.self) {
