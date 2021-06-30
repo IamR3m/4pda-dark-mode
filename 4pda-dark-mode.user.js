@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.8.6
+// @version      0.8.7
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -299,7 +299,9 @@ userStyle += `
     .night .paginator a:hover,
     .night .paginator .active a,
     .night .td-description,
-    .night .td-comment {
+    .night .td-comment,
+    .night .forum-attach-form .forum-attach-file-border,
+    .night .forum-attach-form .view-preview {
         background: #31383e;
     }
 
@@ -329,7 +331,8 @@ userStyle += `
     .night .comment-box .comment-list .karma .num,
     .night .dropdown-menu > li > a:hover,
     .night .dropdown-menu > li > a:focus,
-    .night .menu-right #events-count {
+    .night .menu-right #events-count,
+    .night .forum-attach-form .attach-btn {
         background: #3A4F6C;
     }
 
@@ -337,8 +340,12 @@ userStyle += `
         background: #3A4F6C !important;
     }
 
-    td.row1[style*="background:#FFE87F"] {
+    .night td.row1[style*="background:#FFE87F"] {
         background: #4e4623 !important;
+    }
+
+    .night .forum-attach-form .attach-btn:hover {
+        background: #469ef9 !important;
     }
 
     .night .pagecurrent {
@@ -394,7 +401,9 @@ userStyle += `
     .night .ed-wrap .ed-vtoggle-down,
     .night .ed-wrap .ed-panel,
     .night .dropdown-menu .divider,
-    .night .pp-contentbox-back {
+    .night .pp-contentbox-back,
+    .night .zbtn-default:active:hover,
+    .night .zbtn-default.active:hover {
         background-color: #3A4F6C;
     }
 
@@ -437,7 +446,12 @@ userStyle += `
 
     .night .wr.va-m .content {
         background: #22272B;
-        color: #9f9f9f;
+        color: #9e9e9e;
+    }
+
+    .night .zbtn-default {
+        background: #31383e;
+        color: #9e9e9e;
     }
 
     .night .g-btn.blue /*,
