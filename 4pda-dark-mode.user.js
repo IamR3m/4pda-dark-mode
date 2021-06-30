@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.8.5
+// @version      0.8.6
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1354,7 +1354,8 @@ ready(() => {
 	}, 500);
 
     // чиним страницу/фрейм с загрузкой файла
-    document.querySelector('div.dw-fname').parentNode.className = 'download-container';
+    const dw_fname = document.querySelector('div.dw-fname');
+    if (dw_fname && dw_fname.parentNode) dw_fname.parentNode.className = 'download-container';
 
     // проверяем, скрипт запустился во фрейме или основном окне
     if (window.top === window.self) {
