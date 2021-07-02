@@ -13,6 +13,10 @@
 - Опциональное отключение рекламы
 ### Скриншоты:
 ![site](https://github.com/IamR3m/4pda-dark-mode/raw/IamR3m-patch-1/screenshots/site.png)
+
 ![forum](https://github.com/IamR3m/4pda-dark-mode/raw/IamR3m-patch-1/screenshots/forum.png)
+
 ![subforum](https://github.com/IamR3m/4pda-dark-mode/raw/IamR3m-patch-1/screenshots/subforum.png)
+
 ![topic](https://github.com/IamR3m/4pda-dark-mode/raw/IamR3m-patch-1/screenshots/topic.png)
+
