@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.8.8
+// @version      0.8.9
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -749,7 +749,7 @@ div[style*="background:#dff0d8"] {
 #ad {
     background: white !important;
 }
-night #ad {
+.night #ad {
     background: black !important;
 }`
 /* Кнопка и фрейм настроек */
@@ -1445,3 +1445,4 @@ ready(() => {
 		document.head.appendChild(marker)
 	}, 300)
 });
+
