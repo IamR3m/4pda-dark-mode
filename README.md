@@ -12,11 +12,11 @@
   - Дополнительная информация о пользователях в темах
 - Опциональное отключение рекламы
 ### Скриншоты:
-![site](https://github.com/IamR3m/4pda-dark-mode/raw/IamR3m-patch-1/screenshots/site.png)
+![site](https://raw.githubusercontent.com/IamR3m/4pda-dark-mode/main/screenshots/site.png)
 
-![forum](https://github.com/IamR3m/4pda-dark-mode/raw/IamR3m-patch-1/screenshots/forum.png)
+![forum](https://raw.githubusercontent.com/IamR3m/4pda-dark-mode/main/screenshots/forum.png)
 
-![subforum](https://github.com/IamR3m/4pda-dark-mode/raw/IamR3m-patch-1/screenshots/subforum.png)
+![subforum](https://raw.githubusercontent.com/IamR3m/4pda-dark-mode/main/screenshots/subforum.png)
 
-![topic](https://github.com/IamR3m/4pda-dark-mode/raw/IamR3m-patch-1/screenshots/topic.png)
+![topic](https://raw.githubusercontent.com/IamR3m/4pda-dark-mode/main/screenshots/topic.png)
 
