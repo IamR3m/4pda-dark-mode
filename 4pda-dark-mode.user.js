@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.8.11
+// @version      0.9.0
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1375,6 +1375,9 @@ ready(() => {
                     getUserData(userLink[i].querySelector('a').getAttribute('href'), i)
                 }
                 // создание области для новых данных
+                const addInfoDiv = document.createElement('div');
+                addInfoDiv.className = 'addInfo';
+                addInfoDiv.innerText = "Дополнительная информация";
                 const div = document.createElement('div');
                 div.id = 'myDiv';
                 // Стиль для новой области
@@ -1382,22 +1385,31 @@ ready(() => {
                 style.type = 'text/css';
                 const styleData = `
 #myDiv {
-    border: 1px solid lightblue;
+    display: none;
+    position: absolute;
+    width: 148px;
+    z-index: 10;
     padding: 5px;
-    margin-top: 8px;
-    margin-bottom: -10px;
-}
-.night #myDiv {
-    border-color: #395179;
-}
-#myDiv:hover {
+    margin-top: 10px;
+    border: 1px solid lightblue;
     background: PaleTurquoise;
     color: blue;
     font-size: 10pt;
 }
-.night #myDiv:hover {
+.night #myDiv {
+    border-color: #395179;
     background: #3A4F6C;
     color: #9e9e9e;
+}
+.addInfo {
+    margin: 5px 0 -10px 0;
+    border: 1px solid lightblue;
+}
+.night .addInfo {
+    border-color: #395179;
+}
+.addInfo:hover + #myDiv {
+    display: block;
 }`;
                 const styleNode = document.createTextNode(styleData);
                 style.appendChild(styleNode);
@@ -1430,6 +1442,7 @@ ready(() => {
                 }
                 function insertData(userData, index) {
                     div.innerHTML = userData;
+                    post[index].appendChild(addInfoDiv.cloneNode(true))
                     post[index].appendChild(div.cloneNode(true))
                 }
             }
