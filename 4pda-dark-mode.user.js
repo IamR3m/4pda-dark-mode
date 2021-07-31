@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.0
+// @version      0.9.1
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1380,6 +1380,7 @@ ready(() => {
                 addInfoDiv.innerText = "Дополнительная информация";
                 const div = document.createElement('div');
                 div.id = 'myDiv';
+                addInfoDiv.appendChild(div);
                 // Стиль для новой области
                 const style = document.createElement('style');
                 style.type = 'text/css';
@@ -1390,7 +1391,6 @@ ready(() => {
     width: 148px;
     z-index: 10;
     padding: 5px;
-    margin-top: 10px;
     border: 1px solid lightblue;
     background: PaleTurquoise;
     color: blue;
@@ -1408,7 +1408,7 @@ ready(() => {
 .night .addInfo {
     border-color: #395179;
 }
-.addInfo:hover + #myDiv {
+.addInfo:hover #myDiv {
     display: block;
 }`;
                 const styleNode = document.createTextNode(styleData);
@@ -1443,7 +1443,7 @@ ready(() => {
                 function insertData(userData, index) {
                     div.innerHTML = userData;
                     post[index].appendChild(addInfoDiv.cloneNode(true))
-                    post[index].appendChild(div.cloneNode(true))
+                    // post[index].appendChild(div.cloneNode(true))
                 }
             }
         }
