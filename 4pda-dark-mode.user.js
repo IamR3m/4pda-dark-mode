@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.1
+// @version      0.9.2
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1423,15 +1423,28 @@ ready(() => {
                             const response = xhr.responseText;
                             const parser = new DOMParser();
                             const doc = parser.parseFromString(response, 'text/html');
-                            const main = doc.getElementsByClassName('info-list width1 black-link')[0];
-                            main.style.marginLeft = 0;
-                            main.style.paddingLeft = 0;
-                            main.style.display = 'block';
-                            main.style.listStyle = 'none';
-                            const list = main.querySelectorAll('li');
+                            const personalData = doc.getElementsByClassName('info-list width1 black-link')[0];
+                            personalData.style.marginLeft = 0;
+                            personalData.style.paddingLeft = 0;
+                            personalData.style.display = 'block';
+                            personalData.style.listStyle = 'none';
+                            const personalDataList = personalData.querySelectorAll('li');
+                            const mainData = doc.getElementsByClassName('info-list black-link')[0];
+                            mainData.style.marginLeft = 0;
+                            mainData.style.paddingLeft = 0;
+                            mainData.style.display = 'block';
+                            mainData.style.listStyle = 'none';
+                            const mainDataList = mainData.querySelectorAll('li');
+                            const list = Array.prototype.slice.call(personalDataList).concat(
+                                Array.prototype.slice.call(mainDataList)
+                                    .filter(li => li.innerText.includes('посещение')));
                             let userData = '';
                             for (let i = 0; i < list.length; i++) {
-                                userData += list[i].innerHTML.replace(/<[^>]+>/g,'').replace(/(Город:)/, '$1 ').replace(/(юзера:)/, '$1 ').replace(/(рождения:)/, '$1 ') + '<br/>'
+                                userData += list[i].innerHTML.replace(/<[^>]+>/g,'')
+                                    .replace(/(Город:)/, '$1 ')
+                                    .replace(/(юзера:)/, '$1 ')
+                                    .replace(/(рождения:)/, '$1 ')
+                                    .replace(/(посещение:)/, '$1') + '<br/>'
                             }
                             insertData(userData, index)
                         }
