@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.2
+// @version      0.9.3
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -50,7 +50,8 @@ if(!localStorage.getItem('4pdafixFlags')) {
     })
 }
 const BUTTON_SIZE = FLAGS.SMALL_BUTTONS ? 16 : 32,
-      BUTTON_SIZE2 = 25,
+      BUTTON_SIZE2 = FLAGS.SMALL_BUTTONS ? 15 : 25,
+      BUTTON_SIZE3 = FLAGS.SMALL_BUTTONS ? 6 : 10,
       BUTTON_SIZE4 = FLAGS.SMALL_BUTTONS ? 48 : 88,
       userConfig = {
           key: '4pdafix',
@@ -98,16 +99,12 @@ let userStyle = `
 .night_mode_switcher {
     box-sizing: border-box;
     position: fixed;
-    width: 32px;
-    height: 32px;
-    right: 32px;
-    bottom: 32px;
     width: ${BUTTON_SIZE}px;
     height: ${BUTTON_SIZE}px;
     right: ${BUTTON_SIZE}px;
     bottom: ${BUTTON_SIZE}px;
     z-index: 10000;
-    bachground-color: transparent;
+    background-color: transparent;
     border-radius: 50%;
     border: 4px solid #aaa;
     border-right-width: ${BUTTON_SIZE / 2}px;
@@ -785,26 +782,26 @@ userStyle += `
     background: -webkit-linear-gradient(top, #aaa 50%, transparent 50%);
     background: -moz-linear-gradient(top, #aaa 50%, transparent 50%);
     background: -moz-linear-gradient(top, #aaa 50%, transparent 50%);
-    background-size: 10px 10px;
+    background-size: 10px ${BUTTON_SIZE3}px;
     transition: background 0.1s ease-out;
 }
 .config_button:hover {
     background: -webkit-linear-gradient(top, #333 50%, transparent 50%);
     background: -moz-linear-gradient(top, #333 50%, transparent 50%);
     background: -moz-linear-gradient(top, #333 50%, transparent 50%);
-    background-size: 10px 10px;
+    background-size: 10px ${BUTTON_SIZE3}px;
 }
 .night .config_button {
     background: -webkit-linear-gradient(top, #515151 50%, transparent 50%);
     background: -moz-linear-gradient(top, #515151 50%, transparent 50%);
     background: -moz-linear-gradient(top, #515151 50%, transparent 50%);
-    background-size: 10px 10px;
+    background-size: 10px ${BUTTON_SIZE3}px;
 }
 .night .config_button:hover {
     background: -webkit-linear-gradient(top, #9e9e9e 50%, transparent 50%);
     background: -moz-linear-gradient(top, #9e9e9e 50%, transparent 50%);
     background: -moz-linear-gradient(top, #9e9e9e 50%, transparent 50%);
-    background-size: 10px 10px;
+    background-size: 10px ${BUTTON_SIZE3}px;
 }
 .config_frame {
     box-sizing: border-box;
