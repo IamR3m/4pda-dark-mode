@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.3
+// @version      0.9.4
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -308,20 +308,6 @@ let userStyle = `
     background: #31383e;
     color: #9e9e9e;
 }
-.night .g-btn.blue {
-    background: #3997d2;
-    background: -moz-linear-gradient(top, #3f5364 0%, #7eb8e5 100%);
-    background: -webkit-linear-gradient(top, #3f5364 0%, #7eb8e5 100%);
-    background: linear-gradient(to bottom, #3f5364 0%, #7eb8e5 100%);
-    color: #303040 !important;
-}
-.night .g-btn.red {
-    background: #ff494c;
-    background: -moz-linear-gradient(top, #924e4f 0%, #ff494c 100%);
-    background: -webkit-linear-gradient(top, #924e4f 0%, #ff494c 100%);
-    background: linear-gradient(to bottom, #924e4f 0%, #ff494c 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#924e4f', endColorstr='#ff494c',GradientType=0);
-}
 .night .g-btn.green {
     background: -moz-linear-gradient(top, #5b6b3b 0%, #84a544 100%);
     background: -webkit-linear-gradient(top, #5b6b3b 0%, #84a544 100%);
@@ -418,6 +404,99 @@ div[style*="background:#dff0d8"] {
 .night .post-block.spoil.open > .block-body:after {
     background: #29394e;
     outline-color: #29394e;
+}
+
+/* Buttons */
+
+.night .g-btn.blue {
+	-moz-box-shadow:inset 0px 1px 0px 0px #6aa8d4;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #6aa8d4;
+	box-shadow:inset 0px 1px 0px 0px #6aa8d4;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #63b8ee), color-stop(1, #468ccf));
+	background:-moz-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+	background:-webkit-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+	background:-o-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+	background:-ms-linear-gradient(top, #63b8ee 5%, #468ccf 100%);
+	background:linear-gradient(to bottom, #63b8ee 5%, #468ccf 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#63b8ee', endColorstr='#468ccf',GradientType=0);
+	background-color:#63b8ee;
+	border:1px solid #3866a3;
+	color:#14396a !important;
+	text-shadow:0px 1px 0px #7cacde;
+}
+.night .g-btn.blue:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #468ccf), color-stop(1, #63b8ee));
+	background:-moz-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+	background:-webkit-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+	background:-o-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+	background:-ms-linear-gradient(top, #468ccf 5%, #63b8ee 100%);
+	background:linear-gradient(to bottom, #468ccf 5%, #63b8ee 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#468ccf', endColorstr='#63b8ee',GradientType=0);
+	background-color:#468ccf;
+}
+.night .g-btn.blue:active {
+	position:relative;
+	top:1px;
+}
+.night .g-btn.red {
+	-moz-box-shadow:inset 0px 1px 0px 0px #d1665c;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #d1665c;
+	box-shadow:inset 0px 1px 0px 0px #d1665c;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f24537), color-stop(1, #c62d1f));
+	background:-moz-linear-gradient(top, #f24537 5%, #c62d1f 100%);
+	background:-webkit-linear-gradient(top, #f24537 5%, #c62d1f 100%);
+	background:-o-linear-gradient(top, #f24537 5%, #c62d1f 100%);
+	background:-ms-linear-gradient(top, #f24537 5%, #c62d1f 100%);
+	background:linear-gradient(to bottom, #f24537 5%, #c62d1f 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f24537', endColorstr='#c62d1f',GradientType=0);
+	background-color:#f24537;
+	border:1px solid #d02718;
+	color:#ffffff !important;
+	text-shadow:0px 1px 0px #810e05;
+}
+.night .g-btn.red:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #c62d1f), color-stop(1, #f24537));
+	background:-moz-linear-gradient(top, #c62d1f 5%, #f24537 100%);
+	background:-webkit-linear-gradient(top, #c62d1f 5%, #f24537 100%);
+	background:-o-linear-gradient(top, #c62d1f 5%, #f24537 100%);
+	background:-ms-linear-gradient(top, #c62d1f 5%, #f24537 100%);
+	background:linear-gradient(to bottom, #c62d1f 5%, #f24537 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c62d1f', endColorstr='#f24537',GradientType=0);
+	background-color:#c62d1f;
+}
+.night .g-btn.red:active {
+	position:relative;
+	top:1px;
+}
+.night .g-btn.green {
+	-moz-box-shadow:inset 0px 1px 0px 0px #90db4f;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #90db4f;
+	box-shadow:inset 0px 1px 0px 0px #90db4f;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #77d42a), color-stop(1, #5cb811));
+	background:-moz-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:-webkit-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:-o-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:-ms-linear-gradient(top, #77d42a 5%, #5cb811 100%);
+	background:linear-gradient(to bottom, #77d42a 5%, #5cb811 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#77d42a', endColorstr='#5cb811',GradientType=0);
+	background-color:#77d42a;
+	border:1px solid #268a16;
+	color:#ffffff !important;
+	text-shadow:0px 1px 0px #aade7c;
+}
+.night .g-btn.green:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #5cb811), color-stop(1, #77d42a));
+	background:-moz-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:-webkit-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:-o-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:-ms-linear-gradient(top, #5cb811 5%, #77d42a 100%);
+	background:linear-gradient(to bottom, #5cb811 5%, #77d42a 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#5cb811', endColorstr='#77d42a',GradientType=0);
+	background-color:#5cb811;
+}
+.night .g-btn.green:active {
+	position:relative;
+	top:1px;
 }
 
 /* Filters */
@@ -564,7 +643,7 @@ div[style*="background:#dff0d8"] {
 .night .catend, .night .ed-wrap .ed-textarea {
     color: #DDD;
 }
-.night a.btn.noborder.iblock.rounded.green, .night .comment-box .wrap-menu a, .night .g-btn.red, .night .g-btn.green {
+.night a.btn.noborder.iblock.rounded.green, .night .comment-box .wrap-menu a {
     color: #DDD !important;
 }
 .night form[action*="//4pda.to/forum/index.php"] ul .heading .ico {
