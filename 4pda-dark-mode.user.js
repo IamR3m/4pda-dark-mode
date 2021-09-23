@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.4
+// @version      0.9.5
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -439,60 +439,60 @@ div[style*="background:#dff0d8"] {
 	top:1px;
 }
 .night .g-btn.red {
-	-moz-box-shadow:inset 0px 1px 0px 0px #d1665c;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #d1665c;
-	box-shadow:inset 0px 1px 0px 0px #d1665c;
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f24537), color-stop(1, #c62d1f));
-	background:-moz-linear-gradient(top, #f24537 5%, #c62d1f 100%);
-	background:-webkit-linear-gradient(top, #f24537 5%, #c62d1f 100%);
-	background:-o-linear-gradient(top, #f24537 5%, #c62d1f 100%);
-	background:-ms-linear-gradient(top, #f24537 5%, #c62d1f 100%);
-	background:linear-gradient(to bottom, #f24537 5%, #c62d1f 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f24537', endColorstr='#c62d1f',GradientType=0);
-	background-color:#f24537;
-	border:1px solid #d02718;
+	-moz-box-shadow:inset 0px 1px 0px 0px #8c433c;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #8c433c;
+	box-shadow:inset 0px 1px 0px 0px #8c433c;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #af3228), color-stop(1, #b32114));
+	background:-moz-linear-gradient(top, #af3228 5%, #b32114 100%);
+	background:-webkit-linear-gradient(top, #af3228 5%, #b32114 100%);
+	background:-o-linear-gradient(top, #af3228 5%, #b32114 100%);
+	background:-ms-linear-gradient(top, #af3228 5%, #b32114 100%);
+	background:linear-gradient(to bottom, #af3228 5%, #b32114 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#af3228', endColorstr='#b32114',GradientType=0);
+	background-color:#af3228;
+	border:1px solid #6f170f;
 	color:#ffffff !important;
 	text-shadow:0px 1px 0px #810e05;
 }
 .night .g-btn.red:hover {
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #c62d1f), color-stop(1, #f24537));
-	background:-moz-linear-gradient(top, #c62d1f 5%, #f24537 100%);
-	background:-webkit-linear-gradient(top, #c62d1f 5%, #f24537 100%);
-	background:-o-linear-gradient(top, #c62d1f 5%, #f24537 100%);
-	background:-ms-linear-gradient(top, #c62d1f 5%, #f24537 100%);
-	background:linear-gradient(to bottom, #c62d1f 5%, #f24537 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c62d1f', endColorstr='#f24537',GradientType=0);
-	background-color:#c62d1f;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #b32114), color-stop(1, #af3228));
+	background:-moz-linear-gradient(top, #b32114 5%, #af3228 100%);
+	background:-webkit-linear-gradient(top, #b32114 5%, #af3228 100%);
+	background:-o-linear-gradient(top, #b32114 5%, #af3228 100%);
+	background:-ms-linear-gradient(top, #b32114 5%, #af3228 100%);
+	background:linear-gradient(to bottom, #b32114 5%, #af3228 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#b32114', endColorstr='#af3228',GradientType=0);
+	background-color:#b32114;
 }
 .night .g-btn.red:active {
 	position:relative;
 	top:1px;
 }
 .night .g-btn.green {
-	-moz-box-shadow:inset 0px 1px 0px 0px #90db4f;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #90db4f;
-	box-shadow:inset 0px 1px 0px 0px #90db4f;
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #77d42a), color-stop(1, #5cb811));
-	background:-moz-linear-gradient(top, #77d42a 5%, #5cb811 100%);
-	background:-webkit-linear-gradient(top, #77d42a 5%, #5cb811 100%);
-	background:-o-linear-gradient(top, #77d42a 5%, #5cb811 100%);
-	background:-ms-linear-gradient(top, #77d42a 5%, #5cb811 100%);
-	background:linear-gradient(to bottom, #77d42a 5%, #5cb811 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#77d42a', endColorstr='#5cb811',GradientType=0);
-	background-color:#77d42a;
-	border:1px solid #268a16;
+	-moz-box-shadow:inset 0px 1px 0px 0px #699c3c;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #699c3c;
+	box-shadow:inset 0px 1px 0px 0px #699c3c;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #477d1b), color-stop(1, #207113));
+	background:-moz-linear-gradient(top, #477d1b 5%, #207113 100%);
+	background:-webkit-linear-gradient(top, #477d1b 5%, #207113 100%);
+	background:-o-linear-gradient(top, #477d1b 5%, #207113 100%);
+	background:-ms-linear-gradient(top, #477d1b 5%, #207113 100%);
+	background:linear-gradient(to bottom, #477d1b 5%, #207113 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#477d1b', endColorstr='#207113',GradientType=0);
+	background-color:#477d1b;
+	border:1px solid #1e6d12;
 	color:#ffffff !important;
 	text-shadow:0px 1px 0px #aade7c;
 }
 .night .g-btn.green:hover {
-	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #5cb811), color-stop(1, #77d42a));
-	background:-moz-linear-gradient(top, #5cb811 5%, #77d42a 100%);
-	background:-webkit-linear-gradient(top, #5cb811 5%, #77d42a 100%);
-	background:-o-linear-gradient(top, #5cb811 5%, #77d42a 100%);
-	background:-ms-linear-gradient(top, #5cb811 5%, #77d42a 100%);
-	background:linear-gradient(to bottom, #5cb811 5%, #77d42a 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#5cb811', endColorstr='#77d42a',GradientType=0);
-	background-color:#5cb811;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #207113), color-stop(1, #477d1b));
+	background:-moz-linear-gradient(top, #207113 5%, #477d1b 100%);
+	background:-webkit-linear-gradient(top, #207113 5%, #477d1b 100%);
+	background:-o-linear-gradient(top, #207113 5%, #477d1b 100%);
+	background:-ms-linear-gradient(top, #207113 5%, #477d1b 100%);
+	background:linear-gradient(to bottom, #207113 5%, #477d1b 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#207113', endColorstr='#477d1b',GradientType=0);
+	background-color:#207113;
 }
 .night .g-btn.green:active {
 	position:relative;
@@ -501,6 +501,9 @@ div[style*="background:#dff0d8"] {
 
 /* Filters */
 
+.night .ed-wrap .ed-panel-title {
+    filter: brightness(1.6);
+}
 .night .ed-wrap .ed-bbcode-normal {
     filter: brightness(1.3);
 }
@@ -636,6 +639,15 @@ div[style*="background:#dff0d8"] {
 .night .popupmenu-item-last a:visited, .night .popupmenu-item a:visited, .night .popmenubutton a:link,
 .night .post-edit-reason, .night .content-box, .night .content-box blockquote:before {
     color: #9e9e9e !important;
+}
+.night span[style*="color:red"], .night span[style*="color:#FF0000"], .night span[style*="color:#ff0000"] {
+    color: #c70000 !important;
+}
+.night span[style*="color:blue"], .night span[style*="color:#0000FF"], .night span[style*="color:#0000ff"] {
+    color: #3050f5 !important;
+}
+.night span[style*="color:purple"] {
+    color: #cc00cc !important;
 }
 .night .input-warn, .night .input-green, .night .input-checkbox, .night input, .night textarea, .night .popupmenu-item,
 .night select, .night .popupmenu-item-last, .night .textarea, .night .searchinput,.night .button, .night .normalname,
