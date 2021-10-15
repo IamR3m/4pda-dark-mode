@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.5
+// @version      0.9.6
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -163,6 +163,9 @@ let userStyle = `
 .night .navbar, .night .footer {
     background: #171c20;
 }
+.night .catend {
+    background: #1b4466;
+}
 .night #userlinks, .night #userlinksguest, .night .upopupmenu-new, .night .popupmenu-new, .night #gc_1, .night #footer,
 .night #go_1, .night .borderwrap p, .night .row1, .night .row2, .night .post-edit-reason, .night .menu-main-item:hover,
 .night .pformstrip, .night .borderwrap p.formbuttonrow, .night .comment-box .comment-list li, .night #events-wrapper,
@@ -197,7 +200,7 @@ let userStyle = `
     background: #31383e !important;
 }
 .night h4, .night .borderwrap h3, .night .maintitle, .night .maintitlecollapse, .night .poll-frame .poll-frame-option,
-.night .popupmenu-category, .night .catend, .night .formtable td.formtitle, .night .formsubtitle, .night .footer-panel,
+.night .popupmenu-category, .night .formtable td.formtitle, .night .formsubtitle, .night .footer-panel,
 .night body > div:first-of-type > :nth-child(2) > :first-child > :nth-child(4), .night .second-menu .menu-brands li a,
 .night #gfooter, .night .ac_over, .night .menu-sub-item:hover, .night .comment-box .comment-list .karma .num-wrap,
 .night .price-slider .ui-slider .ui-slider-range, .night .comment-box .comment-list .karma .num, .night .userevents,
@@ -373,9 +376,10 @@ let userStyle = `
     background: #22272B;
     border: 1px #395179 solid;
 }
-div[style*="background:#dff0d8"] {
+.night div[style*="background:#dff0d8"] {
     background: #26351f !important;
     border-color: #597540 !important;
+    position: relative;
 }
 .night .profile-textarea {
     background: #31383e;
@@ -497,6 +501,23 @@ div[style*="background:#dff0d8"] {
 .night .g-btn.green:active {
 	position:relative;
 	top:1px;
+}
+
+/* Closable notification */
+
+.closable {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    right: 0%;
+    padding: 10px 14px;
+    transform: translate(0%, -50%);
+}
+.closable:hover {
+    background: #b7d7aa;
+}
+.night .closable:hover {
+    background: #39502f;
 }
 
 /* Filters */
@@ -1572,6 +1593,25 @@ ready(() => {
                 searchButtons[i].style.backgroundColor = 'transparent'
             }
         }
+        // Закрываемый контейнер уведомления
+        const notifyObserver = new MutationObserver((mutations, obs) => {
+            const notifyDiv = document.querySelector('div[style*="background:#dff0d8"]');
+            if (notifyDiv) {
+                const closeSpan = document.createElement('span');
+                closeSpan.className = 'closable';
+                closeSpan.innerHTML = 'X';
+                notifyDiv.appendChild(closeSpan);
+                closeSpan.addEventListener("click", () => {
+                    notifyDiv.remove();
+                });
+                obs.disconnect();
+                return;
+            }
+        });
+        notifyObserver.observe(document.documentElement, {
+            childList: true,
+            subtree: true
+        });
     }
 	setTimeout(() => {
 		const marker = document.createElement('meta');
