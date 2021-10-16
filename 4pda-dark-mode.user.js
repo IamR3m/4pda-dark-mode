@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.6
+// @version      0.9.7
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1488,13 +1488,13 @@ ready(() => {
                 addInfoDiv.className = 'addInfo';
                 addInfoDiv.innerText = "Дополнительная информация";
                 const div = document.createElement('div');
-                div.id = 'myDiv';
+                div.className = 'myDiv';
                 addInfoDiv.appendChild(div);
                 // Стиль для новой области
                 const style = document.createElement('style');
                 style.type = 'text/css';
                 const styleData = `
-#myDiv {
+.myDiv {
     display: none;
     position: absolute;
     width: 148px;
@@ -1503,12 +1503,19 @@ ready(() => {
     border: 1px solid lightblue;
     background: PaleTurquoise;
     color: blue;
-    font-size: 10pt;
+    font-size: 9pt;
 }
-.night #myDiv {
+.night .myDiv {
     border-color: #395179;
     background: #3A4F6C;
     color: #9e9e9e;
+}
+.myDiv p {
+    border: initial !important;
+    background: initial !important;
+    text-align: center;
+    margin: 0px 0 -10px 0;
+    padding: 0;
 }
 .addInfo {
     margin: 5px 0 -10px 0;
@@ -1517,7 +1524,7 @@ ready(() => {
 .night .addInfo {
     border-color: #395179;
 }
-.addInfo:hover #myDiv {
+.addInfo:hover .myDiv {
     display: block;
 }`;
                 const styleNode = document.createTextNode(styleData);
@@ -1549,11 +1556,14 @@ ready(() => {
                                     .filter(li => li.innerText.includes('посещение')));
                             let userData = '';
                             for (let i = 0; i < list.length; i++) {
-                                userData += list[i].innerHTML.replace(/<[^>]+>/g,'')
+                                const reg = new RegExp(/Город:\n(.*)/);
+                                // console.log(list[i].innerText);
+                                userData += '<p>' + list[i].innerText
                                     .replace(/(Город:)/, '$1 ')
-                                    .replace(/(юзера:)/, '$1 ')
-                                    .replace(/(рождения:)/, '$1 ')
-                                    .replace(/(посещение:)/, '$1') + '<br/>'
+                                    .replace(/(рождения:)/, '$1<br/>')
+                                    .replace(/(юзера:)/, '$1<br/>')
+                                    .replace(/(посещение:)/, '$1<br/>')
+                                    + '</p><br/>'
                             }
                             insertData(userData, index)
                         }
