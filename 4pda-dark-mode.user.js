@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.7
+// @version      0.9.8
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -632,10 +632,10 @@ let userStyle = `
     color: #3294cf;
 }
 .night .upopupmenu-item-last a:visited, .night .ipb-top-right-link a:visited, .night .ipb-top-left-link a:visited,
-.night .upopupmenu-item-last a:link, .night .popmenubutton-new a:visited, .night .ipb-top-right-link a:link,
-.night .upopupmenu-item a:visited, .night .ipb-top-left-link a:link, .night .popmenubutton-new a:link, .night #submenu,
-.night .upopupmenu-item a:link, .night .popmenubutton a:link, .night .popmenubutton a:visited, .night .popmenubutton,
-.night .popmenubutton-new, .night .globalmesscontent {
+.night .upopupmenu-item-last a:link, .night .popmenubutton-new a:visited,.night .upopupmenu-item a:visited,
+.night .ipb-top-left-link a:link, .night .popmenubutton-new a:link, .night #submenu, .night .upopupmenu-item a:link,
+.night .popmenubutton a:link, .night .popmenubutton a:visited, .night .popmenubutton, .night .popmenubutton-new,
+.night .globalmesscontent {
     color: #515151;
 }
 .night .content-box a:link,
@@ -657,8 +657,8 @@ let userStyle = `
 .night .maintitlecollapse, .night .maintitle a:link, .night .maintitle a:visited, .night .popupmenu-item-last a:link,
 .night .maintitlecollapse a:link, .night #navstrip a:link, .night #navstrip a:visited, .night .popmenubutton a:visited,
 .night .popupmenu-new, .night .popupmenu-category, .night .popupmenu-item a:link, .night .advanced-area .post p,
-.night .popupmenu-item-last a:visited, .night .popupmenu-item a:visited, .night .popmenubutton a:link,
-.night .post-edit-reason, .night .content-box, .night .content-box blockquote:before {
+.night .popupmenu-item-last a:visited, .night .popupmenu-item a:visited, .night .ipb-top-right-link a,
+.night .post-edit-reason, .night .content-box, .night .content-box blockquote:before, .night .popmenubutton a:link {
     color: #9e9e9e !important;
 }
 .night span[style*="color:red"], .night span[style*="color:#FF0000"], .night span[style*="color:#ff0000"] {
