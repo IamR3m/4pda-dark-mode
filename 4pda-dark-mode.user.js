@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.8
+// @version      0.9.9
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -410,6 +410,16 @@ let userStyle = `
     outline-color: #29394e;
 }
 
+/* Border */
+
+.night input, .night .pagelink, .night .pagelinklast, .night .pagecurrent, .night .g-btn, .night .usercp_menu_out,
+.night .usercp_menu, .night #gc_1, .night #go_1, .night .post-block.spoil, .night .post-block.code,
+.night .resized-linked-image, .night #userlinks, .night .post-edit-reason, .addInfo, .myDiv, .night .popmenubutton,
+.night .popupmenu-new, .night .upopupmenu-new {
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
 /* Buttons */
 
 .night .g-btn.blue {
@@ -634,8 +644,7 @@ let userStyle = `
 .night .upopupmenu-item-last a:visited, .night .ipb-top-right-link a:visited, .night .ipb-top-left-link a:visited,
 .night .upopupmenu-item-last a:link, .night .popmenubutton-new a:visited,.night .upopupmenu-item a:visited,
 .night .ipb-top-left-link a:link, .night .popmenubutton-new a:link, .night #submenu, .night .upopupmenu-item a:link,
-.night .popmenubutton a:link, .night .popmenubutton a:visited, .night .popmenubutton, .night .popmenubutton-new,
-.night .globalmesscontent {
+.night .popmenubutton a:visited, .night .popmenubutton, .night .popmenubutton-new, .night .globalmesscontent {
     color: #515151;
 }
 .night .content-box a:link,
@@ -658,8 +667,11 @@ let userStyle = `
 .night .maintitlecollapse a:link, .night #navstrip a:link, .night #navstrip a:visited, .night .popmenubutton a:visited,
 .night .popupmenu-new, .night .popupmenu-category, .night .popupmenu-item a:link, .night .advanced-area .post p,
 .night .popupmenu-item-last a:visited, .night .popupmenu-item a:visited, .night .ipb-top-right-link a,
-.night .post-edit-reason, .night .content-box, .night .content-box blockquote:before, .night .popmenubutton a:link {
+.night .post-edit-reason, .night .content-box, .night .content-box blockquote:before {
     color: #9e9e9e !important;
+}
+.night .popmenubutton a:link {
+    color: #484848 !important;
 }
 .night span[style*="color:red"], .night span[style*="color:#FF0000"], .night span[style*="color:#ff0000"] {
     color: #c70000 !important;
@@ -1504,6 +1516,7 @@ ready(() => {
     background: PaleTurquoise;
     color: blue;
     font-size: 9pt;
+    margin-left: -1px;
 }
 .night .myDiv {
     border-color: #395179;
