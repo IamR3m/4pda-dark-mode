@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.9
+// @version      0.9.10
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -415,7 +415,7 @@ let userStyle = `
 .night input, .night .pagelink, .night .pagelinklast, .night .pagecurrent, .night .g-btn, .night .usercp_menu_out,
 .night .usercp_menu, .night #gc_1, .night #go_1, .night .post-block.spoil, .night .post-block.code,
 .night .resized-linked-image, .night #userlinks, .night .post-edit-reason, .addInfo, .myDiv, .night .popmenubutton,
-.night .popupmenu-new, .night .upopupmenu-new {
+.night .popupmenu-new, .night .upopupmenu-new, .night .popupmenu {
     border-radius: 4px;
     -webkit-border-radius: 4px;
 }
