@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.10
+// @version      0.9.11
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -414,10 +414,16 @@ let userStyle = `
 
 .night input, .night .pagelink, .night .pagelinklast, .night .pagecurrent, .night .g-btn, .night .usercp_menu_out,
 .night .usercp_menu, .night #gc_1, .night #go_1, .night .post-block.spoil, .night .post-block.code,
-.night .resized-linked-image, .night #userlinks, .night .post-edit-reason, .addInfo, .myDiv, .night .popmenubutton,
-.night .popupmenu-new, .night .upopupmenu-new, .night .popupmenu {
-    border-radius: 4px;
-    -webkit-border-radius: 4px;
+.night .post-block.quote, .night .resized-linked-image, .night #userlinks, .night .post-edit-reason, .addInfo,
+.myDiv, .night .popmenubutton, .night .popupmenu-new, .night .upopupmenu-new, .night .popupmenu, .night .borderwrap,
+.night a.button, .night select, .night #gfooter, .night .ed-color-normal, .night #ed-0_sp > div:last-child,
+.night button, .config_frame, .night form[action*="//4pda.to/forum/index.php"] ul li, .night .profile-text,
+.night .profile-textarea, .night .btn, .night .activeusers {
+    border-radius: 4px !important;
+    -webkit-border-radius: 4px !important;
+}
+.night label.select-field:before {
+    right: 2px
 }
 
 /* Buttons */
