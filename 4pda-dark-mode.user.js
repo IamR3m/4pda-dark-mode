@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.11
+// @version      0.9.12
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -792,8 +792,9 @@ let userStyle = `
 }
 .night img[src="//ds-assets.cdn.devapps.ru/cQMttxcz1QGLxJ63b0fQZz2Dl4mTlFQ6EAA92aYLTiZfsU5z21PMkgI2xu0QfcYIwy7.gif"],
 .night img[src="//s.4pda.to/cQMtpAqfqkggRwm/cool.gif"] {
-    content: url("data:image/gif;base64,R0lGODlhEwATAMZwAEM0EGUwAGcxAGcyAHY3AHo5AHk8AGBHE4A/AIFAAIZAAGZKEYhCAI9EAI9GAJBGAIpKAJdJAJdKAJNMAHZWFZpOAHhYFZtWAKlUAKFZALBVAKlYAIpjF7pZAI5mFqthAJBoF7leALtgAJVrGLpiAJ5sE7trAKJyGKR0GNRoANVqANZqANxtANNzAM14ANx1AL1+E9x3AOR2ALiDG9h/AOh8AOp8AL+HHOSBAO2BAO6BAPCCAPCDAPOGAPSHAPSIAPaJAO2NAPeLAPmNAPmOAPyRAPuSAP+UAP+VAv+WAv+XA/6YAPuZAP+YA+SgH/+aBf+bBv6cAP+cCP+cCeeiIP+dCf+eC/+fC/+gDP+gDf+hDv+kEP+kEv+lEf+lE/+nFP+nFf+oFP+pFv+pF/+qF/+qGf+rGf+uHP+uHf+vH/+wHv+wH/+xIP+xIv+yIf+yIv///////////////////////////////////////////////////////////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAH8ALAAAAAATABMAAAfUgH+Cg4SFhoeIiRdBTzgTiYQuYWRhWUckkH8mZWpsamVaRRuJEGNpbSAAJ2NVQgmHA0xnbm8HABRnXkoxAYYfZmxvbxwAI2xmV0MVhlFobcIzADdtaFxIL4UZYmvCb1QATm9rYlI9DoQ0wN1vFsLHVkAhhEtj3OvCa2NTPyqERltm0KRJ4wEACjRmtiTRsYJQCyVYunwBU2IBjC5YlPiQ0YEQghxEjjR5AuVJkyNEeMhIUaCQARE1cuzgsSOHDRksNBBAJIDBAwkYIjRQICCT0aOHAgEAOw==");
+    content: url("data:image/gif;base64,R0lGODlhEwATAMZQAEM0EGBGCGJHCGFICGJICGNJCGNLCWlOCWxTCn1aB35bB4BeCYFfCX9iC4NoDYlqDI9sDIxwDqh6B6t9CJyCE7CECrCIDKyKELGJDLCSEraRD8OOCMaTCsiUCr2aEsmZDMuaDMihEMGjFdKfC9SgC9WhC9elDNOoEMyqFdqqDtCvFtS1F+CzEeK2EuO4E+O5E+S6FOW7FOG+F+jAFeTDGeXGGuvFF+vGF+zGGOvJGe3JGPDNGvDOGvHPGvHPG/LRG/PSG/TUHPTVHPbXHffYHffZHvjbHvncH/rdH/reH/ziIf3iIf7kIf7lIv/lIv/mIv///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAH8ALAAAAAATABMAAAe+gH+Cg4SFhoeIiA4ZKjkoFw2JfwYiQ0ZHRkM/NhoEhwg1SUpMpEpIQTYnBYYrSUxPsLBMST8zFoURRUsAvABPvQA6LAyEFMBQvci9EIQ0SU7Av709MB+EPEdMvbG9Oy4jhDK6seRLRMIchB5AruRPs7UpE4QPOEJJS0xNTEtJQQAsSCgoFOLGjyJHkhwp8gNACxMSDB04MUPHDh87eLEwsUHAoQEYWLyI8YJFChISAkhaUAFEiQ4TEkiaSXNmIAA7");
 }
+
 .night img[src="//ds-assets.cdn.devapps.ru/cQMtsuWn2ip4J6ZLOrC43BWSCxGFQ6kwIraxoT9EserOgtLx3FPCn5x6LHgSHSZN.gif"] {
     content: url("data:image/gif;base64,R0lGODlhEwATAMZgAEM0EEc4EEw8EVVFEmBGCGJHCGFICGJICGNJCGNLCWlOCWxTCn1aB35bB4BeCYFfCX9iC4NoDYlqDIFuFoxwDpB8F5J9F6h6B6t9CLCECrCIDKyKELGJDKeSGrCSEraRD8OOCMaTCsiUCrGcGr2aEsmZDMuaDMihEMGjFdKfC8OkFdSgC9WhC9elDNOoEMyqFdqqDtCvFsiyHdS1F8+3HeCzEeK2EuO4E+O5E+S6FOW7FOG+F+jAFeTDGd7HH+XGGuvFF+vGF+TIHezGGOvJGe3JGPDNGvDOGvHPGvHPG/LRG/PSG/PUHfTUHPTVHPTXHvbXHffYHffZHvbaH/PbIfjbHvTcIfncH/rdH/reH/jgIfziIf3iIf7kIf/lIv/mIv///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAH8ALAAAAAATABMAAAfOgH+Cg4SFhoeIiBEeMUQvGxCJfwkoUFVXVVBKQB8Hhws/WVtdpFtYTUAuCIYzWV1fX1o+X11ZSjwahRRSXLBfVgIyX1xRRTUPhCpXr7BWAAAdXVdGNxmEPVleX8/cABNPSDklhEfL293PFtQphDu8590VTMYhhCRLrs0AASO2PDAYCEkY4iQLly5UBtDI0iRIjRUNCp0IokTKlSlCpGyy0eKCIQUueBQxksRIER41WoAocMgAhxo4dOCoAWPFBQKSHGQwwUIEBgaSggoNGggAOw==");
 }
