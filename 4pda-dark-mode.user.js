@@ -267,6 +267,24 @@ let userStyle = `
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4b80b5), color-stop(44%,#335d88), color-stop(100%,#14395f));
     background: -webkit-linear-gradient(top, #4b80b5 0%, #335d88 44%, #14395f 100%);
 }
+/* mobile version */
+.night .post_header, .night .quick_editor, .night .makepost_link, .night .board_forum_row {
+    background: #22272B;
+}
+.night .post_header_editor, .night .forum_search, .night .topic_title_post, .night .cat_name {
+    background: #3A4F6C;
+}
+.night .anonce_body
+{
+    background: #4e4623 !important;
+}
+.night .cat_name + [data-post] > div[style*="background-color:#CFFFE3"]
+{
+    background: #2C0707 !important;
+}
+.night {
+    background: #171c20;
+}
 
 /* Background Color */
 
@@ -597,6 +615,16 @@ let userStyle = `
 .night .post-block.code {
     border-left-color: #ff43436e !important;
 }
+/* mobile version */
+.night [data-spoil-poll-pinned-container] {
+    border-color: #395179 !important;
+}
+.night .post_header, .night .cat_name {
+    border-bottom-color: #395179;
+}
+.night .anonce_body {
+    border-bottom-color: #171c20;
+}
 
 /* Box Shadow */
 
@@ -702,6 +730,18 @@ let userStyle = `
 }
 .night .body-tbl path, .night .body-tbl circle {
     fill: #3A4F6C;
+}
+/* mobile version */
+.night .topic_title_post, .night #gfooter
+{
+    color: #000;
+}
+.night .post_header_editor, .night .forum_search, .night .cat_name, .night .board_forum_row {
+    color: #9e9e9e !important;
+}
+.night .board_forum_date
+{
+    color: #5f6772;
 }
 
 /* Fix download screen */
@@ -952,6 +992,12 @@ userStyle += `
     min-width: 390px;
     text-align: left;
 }
+.mobile_config_frame {
+    min-width: 200px;
+    font-size: 0.8em;
+    bottom: ${BUTTON_SIZE4 * 1.6}px;
+    right: 10px;
+}
 .config_frame label:hover {
     cursor: pointer;
     background: rgba(128, 128, 128, 0.3);
@@ -1201,6 +1247,9 @@ ready(() => {
         </a>`;
         configFrame.appendChild(reloadText);
         configFrame.classList.add('config_frame');
+        if (document.querySelector("meta[name='MobileOptimized']")) {
+            configFrame.classList.add('mobile_config_frame')
+        }
         configFrame.style.display = 'none';
         document.body.appendChild(configFrame);
         // Конец фрейма настроек
