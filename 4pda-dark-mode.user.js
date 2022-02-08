@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.13
+// @version      0.9.14
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -899,7 +899,42 @@ let userStyle = `
 }
 .night #ad {
     background: black !important;
-}`
+}
+
+/* mobile version
+ * Author: anauthentic https://4pda.to/forum/index.php?showuser=200816
+*/
+
+.night .post_header, .night .quick_editor, .night .makepost_link, .night .board_forum_row {
+    background: #22272B;
+}
+.night .post_header_editor, .night .forum_search, .night .topic_title_post, .night .cat_name {
+    background: #3A4F6C;
+}
+.night .anonce_body {
+    background: #4e4623 !important;
+    border-bottom-color: #171c20;
+}
+.night .cat_name + [data-post] > div[style*="background-color:#CFFFE3"] {
+    background: #2C0707 !important;
+}
+.night [data-spoil-poll-pinned-container] {
+    border-color: #395179 !important;
+}
+.night .post_header, .night .cat_name {
+    border-bottom-color: #395179;
+}
+.night .topic_title_post, .night #gfooter {
+    color: #000;
+}
+.night .post_header_editor, .night .forum_search, .night .cat_name, .night .board_forum_row {
+    color: #9e9e9e !important;
+}
+.night .board_forum_date {
+    color: #5f6772;
+}
+
+`
 /* Кнопка и фрейм настроек */
 userStyle += `
 .config_button {
@@ -951,6 +986,12 @@ userStyle += `
     max-height: calc(100vh - 64px);
     min-width: 390px;
     text-align: left;
+}
+.mobile_config_frame {
+    min-width: 200px;
+    font-size: 0.8em;
+    bottom: ${BUTTON_SIZE4 * 1.6}px;
+    right: 10px;
 }
 .config_frame label:hover {
     cursor: pointer;
@@ -1201,6 +1242,11 @@ ready(() => {
         </a>`;
         configFrame.appendChild(reloadText);
         configFrame.classList.add('config_frame');
+        /* Mobile version */
+        if (document.querySelector("meta[name='MobileOptimized']")) {
+            configFrame.classList.add('mobile_config_frame')
+        }
+        /* Mobile version */
         configFrame.style.display = 'none';
         document.body.appendChild(configFrame);
         // Конец фрейма настроек
