@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.14
+// @version      0.9.15
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -597,6 +597,9 @@ let userStyle = `
 .night .post-block.code {
     border-left-color: #ff43436e !important;
 }
+.night .comment-box .comment-list li [name="comment"] {
+    outline-color: #395179;
+}
 
 /* Box Shadow */
 
@@ -660,7 +663,8 @@ let userStyle = `
 .night .desc, .night .lastaction {
     color: #5f6772;
 }
-.night #t-content, .night #t-content a, .night .wr-t + .footer {
+.night #t-content, .night #t-content a, .night .wr-t + .footer, .night .article-footer-item,
+.night .comment-box .comment-form [name="comment"] {
     color: #9e9e9e;
 }
 .night .advanced-area .post .list-post-title a, .night .advanced-area .post .list-post-title a:visited, .night a:link,
@@ -691,7 +695,7 @@ let userStyle = `
 .night .input-warn, .night .input-green, .night .input-checkbox, .night input, .night textarea, .night .popupmenu-item,
 .night select, .night .popupmenu-item-last, .night .textarea, .night .searchinput,.night .button, .night .normalname,
 .night label.select-field select, .night button.editor_button, .night .gobutton, .night .comment-box .comment-list,
-.night .catend, .night .ed-wrap .ed-textarea {
+.night .catend, .night .ed-wrap .ed-textarea, .night .comment-box .comment-list .nickname {
     color: #DDD;
 }
 .night a.btn.noborder.iblock.rounded.green, .night .comment-box .wrap-menu a {
