@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.9.15
+// @version      0.10.0
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -15,33 +15,36 @@
 // ==/UserScript==
 
 const FLAGS = {
-    SMALL_BUTTONS: false,
-    AUTO_NIGHT_MODE: false,
-    AUTO_NIGHT_START: 20,
-    AUTO_NIGHT_END: 8,
-    FAV_UNREAD_DARK_COLOR: "#111d27",
-    FAV_UNREAD_LIGHT_COLOR: "#ACD6F7",
-    SHOW_NEW_VERSIONS: false,
-    SHOW_USER_INFO: false,
-    ADS_CLEANER: false
-},
-      favURL = '/forum/index.php?act=fav',
-      forumURL = '/forum/index.php?showforum=',
-      topicURL = '/forum/index.php?showtopic=',
-      configOptions = [
-          ['SMALL_BUTTONS', 'маленькие кнопки настроек и ночного режима'],
-          ['SHOW_NEW_VERSIONS', 'показывать новые версии в избранном'],
-          ['SHOW_USER_INFO', 'показывать доп. информацию о пользователях в теме'],
-          ['ADS_CLEANER', 'удалять рекламу'],
-          ['AUTO_NIGHT_MODE', 'aвтоматически включать ночной режим'],
-          ['AUTO_NIGHT_START', 'начало ночного режима'],
-          ['AUTO_NIGHT_END', 'окончание ночного режима']
-      ]
-if(!localStorage.getItem('4pdafixFlags')) {
+        SMALL_BUTTONS: false,
+        AUTO_NIGHT_MODE: false,
+        AUTO_NIGHT_START: 20,
+        AUTO_NIGHT_END: 8,
+        FAV_UNREAD_DARK_COLOR: "#111d27",
+        FAV_UNREAD_LIGHT_COLOR: "#ACD6F7",
+        SHOW_NEW_VERSIONS: false,
+        SHOW_USER_INFO: false,
+        ADS_CLEANER: false,
+        QMS_BB_PANEL: false,
+    },
+    favURL = '/forum/index.php?act=fav',
+    forumURL = '/forum/index.php?showforum=',
+    topicURL = '/forum/index.php?showtopic=',
+    qmsURL = '/forum/index.php?act=qms',
+    configOptions = [
+        ['SMALL_BUTTONS', 'маленькие кнопки настроек и ночного режима'],
+        ['SHOW_NEW_VERSIONS', 'показывать новые версии в избранном'],
+        ['SHOW_USER_INFO', 'показывать доп. информацию о пользователях в теме'],
+        ['QMS_BB_PANEL', 'модифицированная панель BB-кодов в QMS'],
+        ['ADS_CLEANER', 'удалять рекламу'],
+        ['AUTO_NIGHT_MODE', 'aвтоматически включать ночной режим'],
+        ['AUTO_NIGHT_START', 'начало ночного режима'],
+        ['AUTO_NIGHT_END', 'окончание ночного режима']
+    ]
+if (!localStorage.getItem('4pdafixFlags')) {
     localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS))
 } else {
     const jsonString = localStorage.getItem('4pdafixFlags'),
-          loadedConfig = jsonString ? JSON.parse(jsonString) : {};
+        loadedConfig = jsonString ? JSON.parse(jsonString) : {};
     Object.keys(FLAGS).forEach((key) => {
         if (
             Object.keys(loadedConfig).includes(key) &&
@@ -50,47 +53,47 @@ if(!localStorage.getItem('4pdafixFlags')) {
     })
 }
 const BUTTON_SIZE = FLAGS.SMALL_BUTTONS ? 16 : 32,
-      BUTTON_SIZE2 = FLAGS.SMALL_BUTTONS ? 15 : 25,
-      BUTTON_SIZE3 = FLAGS.SMALL_BUTTONS ? 6 : 10,
-      BUTTON_SIZE4 = FLAGS.SMALL_BUTTONS ? 48 : 88,
-      userConfig = {
-          key: '4pdafix',
-          model: {
-              night_mode: [false, true],
-              fav_unread_dark_color: [FLAGS.FAV_UNREAD_DARK_COLOR],
-              fav_unread_light_color: [FLAGS.FAV_UNREAD_LIGHT_COLOR]
-          },
-          config: {},
-          init() {
-              let jsonString = localStorage.getItem(userConfig.key);
-              const loadedConfig = jsonString ? JSON.parse(jsonString) : {},
-                    config = {};
-              Object.keys(userConfig.model).forEach((key) => {
-                  config[key] = Object.keys(loadedConfig).indexOf(key) >= 0 ? loadedConfig[key] : userConfig.model[key][0]
-              });
-              jsonString = JSON.stringify(config);
-              localStorage.setItem(userConfig.key, jsonString);
-              userConfig.config = config
-          },
-          getItem(key) {
-              return JSON.parse(localStorage.getItem(userConfig.key))[key]
-          },
-          setItem(key, value) {
-              let jsonString = localStorage.getItem(userConfig.key);
-              const config = JSON.parse(jsonString);
-              config[key] = value;
-              jsonString = JSON.stringify(config);
-              localStorage.setItem(userConfig.key, jsonString);
-              userConfig.config = config
-          },
-          shiftItem(key) {
-              const availableValues = userConfig.model[key],
-                    nextIdx = (availableValues.indexOf(userConfig.getItem(key)) + 1) % availableValues.length,
-                    nextValue = availableValues[nextIdx];
-              userConfig.setItem(key, nextValue);
-              return nextValue
-          }
-      };
+    BUTTON_SIZE2 = FLAGS.SMALL_BUTTONS ? 15 : 25,
+    BUTTON_SIZE3 = FLAGS.SMALL_BUTTONS ? 6 : 10,
+    BUTTON_SIZE4 = FLAGS.SMALL_BUTTONS ? 48 : 88,
+    userConfig = {
+        key: '4pdafix',
+        model: {
+            night_mode: [false, true],
+            fav_unread_dark_color: [FLAGS.FAV_UNREAD_DARK_COLOR],
+            fav_unread_light_color: [FLAGS.FAV_UNREAD_LIGHT_COLOR]
+        },
+        config: {},
+        init() {
+            let jsonString = localStorage.getItem(userConfig.key);
+            const loadedConfig = jsonString ? JSON.parse(jsonString) : {},
+                config = {};
+            Object.keys(userConfig.model).forEach(key => {
+                config[key] = Object.keys(loadedConfig).indexOf(key) >= 0 ? loadedConfig[key] : userConfig.model[key][0]
+            });
+            jsonString = JSON.stringify(config);
+            localStorage.setItem(userConfig.key, jsonString);
+            userConfig.config = config
+        },
+        getItem(key) {
+            return JSON.parse(localStorage.getItem(userConfig.key))[key]
+        },
+        setItem(key, value) {
+            let jsonString = localStorage.getItem(userConfig.key);
+            const config = JSON.parse(jsonString);
+            config[key] = value;
+            jsonString = JSON.stringify(config);
+            localStorage.setItem(userConfig.key, jsonString);
+            userConfig.config = config
+        },
+        shiftItem(key) {
+            const availableValues = userConfig.model[key],
+                nextIdx = (availableValues.indexOf(userConfig.getItem(key)) + 1) % availableValues.length,
+                nextValue = availableValues[nextIdx];
+            userConfig.setItem(key, nextValue);
+            return nextValue
+        }
+    };
 userConfig.init();
 const userStyleEl = document.createElement('style');
 let userStyle = `
@@ -389,9 +392,9 @@ let userStyle = `
     background: #31383e;
     border-top-color: #395179;
 }
-.night .navbar .btn, .night .bb-codes {
+.night .navbar .btn, .night .bb-codes, .night .ed-panel .dropdown .btn {
     background-color: #3A4F6C;
-    border-color: #395179;
+    border-color: #5d7397;
 }
 .night td.formbuttonrow, .night .pformstrip, .night .borderwrap p.formbuttonrow, .night .borderwrap p.formbuttonrow1 {
     background-color: #3A4F6C !important;
@@ -544,7 +547,7 @@ let userStyle = `
 .night .ed-wrap .ed-bbcode-normal {
     filter: brightness(1.3);
 }
-.night .ed-wrap .ed-bbcode-hover {
+.night .ed-wrap .ed-bbcode-hover, .night .ed-wrap .ed-bbcode-normal:hover {
     filter: brightness(0.7) contrast(1.3);
 }
 .night input:-webkit-autofill {
@@ -892,6 +895,33 @@ let userStyle = `
 .night .qms-search-form .btn.blue {
     color: #9e9e9e;
 }
+.ed-wrap .ed-bbcode-normal, .ed-wrap .ed-bbcode-hover, .ed-wrap .ed-bbcode-down {
+    border: solid;
+    border-width: 1px;
+    cursor: pointer;
+    margin: 0px 3px 0px 0px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    color: #000;
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+}
+.ed-wrap div.ed-bbcode-normal, .ed-wrap div.ed-bbcode-hover, .ed-wrap div.ed-bbcode-down {
+	font-family: Verdana;
+	line-height: 11px;
+	width: 11px;
+	height: 11px;
+	color: #4373c3;
+}
+.ed-wrap .ed-bbcode-normal {
+    border-color: transparent;
+}
+.ed-wrap .ed-color-hover, .ed-wrap .ed-bbcode-hover, .ed-wrap .ed-bbcode-normal:hover {
+	border-color: transparent;
+	background-color: #D6E8FF;
+} 
 
 /* Ticket paginator fix */
 
@@ -937,9 +967,8 @@ let userStyle = `
 .night .board_forum_date {
     color: #5f6772;
 }
-
 `
-/* Кнопка и фрейм настроек */
+    /* Кнопка и фрейм настроек */
 userStyle += `
 .config_button {
     box-sizing: border-box;
@@ -1049,7 +1078,7 @@ userStyle += `
 }`
 userStyleEl.innerHTML = userStyle;
 const frameStyleEl = document.createElement('style'),
-      frameStyle = `
+    frameStyle = `
 .night .download-container {
     background-color: #22272B !important;
     border-color: #393d41 !important;
@@ -1063,66 +1092,68 @@ const frameStyleEl = document.createElement('style'),
 }`;
 frameStyleEl.innerHTML = frameStyle;
 const navigatorEdge = /Edge/.test(navigator.userAgent);
+
 function readyHead(fn) {
     if (document.body) {
         fn()
     } else if (document.documentElement && !navigatorEdge) {
-		const observer = new MutationObserver(() => {
-			if (document.body) {
-				observer.disconnect();
-				fn()
-			}
-		});
-		observer.observe(document.documentElement, { childList: true })
-	} else {
-		setTimeout(() => readyHead(fn), 16)
-	}
+        const observer = new MutationObserver(() => {
+            if (document.body) {
+                observer.disconnect();
+                fn()
+            }
+        });
+        observer.observe(document.documentElement, { childList: true })
+    } else {
+        setTimeout(() => readyHead(fn), 16)
+    }
 }
 readyHead(() => {
-	if (document.getElementById('4pdafixmarker')) return;
+    if (document.getElementById('4pdafixmarker')) return;
     if (window.top === window.self) {
         document.head.appendChild(userStyleEl)
     } else {
         document.head.appendChild(frameStyleEl)
     }
-	if (userConfig.getItem('night_mode')) {
-		document.documentElement.classList.add('night')
-	}
+    if (userConfig.getItem('night_mode')) {
+        document.documentElement.classList.add('night')
+    }
 });
+
 function ready(fn) {
-	const { readyState } = document;
-	if (readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', () => {
-			fn()
-		})
-	} else {
-		fn()
-	}
+    const { readyState } = document;
+    if (readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            fn()
+        })
+    } else {
+        fn()
+    }
 }
 ready(() => {
-	if (document.getElementById('4pdafixmarker')) return;
+    if (document.getElementById('4pdafixmarker')) return;
     // Автоматичский ночной режим
-    if(FLAGS.AUTO_NIGHT_MODE) {
+    if (FLAGS.AUTO_NIGHT_MODE) {
         setInterval(() => {
             const currentHours = new Date().getHours();
             userConfig.setItem('night_mode', currentHours < FLAGS.AUTO_NIGHT_END || currentHours >= FLAGS.AUTO_NIGHT_START);
         }, 500)
     }
     // Переключатель дневного/ночного режима
-	const switcherEl = document.createElement('div');
-	switcherEl.classList.add('night_mode_switcher');
-	switcherEl.onclick = () => {
-		const isNightMode = userConfig.shiftItem('night_mode');
-		document.documentElement.classList.toggle('night', isNightMode);
-	};
-	document.body.appendChild(switcherEl);
-	setInterval(() => {
-		const isNightMode = userConfig.getItem('night_mode');
-		if (document.documentElement.classList.contains('night') !== isNightMode) {
-			document.documentElement.classList.toggle('night', isNightMode)
-		}
-	}, 500)
-    // чиним страницу/фрейм с загрузкой файла
+    const switcherEl = document.createElement('div');
+    switcherEl.classList.add('night_mode_switcher');
+    switcherEl.onclick = () => {
+        const isNightMode = userConfig.shiftItem('night_mode');
+        document.documentElement.classList.toggle('night', isNightMode);
+    };
+    document.body.appendChild(switcherEl);
+    setInterval(() => {
+            const isNightMode = userConfig.getItem('night_mode');
+            if (document.documentElement.classList.contains('night') !== isNightMode) {
+                document.documentElement.classList.toggle('night', isNightMode)
+            }
+        }, 500)
+        // чиним страницу/фрейм с загрузкой файла
     const dw_fname = document.querySelector('div.dw-fname');
     if (dw_fname && dw_fname.parentNode) dw_fname.parentNode.className = 'download-container';
     // проверяем, скрипт запустился во фрейме или основном окне
@@ -1250,7 +1281,7 @@ ready(() => {
         if (document.querySelector("meta[name='MobileOptimized']")) {
             configFrame.classList.add('mobile_config_frame')
         }
-        /* Mobile version */
+        /* End mobile version */
         configFrame.style.display = 'none';
         document.body.appendChild(configFrame);
         // Конец фрейма настроек
@@ -1273,12 +1304,12 @@ ready(() => {
                 const tr = tbl[i].getElementsByTagName('tbody')[0].getElementsByTagName('tr');
                 for (let j = 0; j < tr.length; j++) {
                     if (tr[j].hasAttribute('data-item-fid') || (
-                        tr[j].getElementsByTagName('td') &&
-                        tr[j].getElementsByTagName('td')[0] &&
-                        tr[j].getElementsByTagName('td')[0].className === 'row2'
-                    )) {
+                            tr[j].getElementsByTagName('td') &&
+                            tr[j].getElementsByTagName('td')[0] &&
+                            tr[j].getElementsByTagName('td')[0].className === 'row2'
+                        )) {
                         const td = tr[j].getElementsByTagName('td'),
-                              tdIndex = ~URL.indexOf(favURL) ? 1 : 2;
+                            tdIndex = ~URL.indexOf(favURL) ? 1 : 2;
                         if (
                             td[tdIndex].getElementsByTagName('a') &&
                             td[tdIndex].getElementsByTagName('a')[0] &&
@@ -1301,15 +1332,15 @@ ready(() => {
             if (~URL.indexOf(favURL)) {
                 // находим таблицу
                 const _tr = document.getElementsByClassName('ipbtable')[0].getElementsByTagName('tbody')[0].getElementsByTagName('tr'),
-                // запихиваем в tr нужные нам строки таблицы
-                      tr = [];
+                    // запихиваем в tr нужные нам строки таблицы
+                    tr = [];
                 for (let i = 0; i < _tr.length; i++) {
                     if (_tr[i].hasAttribute('data-item-fid')) { // отсортировываем из таблицы только темы
                         tr.push(_tr[i]) // запихиваем в массив tr
                     }
                 }
                 const trLength = tr.length,
-                      name = []; // названия тем
+                    name = []; // названия тем
                 for (let i = 0; i < trLength; i++) {
                     const tmp = tr[i].getElementsByTagName('td')[1].getElementsByTagName('span')[0].getElementsByTagName('a')[0];
                     getVersion(tmp.getAttribute('href'), i);
@@ -1325,6 +1356,7 @@ ready(() => {
                 let app_name,
                     saveToHideName = [],
                     saveToHideVer = [];
+
                 function getVersion(link, i) {
                     const xhr = new XMLHttpRequest();
                     xhr.open('GET', link, true);
@@ -1332,8 +1364,8 @@ ready(() => {
                     xhr.onload = function() {
                         if (this.readyState === 4 && this.status === 200) {
                             const parser = new DOMParser(),
-                                  doc = parser.parseFromString(xhr.responseText, 'text/html'),
-                                  tbl = doc.getElementsByClassName('ipbtable');
+                                doc = parser.parseFromString(xhr.responseText, 'text/html'),
+                                tbl = doc.getElementsByClassName('ipbtable');
                             for (let j = 0; j < tbl.length; j++) {
                                 if (tbl[j].hasAttribute('data-post')) {
                                     const span = tbl[j].getElementsByTagName('tbody')[0]
@@ -1357,7 +1389,7 @@ ready(() => {
                                                     if (alt_ver.localeCompare(localStorage.getItem(alt_name)) !== 0) {
                                                         showNotif(alt_name, alt_ver, link)
                                                     }
-                                                // если тема была открыта и просмотрена
+                                                    // если тема была открыта и просмотрена
                                                 } else {
                                                     replace_ver = replace_ver.toLowerCase().replace(/<b>[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b>/g, '').trim();
                                                     alt_ver = replace_ver;
@@ -1391,7 +1423,6 @@ ready(() => {
                 }
                 // переопределяем стиль для кнопок
                 const btnStyle = document.createElement('style');
-                btnStyle.type = 'text/css';
                 const _s = `
 .myBtn {
     display: inline-block;
@@ -1440,7 +1471,6 @@ ready(() => {
                 let n = 0;
                 _tbl.style.display = 'none';
                 const tblStyle = document.createElement('style');
-                tblStyle.type = 'text/css';
                 const s = `
 #_tbl th {
     color: brown;
@@ -1466,20 +1496,20 @@ ready(() => {
                 // кнопка скрытия обновлений вручную
                 const hideBtn = document.querySelector('#hideBtn');
                 hideBtn.onclick = () => {
-                    hideBtn.style.display = 'none';
-                    // сразу сохраняем обновленные версии в память, чтобы при следующем обновлении не всплыли в таблице обновлений
-                    for(let i = 0; i < saveToHideName.length; i++) {
-                        localStorage.setItem(saveToHideName[i], saveToHideVer[i])
+                        hideBtn.style.display = 'none';
+                        // сразу сохраняем обновленные версии в память, чтобы при следующем обновлении не всплыли в таблице обновлений
+                        for (let i = 0; i < saveToHideName.length; i++) {
+                            localStorage.setItem(saveToHideName[i], saveToHideVer[i])
+                        }
+                        // скрываем таблицу с обновлениями и обнуляем счетчик
+                        _tbl.style.display = 'none';
+                        count = 0;
+                        _cnt.innerHTML = count;
+                        for (; _tbody.querySelectorAll('tr').length > 0;) {
+                            _tbl.deleteRow(1)
+                        }
                     }
-                    // скрываем таблицу с обновлениями и обнуляем счетчик
-                    _tbl.style.display = 'none';
-                    count = 0;
-                    _cnt.innerHTML = count;
-                    for(; _tbody.querySelectorAll('tr').length > 0;) {
-                        _tbl.deleteRow(1)
-                    }
-                }
-                // вывод обновленных приложений вверху
+                    // вывод обновленных приложений вверху
                 function showNotif(alt_name, alt_ver, link) {
                     // показываем скрытую кнопку, если есть обновления
                     hideBtn.style.display = 'inline';
@@ -1495,21 +1525,23 @@ ready(() => {
                     _tbl.style.display = 'block';
                     n++;
                     const row = _tbody.insertRow(-1),
-                          cell1 = row.insertCell(-1),
-                          cell2 = row.insertCell(-1),
-                          cell3 = row.insertCell(-1),
-                          cell4 = row.insertCell(-1);
+                        cell1 = row.insertCell(-1),
+                        cell2 = row.insertCell(-1),
+                        cell3 = row.insertCell(-1),
+                        cell4 = row.insertCell(-1);
                     row.className = 'myTr';
                     cell1.className = 'one';
                     cell2.className = 'two';
-                    cell1.innerHTML = n; _cnt.innerHTML = count;
+                    cell1.innerHTML = n;
+                    _cnt.innerHTML = count;
                     cell2.innerHTML = app_name;
                     cell3.innerHTML = ver;
                     cell4.innerHTML = '<input class="myBtn hidden" type="button" value="Скрыть" style="display: none;">'
                 }
+
                 function addEvent() {
                     const myTr = document.querySelectorAll('.myTr');
-                    for(let i = 0; i < myTr.length; i++) {
+                    for (let i = 0; i < myTr.length; i++) {
                         myTr[i].addEventListener('mouseover', function showButton() {
                             this.querySelector('.hidden').style.display = 'block'
                         });
@@ -1518,24 +1550,25 @@ ready(() => {
                         })
                     }
                 }
+
                 function hideApp() {
                     let hBut = document.querySelectorAll('.myBtn.hidden');
-                    for(let i = 0; i < hBut.length; i++) {
+                    for (let i = 0; i < hBut.length; i++) {
                         hBut[i].onclick = function() {
                             const n = this.parentNode.parentNode.firstChild.innerHTML,
-                                  name = this.parentNode.parentNode.children[1].children[1].innerHTML,
-                                  ver = this.parentNode.parentNode.children[2].innerHTML;
+                                name = this.parentNode.parentNode.children[1].children[1].innerHTML,
+                                ver = this.parentNode.parentNode.children[2].innerHTML;
                             localStorage.setItem(name, ver);
                             // сброс # таблицы и удаление строк(и)
                             _tbl.deleteRow(n);
                             let num = _tbl.querySelectorAll('td.one');
                             // если было скрыто последнее обновление, скрываем шапку таблицы и кнопку "Скрыть обновления"
-                            if(num.length === 0) {
+                            if (num.length === 0) {
                                 _tbl.style.display = 'none';
                                 hideBtn.style.display = 'none'
                             }
-                            for(var j=0; j<num.length; j++) {
-                                num[j].innerHTML = j+1
+                            for (var j = 0; j < num.length; j++) {
+                                num[j].innerHTML = j + 1
                             }
                             _cnt.innerHTML = j
                         }
@@ -1546,9 +1579,9 @@ ready(() => {
         if (FLAGS.SHOW_USER_INFO) {
             if (~URL.indexOf(topicURL)) {
                 const post = document.querySelectorAll('.postdetails > center'),
-                      userLink = document.getElementsByClassName('normalname'),
-                      link = [], // собираем все ссылки на профили
-                      ulLength = userLink.length;
+                    userLink = document.getElementsByClassName('normalname'),
+                    link = [], // собираем все ссылки на профили
+                    ulLength = userLink.length;
                 for (let i = 0; i < ulLength; i++) {
                     getUserData(userLink[i].querySelector('a').getAttribute('href'), i)
                 }
@@ -1561,7 +1594,6 @@ ready(() => {
                 addInfoDiv.appendChild(div);
                 // Стиль для новой области
                 const style = document.createElement('style');
-                style.type = 'text/css';
                 const styleData = `
 .myDiv {
     display: none;
@@ -1600,6 +1632,7 @@ ready(() => {
                 const styleNode = document.createTextNode(styleData);
                 style.appendChild(styleNode);
                 document.head.appendChild(style);
+
                 function getUserData(link, index) {
                     const xhr = new XMLHttpRequest();
                     xhr.open('GET', link, true);
@@ -1632,7 +1665,7 @@ ready(() => {
                                 .filter(li => personalDataFilter.filter(el => li.innerText.includes(el)).length > 0)
                                 .concat(
                                     Array.prototype.slice.call(mainDataList)
-                                        .filter(li => li.innerText.includes('посещение')));
+                                    .filter(li => li.innerText.includes('посещение')));
                             let userData = '';
                             for (let i = 0; i < list.length; i++) {
                                 const reg = new RegExp(/Город:\n(.*)/);
@@ -1641,8 +1674,8 @@ ready(() => {
                                     .replace(/(Город:)/, '$1 ')
                                     .replace(/(рождения:)/, '$1<br/>')
                                     .replace(/(юзера:)/, '$1<br/>')
-                                    .replace(/(посещение:)/, '$1<br/>')
-                                    + '</p><br/>'
+                                    .replace(/(посещение:)/, '$1<br/>') +
+                                    '</p><br/>'
                             }
                             insertData(userData, index)
                         }
@@ -1651,10 +1684,11 @@ ready(() => {
                         console.log('error')
                     }
                 }
+
                 function insertData(userData, index) {
                     div.innerHTML = userData;
                     post[index].appendChild(addInfoDiv.cloneNode(true))
-                    // post[index].appendChild(div.cloneNode(true))
+                        // post[index].appendChild(div.cloneNode(true))
                 }
             }
         }
@@ -1667,6 +1701,304 @@ ready(() => {
             div && div.remove();
             div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(6):not(div)');
             if (div) div.id = 'ad';
+        }
+        if (FLAGS.QMS_BB_PANEL) {
+            if (~URL.indexOf(qmsURL)) {
+                const smiles = {
+                    ":happy:": "happy",
+                    ";)": "wink",
+                    ":P": "tongue",
+                    ":-D": "biggrin",
+                    ":lol:": "laugh",
+                    ":rolleyes:": "rolleyes",
+                    ":)": "smile_good",
+                    ":beee:": "beee",
+                    ":rofl:": "rofl",
+                    ":sveta:": "sveta",
+                    ":thank_you:": "thank_you",
+                    "}-)": "devil",
+                    ":girl_cray:": "girl_cray",
+                    ":D": "biggrin",
+                    "o.O": "blink",
+                    ":blush:": "blush",
+                    ":yes2:": "yes",
+                    ":mellow:": "mellow",
+                    ":huh:": "huh",
+                    ":o": "ohmy",
+                    "B)": "cool",
+                    "-_-": "sleep",
+                    "<_<": "dry",
+                    ":wub:": "wub",
+                    ":angry:": "angry",
+                    ":(": "sad",
+                    ":unsure:": "unsure",
+                    ":wacko:": "wacko",
+                    ":blink:": "blink",
+                    ":ph34r:": "ph34r",
+                    ":banned:": "banned",
+                    ":antifeminism:": "antifeminism",
+                    ":beta:": "beta",
+                    ":boy_girl:": "boy_girl",
+                    ":butcher:": "butcher",
+                    ":bubble:": "bubble",
+                    ":censored:": "censored",
+                    ":clap:": "clap",
+                    ":close_tema:": "close_tema",
+                    ":clapping:": "clapping",
+                    ":coldly:": "coldly",
+                    ":comando:": "comando",
+                    ":congratulate:": "congratulate",
+                    ":dance:": "dance",
+                    ":daisy:": "daisy",
+                    ":dancer:": "dancer",
+                    ":derisive:": "derisive",
+                    ":dinamo:": "dinamo",
+                    ":dirol:": "dirol",
+                    ":diver:": "diver",
+                    ":drag:": "drag",
+                    ":download:": "download",
+                    ":drinks:": "drinks",
+                    ":first_move:": "first_move",
+                    ":feminist:": "feminist",
+                    ":flood:": "flood",
+                    ":fool:": "fool",
+                    ":friends:": "friends",
+                    ":foto:": "foto",
+                    ":girl_blum:": "girl_blum",
+                    ":girl_crazy:": "girl_crazy",
+                    ":girl_curtsey:": "girl_curtsey",
+                    ":girl_dance:": "girl_dance",
+                    ":girl_flirt:": "girl_flirt",
+                    ":girl_hospital:": "girl_hospital",
+                    ":girl_hysterics:": "girl_hysterics",
+                    ":girl_in_love:": "girl_in_love",
+                    ":girl_kiss:": "girl_kiss",
+                    ":girl_pinkglassesf:": "girl_pinkglassesf",
+                    ":girl_parting:": "girl_parting",
+                    ":girl_prepare_fish:": "girl_prepare_fish",
+                    ":good:": "good",
+                    ":girl_spruce_up:": "girl_spruce_up",
+                    ":girl_tear:": "girl_tear",
+                    ":girl_tender:": "girl_tender",
+                    ":girl_teddy:": "girl_teddy",
+                    ":girl_to_babruysk:": "girl_to_babruysk",
+                    ":girl_to_take_umbrage:": "girl_to_take_umbrage",
+                    ":girl_triniti:": "girl_triniti",
+                    ":girl_tongue:": "girl_tongue",
+                    ":girl_wacko:": "girl_wacko",
+                    ":girl_werewolf:": "girl_werewolf",
+                    ":girl_witch:": "girl_witch",
+                    ":grabli:": "grabli",
+                    ":good_luck:": "good_luck",
+                    ":guess:": "guess",
+                    ":hang:": "hang",
+                    ":heart:": "heart",
+                    ":help:": "help",
+                    ":helpsmilie:": "helpsmilie",
+                    ":hemp:": "hemp",
+                    ":heppy_dancing:": "heppy_dancing",
+                    ":hysterics:": "hysterics",
+                    ":indeec:": "indeec",
+                    ":i-m_so_happy:": "i-m_so_happy",
+                    ":kindness:": "kindness",
+                    ":king:": "king",
+                    ":laugh_wild:": "laugh_wild",
+                    ":4PDA:": "love_4PDA",
+                    ":nea:": "nea",
+                    ":moil:": "moil",
+                    ":no:": "no",
+                    ":nono:": "nono",
+                    ":offtopic:": "offtopic",
+                    ":ok:": "ok",
+                    ":papuas:": "papuas",
+                    ":party:": "party",
+                    ":pioneer_smoke:": "pioneer_smoke",
+                    ":pipiska:": "pipiska",
+                    ":protest:": "protest",
+                    ":popcorm:": "popcorm",
+                    ":rabbi:": "rabbi",
+                    ":resent:": "resent",
+                    ":roll:": "roll",
+                    ":rtfm:": "rtfm",
+                    ":russian_garmoshka:": "russian_garmoshka",
+                    ":russian:": "russian",
+                    ":russian_ru:": "russian_ru",
+                    ":scratch_one-s_head:": "scratch_one-s_head",
+                    ":scare:": "scare",
+                    ":search:": "search",
+                    ":secret:": "secret",
+                    ":skull:": "skull",
+                    ":shok:": "shok",
+                    ":sorry:": "sorry",
+                    ":smoke:": "smoke",
+                    ":spiteful:": "spiteful",
+                    ":stop_flood:": "stop_flood",
+                    ":suicide:": "suicide",
+                    ":stop_holywar:": "stop_holywar",
+                    ":superman:": "superman",
+                    ":superstition:": "superstition",
+                    ":tablet_za:": "tablet_protiv",
+                    ":tablet_protiv:": "tablet_za",
+                    ":this:": "this",
+                    ":tomato:": "tomato",
+                    ":to_clue:": "to_clue",
+                    ":tommy:": "tommy",
+                    ":tongue3:": "tongue3",
+                    ":umnik:": "umnik",
+                    ":victory:": "victory",
+                    ":vinsent:": "vinsent",
+                    ":wallbash:": "wallbash",
+                    ":whistle:": "whistle",
+                    ":wink_kind:": "wink_kind",
+                    ":yahoo:": "yahoo",
+                    ":yes:": "yes",
+                    ":blush:": "confusion",
+                    "-:{": "girl_devil",
+                    ":*": "kiss",
+                    "@}-'-,-": "give_rose",
+                    ":'(": "cry",
+                    ":-{": "mad",
+                    "=^.^=": "kitten",
+                    "(-=": "girl_hide",
+                    "(-;": "girl_wink",
+                    ")-:{": "girl_angry",
+                    "*-:": "girl_chmok",
+                    ")-:": "girl_sad",
+                    ":girl_mad:": "girl_mad",
+                    "(-:": "girl_smile",
+                    ":acute:": "acute",
+                    ":aggressive:": "aggressive",
+                    ":air_kiss:": "air_kiss",
+                    "o_O": "blink",
+                    ":-": "confusion",
+                    ":'-(": "cry",
+                    ":lol_girl:": "girl_haha",
+                    ")-':": "girl_cray",
+                    "(;": "girl_wink",
+                    ":-*": "kiss",
+                    ":laugh:": "laugh",
+                    ":ohmy:": "ohmy",
+                    ":-(": "sad",
+                    "8-)": "rolleyes",
+                    ":-)": "smile",
+                    ":smile:": "smile",
+                    ":-P": "tongue",
+                    ";-)": "wink"
+                }
+                const bbButtons = [{
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/b.png",
+                        title: "Жирный",
+                        name: "B"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/i.png",
+                        title: "Курсив",
+                        name: "I"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/u.png",
+                        title: "Подчёркивание",
+                        name: "U"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/s.png",
+                        title: "Зачёркивание",
+                        name: "S"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/sub.png",
+                        title: "Подстрочный текст",
+                        name: "SUB"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/sup.png",
+                        title: "Надстрочный текст",
+                        name: "SUP"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/left.png",
+                        title: "Влево",
+                        name: "LEFT"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/center.png",
+                        title: "По центру",
+                        name: "CENTER"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/right.png",
+                        title: "Вправо",
+                        name: "RIGHT"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/url.png",
+                        title: "Вставить гиперссылку",
+                        name: "URL"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/quote.png",
+                        title: "Вставить цитату",
+                        name: "QUOTE"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/offtop.png",
+                        title: "Оффтоп",
+                        name: "OFFTOP"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/code.png",
+                        title: "Вставить код",
+                        name: "CODE"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/spoiler.png",
+                        title: "Сделать текст сворачиваемым",
+                        name: "SPOILER"
+                    },
+                    {
+                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/list.png",
+                        title: "Вставить список",
+                        name: "LIST"
+                    },
+                ];
+                $('#body').on('click', (e) => {
+                    if (e.target.id == 'btn-bb-codes') {
+                        if (!($('div').is('#btn-bb'))) {
+                            $('#btn-bb-codes').attr('data-options', '{"class":"show"}');
+                            let btn = '<table cellspacing="0" cellpadding="0" border="0" width="100%" class="ed-wrap"><tbody><tr>' +
+                                '<td id="ed--1_bbc" style="text-align: left; width: 100%; padding-left: 4px;" class="ed-panel">';
+                            for (const bbButton of bbButtons) {
+                                btn += '<img data-toggle="bb" data-options={"target":"#thread-msg","before":"[' + bbButton.name +
+                                    (bbButton.name == "URL" ? '=' : '') + ']","after":"[/' + bbButton.name + ']"} src="' + bbButton.src +
+                                    '" border="0" align="top" class="ed-bbcode-normal" alt=" ' + bbButton.title + '" title="' + bbButton.title + '">'
+                            }
+                            btn += '<div class="dropdown"><a href="#" class="btn" data-toggle="dropdown"><i class="icon-cog"/>' +
+                                '<span class="on-show-sidebar">Смайлы</span><i class="icon-down-dir-1"/></a>' +
+                                '<ul class="dropdown-menu" style="position: absolute; width: auto; margin-left: auto; height: 150px;' +
+                                ' border: 1px solid; overflow-y: auto; overflow-x: scroll; cursor: pointer;">';
+                            const paths_to_smile = localStorage.getItem('4pda_script_path_to_smile');
+                            for (const i in smiles) {
+                                btn += '<img src="' + paths_to_smile + smiles[i] + '.gif" border="0" class="ed-emo-normal" alt"' + i +
+                                    '" title="' + i + '" data-toggle="bb" data-options={"target":"#thread-msg","before":"","after":"&#32;' + i + '&#32;"}>'
+                            }
+                            btn += '</ul></td></tr></tbody></table>';
+                            const sep1 = $('div').is('#threads-bottom-form') ? '#threads-bottom-form' : '#thread-bottom-form'
+                            $(sep1).prepend('<div id="btn-bb" style="display: block; padding: 12px 12px 0 12px;">' + btn + '</div>');
+                        } else {
+                            if ($('#btn-bb').attr('style').indexOf('display: block;') != -1) {
+                                $('#btn-bb').attr('style', 'display: none;')
+                            } else {
+                                $('#btn-bb').attr('style', 'display: block; padding-left: 12px;')
+                            }
+                        }
+                    }
+                })
+            } else {
+                if (localStorage.getItem('4pda_script_path_to_smile') == null) {
+                    const smilesPath = BBSmiles.toString().match(/b\.src\=\"(\/\/\S+\/)/)[1];
+                    localStorage.setItem('4pda_script_path_to_smile', smilesPath)
+                }
+            }
         }
         // Исправление кнопок
         const fixedButton = "data:image/gif;base64,R0lGODlhHgAVAOeCAAcpWgcpZRI0bBg5cSRIhSRLiC9OgS9VkztXh0NVhzRalzRbmThfnDpfnThgnj5hmzpjoD1jojtkoTxkojxnpUFmoD1npD9npj1opj9op0Fopj5ppj9pqEBqqE5okkNrpEFsqkFtrEJtq1FrlUVtrEZuqEdvrEhxsElyrE5xp1BzqE12tUt3tkx3tlN5rll4qVN5uVV6sE98uVV9vVF/vlWAv1aAv1OBwVeBwFWDwlWEw1mDw1uGxlaIyGOGuGiFslyHx12KyluLyl+NzF+NzWyLuWCOzmGOzmGR0WOR0WGT0naQuWKV1maW13iTvGuX1mWZ2WeZ2mmZ2XqWwGea22ib3Gmb3Wic3Gmd3mqd3mue322g4G2h4m2i42+j42+m53Gm53Gn6YmjyHKo6XKp63Op6pGmx3Ws7nWt75Opynev8ZSrzJatzpeu0J+xzoW59aK107HD27rH27zK377N4cnT5MnU5MrW5svW58vX59ff7Nfg7OPo8eTp8fH0+PL0+PL0+fL1+f///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEKAP8ALAAAAAAeABUAAAj+AP8JHEiwoMGDAxMEWMiwocOHDgcGeEOxosWLGC8GEBjgicePIEOKDLnxXwAYKFOqXMlyZckAM2LKnEmzJs2XOHLq1EliwQISFw5MWLGz6MsdSJMitfGAD58HLwTJiaC06ksgWLNi5aFhiSAzDdwI+nFCq9aXRNKqTTukhoI6glJU8NPHQZC1al8m2cuX7xETKv7YYeBEUJoWffm+bMK4CZPGjI1AmCPowwdAejBAbvwyiucoUj57vlFEEJwMawRNYSH680stsGPHrhJiT6ASLgTdkYBEduySAqx4GU58uA42gsRswCMohowtxYmXNNADjPXrYLigoBPHgo88bUROZMGOveQ/AmHKqF8/RgiIDjlocBChZMz6+2XMe6CApr//M19QccUXXUCBBRn+Jdifef+MUEAPXKgh4YQUVmghAAYhMABEHD6E0IcgFhQQADs=";
@@ -1702,9 +2034,9 @@ ready(() => {
             subtree: true
         });
     }
-	setTimeout(() => {
-		const marker = document.createElement('meta');
-		marker.id = '4pdafixmarker';
-		document.head.appendChild(marker)
-	}, 300)
+    setTimeout(() => {
+        const marker = document.createElement('meta');
+        marker.id = '4pdafixmarker';
+        document.head.appendChild(marker)
+    }, 300)
 });
