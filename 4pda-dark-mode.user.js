@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.10.0
+// @version      0.10.1
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1982,8 +1982,8 @@ ready(() => {
                                     '" title="' + i + '" data-toggle="bb" data-options={"target":"#thread-msg","before":"","after":"&#32;' + i + '&#32;"}>'
                             }
                             btn += '</ul></td></tr></tbody></table>';
-                            const sep1 = $('div').is('#threads-bottom-form') ? '#threads-bottom-form' : '#thread-bottom-form'
-                            $(sep1).prepend('<div id="btn-bb" style="display: block; padding: 12px 12px 0 12px;">' + btn + '</div>');
+                            const sep1 = 'div.form-thread[data-form="send-message"]'
+                            $(sep1).prepend('<div id="btn-bb" style="display: block; padding-top: 4px;">' + btn + '</div>');
                         } else {
                             if ($('#btn-bb').attr('style').indexOf('display: block;') != -1) {
                                 $('#btn-bb').attr('style', 'display: none;')
