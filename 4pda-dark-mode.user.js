@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.10.1
+// @version      0.10.2
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -921,7 +921,14 @@ let userStyle = `
 .ed-wrap .ed-color-hover, .ed-wrap .ed-bbcode-hover, .ed-wrap .ed-bbcode-normal:hover {
 	border-color: transparent;
 	background-color: #D6E8FF;
-} 
+}
+.night div#threads-bottom-form::after, .night div#thread-bottom-form::after, .night div#create-thread-div-form::after {
+    background-color: #171c20;
+    border-bottom: #395179 solid 1px;
+}
+.night .logo-in-qms .dropdown-menu > li > a:hover, .night .logo-in-qms .dropdown .chk-wrap:hover {
+    background-color: #3A4F6C;
+}
 
 /* Ticket paginator fix */
 
@@ -1982,13 +1989,13 @@ ready(() => {
                                     '" title="' + i + '" data-toggle="bb" data-options={"target":"#thread-msg","before":"","after":"&#32;' + i + '&#32;"}>'
                             }
                             btn += '</ul></td></tr></tbody></table>';
-                            const sep1 = 'div.form-thread[data-form="send-message"]'
-                            $(sep1).prepend('<div id="btn-bb" style="display: block; padding-top: 4px;">' + btn + '</div>');
+                            const sep1 = $('div').is('.form-thread[data-form="create-thread"]') ? 'div.form-thread[data-form="create-thread"]' : 'div.form-thread[data-form="send-message"]'
+                            $(sep1).prepend('<div id="btn-bb" style="display: block;">' + btn + '</div>');
                         } else {
                             if ($('#btn-bb').attr('style').indexOf('display: block;') != -1) {
                                 $('#btn-bb').attr('style', 'display: none;')
                             } else {
-                                $('#btn-bb').attr('style', 'display: block; padding-left: 12px;')
+                                $('#btn-bb').attr('style', 'display: block;')
                             }
                         }
                     }
