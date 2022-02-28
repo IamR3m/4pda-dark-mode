@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.10.3
+// @version      0.10.4
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -928,6 +928,12 @@ let userStyle = `
 }
 .night .logo-in-qms .dropdown-menu > li > a:hover, .night .logo-in-qms .dropdown .chk-wrap:hover {
     background-color: #3A4F6C;
+}
+.night .logo-in-qms .starred {
+    background-color: #1B4466;
+}
+.night .logo-in-qms .starred-footer {
+    border-top-color: #395179;
 }
 
 /* Ticket paginator fix */
