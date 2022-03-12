@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.10.5
+// @version      0.10.6
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -945,6 +945,11 @@ let userStyle = `
 .night .logo-in-qms #message-preview {
     background-color: #171c20;
     border-color: #395179;
+}
+.night .logo-in-qms .show-checkboxes .thread-list .list-group-item:hover,
+.night .logo-in-qms .show-checkboxes .thread-list .list-group-item:focus,
+.night .logo-in-qms .show-checkboxes .thread-list .list-group-item:active {
+    background: #3a4f6c !important;
 }
 
 /* Ticket paginator fix */
@@ -1986,6 +1991,23 @@ ready(() => {
                         name: "LIST"
                     },
                 ];
+
+                function getSelectionText() {
+                    let text = "";
+                    if (window.getSelection) {
+                        text = window.getSelection().toString()
+                    } else if (document.selection && document.selection.type != "Control") {
+                        text = document.selection.createRange().text
+                    }
+                    return text
+                }
+
+                function quoteClick() {
+                    const appendText = getSelectionText();
+                    const textArea = $('#thread-msg');
+                    textArea.val(textArea.val() + '[QUOTE]' + appendText + '[/QUOTE]')
+                }
+
                 $('#body').on('click', (e) => {
                     if (e.target.id == 'btn-bb-codes') {
                         if (!($('div').is('#btn-bb'))) {
@@ -1993,9 +2015,15 @@ ready(() => {
                             let btn = '<table cellspacing="0" cellpadding="0" border="0" width="100%" class="ed-wrap"><tbody><tr>' +
                                 '<td id="ed--1_bbc" style="text-align: left; width: 100%; padding-left: 4px;" class="ed-panel">';
                             for (const bbButton of bbButtons) {
-                                btn += '<img data-toggle="bb" data-options={"target":"#thread-msg","before":"[' + bbButton.name +
-                                    (bbButton.name == "URL" ? '=' : '') + ']","after":"[/' + bbButton.name + ']"} src="' + bbButton.src +
-                                    '" border="0" align="top" class="ed-bbcode-normal" alt=" ' + bbButton.title + '" title="' + bbButton.title + '">'
+                                if (bbButton.name == "QUOTE") {
+                                    btn += '<img src="' + bbButton.src + '" border="0" align="top" class="ed-bbcode-normal" alt="' + bbButton.title +
+                                        '" title="' + bbButton.title + '" id="bb-quote">'
+                                } else {
+                                    btn += '<img data-toggle="bb" data-options={"target":"#thread-msg","before":"[' + bbButton.name +
+                                        (bbButton.name == "URL" ? '=' : '') + ']","after":"[/' + bbButton.name + ']"} src="' + bbButton.src +
+                                        '" border="0" align="top" class="ed-bbcode-normal" alt=" ' + bbButton.title + '" title="' + bbButton.title +
+                                        '">'
+                                }
                             }
                             btn += '<div class="dropdown"><a href="#" class="btn" data-toggle="dropdown"><i class="icon-cog"/>' +
                                 '<span class="on-show-sidebar">Смайлы</span><i class="icon-down-dir-1"/></a>' +
@@ -2016,6 +2044,7 @@ ready(() => {
                                 sep1 = '#create-thread-form'
                             }
                             $(sep1).prepend('<div id="btn-bb" style="display: block;">' + btn + '</div>');
+                            $('#bb-quote').on('click', () => quoteClick())
                         } else {
                             if ($('#btn-bb').attr('style').indexOf('display: block;') != -1) {
                                 $('#btn-bb').attr('style', 'display: none;')
