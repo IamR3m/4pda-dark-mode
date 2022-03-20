@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.10.6
+// @version      0.10.7
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -996,7 +996,7 @@ let userStyle = `
 .night .board_forum_date {
     color: #5f6772;
 }
-// end mobile version
+/* end mobile version */
 `
     /* Кнопка и фрейм настроек */
 userStyle += `
