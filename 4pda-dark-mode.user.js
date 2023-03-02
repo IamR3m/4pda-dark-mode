@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.10.10
+// @version      0.10.11
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1943,77 +1943,77 @@ ready(() => {
                     ";-)": "wink"
                 }
                 const bbButtons = [{
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/b.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/b.png",
                         title: "Жирный",
                         name: "B"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/i.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/i.png",
                         title: "Курсив",
                         name: "I"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/u.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/u.png",
                         title: "Подчёркивание",
                         name: "U"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/s.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/s.png",
                         title: "Зачёркивание",
                         name: "S"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/sub.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/sub.png",
                         title: "Подстрочный текст",
                         name: "SUB"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/sup.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/sup.png",
                         title: "Надстрочный текст",
                         name: "SUP"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/left.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/left.png",
                         title: "Влево",
                         name: "LEFT"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/center.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/center.png",
                         title: "По центру",
                         name: "CENTER"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/right.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/right.png",
                         title: "Вправо",
                         name: "RIGHT"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/url.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/url.png",
                         title: "Вставить гиперссылку",
                         name: "URL"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/quote.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/quote.png",
                         title: "Вставить цитату",
                         name: "QUOTE"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/offtop.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/offtop.png",
                         title: "Оффтоп",
                         name: "OFFTOP"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/code.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/code.png",
                         title: "Вставить код",
                         name: "CODE"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/spoiler.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/spoiler.png",
                         title: "Сделать текст сворачиваемым",
                         name: "SPOILER"
                     },
                     {
-                        src: "//ds-assets.cdn.devapps.ru/cQMtqjSVcf6rubOFtgJ2z2G9AsWbu/1/folder_editor_buttons/list.png",
+                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/list.png",
                         title: "Вставить список",
                         name: "LIST"
                     },
