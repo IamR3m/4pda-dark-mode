@@ -2,17 +2,19 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.10.13
+// @version      0.10.14
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
 // @match        https://4pda.to/*
-// @icon         https://ds-assets.cdn.devapps.ru/cQMtfz1ctAlz1Rhz2XO6lH.png
+// @icon         https://4pda.to/s/PXtiacOY8Mz0UBgLQBVkl40yz0oYH.svg
 // @downloadURL  https://github.com/IamR3m/4pda-dark-mode/raw/main/4pda-dark-mode.user.js
 // @updateURL    https://github.com/IamR3m/4pda-dark-mode/raw/main/4pda-dark-mode.meta.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js
 // @run-at       document-start
 // @grant        GM_xmlhttpRequest
+// @grant        GM_getValue
+// @grant        GM_setValue
 // ==/UserScript==
 
 /* global $*/
@@ -43,10 +45,10 @@ const FLAGS = {
         ['AUTO_NIGHT_START', 'начало ночного режима'],
         ['AUTO_NIGHT_END', 'окончание ночного режима']
     ]
-if (!localStorage.getItem('4pdafixFlags')) {
-    localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS))
+if (!GM_getValue('4pdafixFlags')) {
+    GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
 } else {
-    const jsonString = localStorage.getItem('4pdafixFlags'),
+    const jsonString = GM_getValue('4pdafixFlags'),
         loadedConfig = jsonString ? JSON.parse(jsonString) : {};
     Object.keys(FLAGS).forEach((key) => {
         if (
@@ -68,25 +70,25 @@ const BUTTON_SIZE = FLAGS.SMALL_BUTTONS ? 16 : 32,
         },
         config: {},
         init() {
-            let jsonString = localStorage.getItem(userConfig.key);
+            let jsonString = GM_getValue(userConfig.key);
             const loadedConfig = jsonString ? JSON.parse(jsonString) : {},
                 config = {};
             Object.keys(userConfig.model).forEach(key => {
                 config[key] = Object.keys(loadedConfig).indexOf(key) >= 0 ? loadedConfig[key] : userConfig.model[key][0]
             });
             jsonString = JSON.stringify(config);
-            localStorage.setItem(userConfig.key, jsonString);
+            GM_setValue(userConfig.key, jsonString);
             userConfig.config = config
         },
         getItem(key) {
-            return JSON.parse(localStorage.getItem(userConfig.key))[key]
+            return JSON.parse(GM_getValue(userConfig.key))[key]
         },
         setItem(key, value) {
-            let jsonString = localStorage.getItem(userConfig.key);
+            let jsonString = GM_getValue(userConfig.key);
             const config = JSON.parse(jsonString);
             config[key] = value;
             jsonString = JSON.stringify(config);
-            localStorage.setItem(userConfig.key, jsonString);
+            GM_setValue(userConfig.key, jsonString);
             userConfig.config = config
         },
         shiftItem(key) {
@@ -1235,7 +1237,7 @@ ready(() => {
             labelEl.appendChild(spanEl);
             inputEl.onchange = () => {
                 FLAGS[key] = inputEl.checked;
-                localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS))
+                GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
             };
             configFrame.appendChild(document.createElement('br'))
         });
@@ -1255,7 +1257,7 @@ ready(() => {
         configFrame.appendChild(inputNightStart);
         inputNightStart.oninput = () => {
             FLAGS.AUTO_NIGHT_START = inputNightStart.value;
-            localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS))
+            GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
         };
         const inputNightEnd = document.createElement('input');
         inputNightEnd.type = 'number';
@@ -1272,7 +1274,7 @@ ready(() => {
         configFrame.appendChild(inputNightEnd);
         inputNightEnd.oninput = () => {
             FLAGS.AUTO_NIGHT_END = inputNightEnd.value;
-            localStorage.setItem('4pdafixFlags', JSON.stringify(FLAGS))
+            GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
         };
         configFrame.appendChild(document.createElement('br'));
         // Настройка цвета непрочитанных тем
@@ -1444,14 +1446,14 @@ ready(() => {
                                                     alt_ver = replace_ver;
                                                     const alt_name = name[i].innerHTML.replace(/<[\/]*strong>/g, '');
                                                     // сравнение версий: текущей полученной и сохраненной в локальном хранилище
-                                                    if (alt_ver.localeCompare(localStorage.getItem(alt_name)) !== 0) {
+                                                    if (alt_ver.localeCompare(GM_getValue(alt_name)) !== 0) {
                                                         showNotif(alt_name, alt_ver, link)
                                                     }
                                                     // если тема была открыта и просмотрена
                                                 } else {
                                                     replace_ver = replace_ver.toLowerCase().replace(/<b>[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b>/g, '').trim();
                                                     alt_ver = replace_ver;
-                                                    if (replace_ver.localeCompare(localStorage.getItem(name[i].innerHTML)) !== 0) {
+                                                    if (replace_ver.localeCompare(GM_getValue(name[i].innerHTML)) !== 0) {
                                                         showNotif(name[i].innerHTML, alt_ver, link)
                                                     }
                                                 }
@@ -1557,7 +1559,7 @@ ready(() => {
                         hideBtn.style.display = 'none';
                         // сразу сохраняем обновленные версии в память, чтобы при следующем обновлении не всплыли в таблице обновлений
                         for (let i = 0; i < saveToHideName.length; i++) {
-                            localStorage.setItem(saveToHideName[i], saveToHideVer[i])
+                            GM_setValue(saveToHideName[i], saveToHideVer[i])
                         }
                         // скрываем таблицу с обновлениями и обнуляем счетчик
                         _tbl.style.display = 'none';
@@ -1616,7 +1618,7 @@ ready(() => {
                             const n = this.parentNode.parentNode.firstChild.innerHTML,
                                 name = this.parentNode.parentNode.children[1].children[1].innerHTML,
                                 ver = this.parentNode.parentNode.children[2].innerHTML;
-                            localStorage.setItem(name, ver);
+                            GM_setValue(name, ver);
                             // сброс # таблицы и удаление строк(и)
                             _tbl.deleteRow(n);
                             let num = _tbl.querySelectorAll('td.one');
@@ -2057,7 +2059,7 @@ ready(() => {
                                 '<span class="on-show-sidebar">Смайлы</span><i class="icon-down-dir-1"/></a>' +
                                 '<ul class="dropdown-menu" style="position: absolute; width: auto; margin-left: auto; height: 150px;' +
                                 ' border: 1px solid; overflow-y: auto; overflow-x: scroll; cursor: pointer;">';
-                            const paths_to_smile = localStorage.getItem('4pda_script_path_to_smile');
+                            const paths_to_smile = GM_getValue('4pda_script_path_to_smile');
                             for (const i in smiles) {
                                 btn += '<img src="' + paths_to_smile + smiles[i] + '.gif" border="0" class="ed-emo-normal" alt"' + i +
                                     '" title="' + i + '" data-toggle="bb" data-options={"target":"#thread-msg","before":"","after":"&#32;' + i + '&#32;"}>'
@@ -2083,9 +2085,9 @@ ready(() => {
                     }
                 })
             } else {
-                if (localStorage.getItem('4pda_script_path_to_smile') == null) {
+                if (GM_getValue('4pda_script_path_to_smile') == null) {
                     const smilesPath = BBSmiles.toString().match(/b\.src\=\"(\/\/\S+\/)/)[1];
-                    localStorage.setItem('4pda_script_path_to_smile', smilesPath)
+                    GM_setValue('4pda_script_path_to_smile', smilesPath)
                 }
             }
         }
