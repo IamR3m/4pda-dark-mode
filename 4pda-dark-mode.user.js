@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.10.15
+// @version      0.10.16
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1574,7 +1574,7 @@ ready(() => {
                     // показываем скрытую кнопку, если есть обновления
                     hideBtn.style.display = 'inline';
                     count++;
-                    const goto = '<a href="' + link + '&amp;view=getnewpost"><img src="//s.4pda.to/kkRMw9H6PDJH2O7aOGE4gWJpHLz0xXN6ymhvGxkFLXM.gif" alt=">N" title="Перейти к первому непрочитанному" border="0"></a> ';
+                    const goto = '<a href="' + link + '&amp;view=getnewpost"><img src="//4pda.to/s/PXtiv0SJz25I1LFK93vEIDz09EWP3igNulg0lq5cZxWOKJ.gif" alt=">N" title="Перейти к первому непрочитанному" border="0"></a> ';
                     app_name = goto + '<a href="' + link + '" title="Перейти к первому сообщению">' + alt_name + '</a>';
                     saveToHideName.push(alt_name);
                     saveToHideVer.push(alt_ver);
