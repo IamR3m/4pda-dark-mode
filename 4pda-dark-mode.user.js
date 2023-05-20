@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.11.0
+// @version      0.11.1
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1154,6 +1154,7 @@ frameStyleEl.innerHTML = frameStyle;
 const navigatorEdge = /Edge/.test(navigator.userAgent);
 
 const getDateBefore = (days) => (d => new Date(d.setDate(d.getDate() - days)))(new Date);
+const getMinutesBefore = (minutes) => (d => new Date(d.setMinutes(d.getMinutes() - minutes)))(new Date);
 
 function readyHead(fn) {
     if (document.body) {
@@ -1693,7 +1694,13 @@ ready(async () => {
                 document.head.appendChild(style);
 
                 for (let i = 0; i < ulLength; i++) {
-                    await getUserData(userLink[i].querySelector('a').getAttribute('href'), i);
+                    const link = userLink[i].querySelector('a').getAttribute('href');
+                    insertUserDataContainer(link, i);
+                }
+
+                function insertUserDataContainer(link, index) {
+                    post[index].appendChild(addInfoDiv.cloneNode(true));
+                    post[index].getElementsByClassName('addInfo')[0].addEventListener("mouseenter", async () => await getUserData(link, index));
                 }
 
                 function getUserData(link, index) {
@@ -1701,7 +1708,7 @@ ready(async () => {
                         //debugger;
                         const usersInfo = GM_getValue('usersInfo') || new Map();
                         const userInfo = usersInfo[link];
-                        if (!userInfo || isNaN(new Date(userInfo.updated)) || new Date(userInfo.updated) < getDateBefore(1)) {
+                        if (!userInfo || isNaN(new Date(userInfo.updated)) || new Date(userInfo.updated) < getMinutesBefore(10)) {
                             const xhr = new XMLHttpRequest();
                             xhr.open('GET', link, true);
                             xhr.send();
@@ -1763,8 +1770,7 @@ ready(async () => {
                 }
 
                 function insertData(userData, index) {
-                    div.innerHTML = userData;
-                    post[index].appendChild(addInfoDiv.cloneNode(true));
+                    post[index].getElementsByClassName('myDiv')[0].innerHTML = userData;
                 }
             }
         }
