@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.10.17
+// @version      0.11.1
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1153,6 +1153,9 @@ const frameStyleEl = document.createElement('style'),
 frameStyleEl.innerHTML = frameStyle;
 const navigatorEdge = /Edge/.test(navigator.userAgent);
 
+const getDateBefore = (days) => (d => new Date(d.setDate(d.getDate() - days)))(new Date);
+const getMinutesBefore = (minutes) => (d => new Date(d.setMinutes(d.getMinutes() - minutes)))(new Date);
+
 function readyHead(fn) {
     if (document.body) {
         fn()
@@ -1190,7 +1193,7 @@ function ready(fn) {
         fn()
     }
 }
-ready(() => {
+ready(async () => {
     if (document.getElementById('4pdafixmarker')) return;
     // Автоматичский ночной режим
     if (FLAGS.AUTO_NIGHT_MODE) {
@@ -1642,9 +1645,6 @@ ready(() => {
                     userLink = document.getElementsByClassName('normalname'),
                     link = [], // собираем все ссылки на профили
                     ulLength = userLink.length;
-                for (let i = 0; i < ulLength; i++) {
-                    getUserData(userLink[i].querySelector('a').getAttribute('href'), i)
-                }
                 // создание области для новых данных
                 const addInfoDiv = document.createElement('div');
                 addInfoDiv.className = 'addInfo';
@@ -1693,62 +1693,84 @@ ready(() => {
                 style.appendChild(styleNode);
                 document.head.appendChild(style);
 
+                for (let i = 0; i < ulLength; i++) {
+                    const link = userLink[i].querySelector('a').getAttribute('href');
+                    insertUserDataContainer(link, i);
+                }
+
+                function insertUserDataContainer(link, index) {
+                    post[index].appendChild(addInfoDiv.cloneNode(true));
+                    post[index].getElementsByClassName('addInfo')[0].addEventListener("mouseenter", async () => await getUserData(link, index));
+                }
+
                 function getUserData(link, index) {
-                    const xhr = new XMLHttpRequest();
-                    xhr.open('GET', link, true);
-                    xhr.send();
-                    xhr.onload = function() {
-                        if (this.readyState === 4 && this.status === 200) {
-                            const response = xhr.responseText;
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(response, 'text/html');
-                            const personalData = doc.getElementsByClassName('info-list width1 black-link')[0];
-                            personalData.style.marginLeft = 0;
-                            personalData.style.paddingLeft = 0;
-                            personalData.style.display = 'block';
-                            personalData.style.listStyle = 'none';
-                            const personalDataList = personalData.querySelectorAll('li');
-                            const mainData = doc.getElementsByClassName('info-list black-link')[0];
-                            mainData.style.marginLeft = 0;
-                            mainData.style.paddingLeft = 0;
-                            mainData.style.display = 'block';
-                            mainData.style.listStyle = 'none';
-                            const mainDataList = mainData.querySelectorAll('li');
-                            const personalDataFilter = [
-                                'Мужчина',
-                                'Женщина',
-                                'Город:',
-                                'Дата рождения:',
-                                'Время у юзера:',
-                            ];
-                            const list = Array.prototype.slice.call(personalDataList)
-                                .filter(li => personalDataFilter.filter(el => li.innerText.includes(el)).length > 0)
-                                .concat(
-                                    Array.prototype.slice.call(mainDataList)
-                                    .filter(li => li.innerText.includes('посещение')));
-                            let userData = '';
-                            for (let i = 0; i < list.length; i++) {
-                                const reg = new RegExp(/Город:\n(.*)/);
-                                // console.log(list[i].innerText);
-                                userData += '<p>' + list[i].innerText
-                                    .replace(/(Город:)/, '$1 ')
-                                    .replace(/(рождения:)/, '$1<br/>')
-                                    .replace(/(юзера:)/, '$1<br/>')
-                                    .replace(/(посещение:)/, '$1<br/>') +
-                                    '</p><br/>'
+                    return new Promise(resolve => {
+                        //debugger;
+                        const usersInfo = GM_getValue('usersInfo') || new Map();
+                        const userInfo = usersInfo[link];
+                        if (!userInfo || isNaN(new Date(userInfo.updated)) || new Date(userInfo.updated) < getMinutesBefore(10)) {
+                            const xhr = new XMLHttpRequest();
+                            xhr.open('GET', link, true);
+                            xhr.send();
+                            xhr.onload = function() {
+                                if (this.readyState === 4 && this.status === 200) {
+                                    const response = xhr.responseText;
+                                    const parser = new DOMParser();
+                                    const doc = parser.parseFromString(response, 'text/html');
+                                    const personalData = doc.getElementsByClassName('info-list width1 black-link')[0];
+                                    personalData.style.marginLeft = 0;
+                                    personalData.style.paddingLeft = 0;
+                                    personalData.style.display = 'block';
+                                    personalData.style.listStyle = 'none';
+                                    const personalDataList = personalData.querySelectorAll('li');
+                                    const mainData = doc.getElementsByClassName('info-list black-link')[0];
+                                    mainData.style.marginLeft = 0;
+                                    mainData.style.paddingLeft = 0;
+                                    mainData.style.display = 'block';
+                                    mainData.style.listStyle = 'none';
+                                    const mainDataList = mainData.querySelectorAll('li');
+                                    const personalDataFilter = [
+                                        'Мужчина',
+                                        'Женщина',
+                                        'Город:',
+                                        'Дата рождения:',
+                                        'Время у юзера:',
+                                    ];
+                                    const list = Array.prototype.slice.call(personalDataList)
+                                    .filter(li => personalDataFilter.filter(el => li.innerText.includes(el)).length > 0)
+                                    .concat(
+                                        Array.prototype.slice.call(mainDataList)
+                                        .filter(li => li.innerText.includes('посещение')));
+                                    let userData = '';
+                                    for (let i = 0; i < list.length; i++) {
+                                        const reg = new RegExp(/Город:\n(.*)/);
+                                        // console.log(list[i].innerText);
+                                        userData += '<p>' + list[i].innerText
+                                            .replace(/(Город:)/, '$1 ')
+                                            .replace(/(рождения:)/, '$1<br/>')
+                                            .replace(/(юзера:)/, '$1<br/>')
+                                            .replace(/(посещение:)/, '$1<br/>') +
+                                            '</p><br/>'
+                                    }
+                                    //debugger;
+                                    usersInfo[link] = {userData, updated: Date.now()};
+                                    GM_setValue("usersInfo", usersInfo);
+                                    insertData(userData, index);
+                                    resolve();
+                                }
+                            };
+                            xhr.onerror = () => {
+                                console.log('error');
                             }
-                            insertData(userData, index)
+                        } else {
+                            insertData(userInfo.userData, index);
+                            resolve();
                         }
-                    };
-                    xhr.onerror = () => {
-                        console.log('error')
-                    }
+                    });
                 }
 
                 function insertData(userData, index) {
-                    div.innerHTML = userData;
-                    post[index].appendChild(addInfoDiv.cloneNode(true))
-                        // post[index].appendChild(div.cloneNode(true))
+                    post[index].getElementsByClassName('myDiv')[0].innerHTML = userData;
                 }
             }
         }
