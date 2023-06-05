@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.11.1
+// @version      0.12.0
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -30,6 +30,10 @@ const FLAGS = {
         SHOW_USER_INFO: false,
         ADS_CLEANER: false,
         QMS_BB_PANEL: false,
+        CATEND_HEIGHT: 5,
+        TD_PADDING: 5,
+        POPMENUBUTTON_PADDING: 4,
+        POST_FOOTER_PADDING: 5,
     },
     favURL = '/forum/index.php?act=fav',
     forumURL = '/forum/index.php?showforum=',
@@ -43,7 +47,11 @@ const FLAGS = {
         ['ADS_CLEANER', 'удалять рекламу'],
         ['AUTO_NIGHT_MODE', 'aвтоматически включать ночной режим'],
         ['AUTO_NIGHT_START', 'начало ночного режима'],
-        ['AUTO_NIGHT_END', 'окончание ночного режима']
+        ['AUTO_NIGHT_END', 'окончание ночного режима'],
+        ['CATEND_HEIGHT', 'высота разделителя постов'],
+        ['TD_PADDING', 'отступы табличных ячеек'],
+        ['POPMENUBUTTON_PADDING', 'отступ кнопки меню автора поста'],
+        ['POST_FOOTER_PADDING','отступ подвала поста'],
     ]
 if (!GM_getValue('4pdafixFlags')) {
     GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
@@ -66,7 +74,11 @@ const BUTTON_SIZE = FLAGS.SMALL_BUTTONS ? 16 : 32,
         model: {
             night_mode: [false, true],
             fav_unread_dark_color: [FLAGS.FAV_UNREAD_DARK_COLOR],
-            fav_unread_light_color: [FLAGS.FAV_UNREAD_LIGHT_COLOR]
+            fav_unread_light_color: [FLAGS.FAV_UNREAD_LIGHT_COLOR],
+            catend_height: [FLAGS.CATEND_HEIGHT],
+            td_padding: [FLAGS.TD_PADDING],
+            popmenubutton_padding: [FLAGS.POPMENUBUTTON_PADDING],
+            post_footer_padding: [FLAGS.POST_FOOTER_PADDING],
         },
         config: {},
         init() {
@@ -525,6 +537,25 @@ let userStyle = `
 .night .g-btn.green:active {
     position:relative;
     top:1px;
+}
+
+/* Catend height */
+.catend {
+    height: ${userConfig.getItem('catend_height')}px;
+}
+
+/* padding */
+.ipbtable td, .divpad {
+    padding: ${userConfig.getItem('td_padding')}px;
+}
+.popmenubutton-new-out {
+    padding: ${userConfig.getItem('popmenubutton_padding')}px;
+}
+.popmenubutton-new {
+    padding: ${Math.max(0, userConfig.getItem('popmenubutton_padding')-1)}px;
+}
+td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbuttonrow1 {
+    padding: ${userConfig.getItem('post_footer_padding')}px !important;
 }
 
 /* Closable notification */
@@ -1099,7 +1130,7 @@ userStyle += `
     opacity: 1;
     margin: 0 3px 0 3px;
     position: initial;
-    width: 40px;
+    width: 20px;
 }
 .config_frame input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -1271,7 +1302,7 @@ ready(async () => {
         labelNightEnd.setAttribute('unselectable', 'on');
         labelNightEnd.setAttribute('onselectstart', 'return false');
         const spanNightEnd = document.createElement('span');
-        spanNightEnd.innerHTML = "до (ч)";
+        spanNightEnd.innerHTML = " до (ч)";
         configFrame.appendChild(labelNightEnd);
         labelNightEnd.appendChild(spanNightEnd);
         configFrame.appendChild(inputNightEnd);
@@ -1331,6 +1362,79 @@ ready(async () => {
             userConfig.setItem('fav_unread_light_color', inputFavColorLight.value)
         };
         configFrame.appendChild(document.createElement('br'));
+        // Настройка высоты разделителя постов
+        const inputCatendHeight = document.createElement('input');
+        inputCatendHeight.type = 'number';
+        inputCatendHeight.value = userConfig.getItem('catend_height');
+        inputCatendHeight.min = 0;
+        inputCatendHeight.max = 20;
+        const labelCatendHeight = document.createElement('label');
+        labelCatendHeight.setAttribute('unselectable', 'on');
+        labelCatendHeight.setAttribute('onselectstart', 'return false');
+        const spanCatendHeight = document.createElement('span');
+        spanCatendHeight.innerHTML = "Высота разделителя постов (px):";
+        configFrame.appendChild(labelCatendHeight);
+        labelCatendHeight.appendChild(spanCatendHeight);
+        configFrame.appendChild(inputCatendHeight);
+        inputCatendHeight.oninput = () => {
+            userConfig.setItem('catend_height', inputCatendHeight.value);
+        };
+        configFrame.appendChild(document.createElement('br'));
+        // Настройка отступа табличных ячеек
+        const inputTdPadding = document.createElement('input');
+        inputTdPadding.type = 'number';
+        inputTdPadding.value = userConfig.getItem('td_padding');
+        inputTdPadding.min = 0;
+        inputTdPadding.max = 5;
+        const labelTdPadding = document.createElement('label');
+        labelTdPadding.setAttribute('unselectable', 'on');
+        labelTdPadding.setAttribute('onselectstart', 'return false');
+        const spanTdPadding = document.createElement('span');
+        spanTdPadding.innerHTML = "Отступ табличных ячеек (px):";
+        configFrame.appendChild(labelTdPadding);
+        labelTdPadding.appendChild(spanTdPadding);
+        configFrame.appendChild(inputTdPadding);
+        inputTdPadding.oninput = () => {
+            userConfig.setItem('td_padding', inputTdPadding.value);
+        };
+        configFrame.appendChild(document.createElement('br'));
+        // Настройка отступа кнопки меню автора поста
+        const inputPostFooterPadding = document.createElement('input');
+        inputPostFooterPadding.type = 'number';
+        inputPostFooterPadding.value = userConfig.getItem('post_footer_padding');
+        inputPostFooterPadding.min = 0;
+        inputPostFooterPadding.max = 6;
+        const labelPostFooterPadding = document.createElement('label');
+        labelPostFooterPadding.setAttribute('unselectable', 'on');
+        labelPostFooterPadding.setAttribute('onselectstart', 'return false');
+        const spanPostFooterPadding = document.createElement('span');
+        spanPostFooterPadding.innerHTML = "Отступ подвала поста (px):";
+        configFrame.appendChild(labelPostFooterPadding);
+        labelPostFooterPadding.appendChild(spanPostFooterPadding);
+        configFrame.appendChild(inputPostFooterPadding);
+        inputPostFooterPadding.oninput = () => {
+            userConfig.setItem('post_footer_padding', inputPostFooterPadding.value);
+        };
+        configFrame.appendChild(document.createElement('br'));
+        // Настройка отступа кнопки меню автора поста
+        const inputPopmenubuttonPadding = document.createElement('input');
+        inputPopmenubuttonPadding.type = 'number';
+        inputPopmenubuttonPadding.value = userConfig.getItem('popmenubutton_padding');
+        inputPopmenubuttonPadding.min = 0;
+        inputPopmenubuttonPadding.max = 6;
+        const labelPopmenubuttonPadding = document.createElement('label');
+        labelPopmenubuttonPadding.setAttribute('unselectable', 'on');
+        labelPopmenubuttonPadding.setAttribute('onselectstart', 'return false');
+        const spanPopmenubuttonPadding = document.createElement('span');
+        spanPopmenubuttonPadding.innerHTML = "Отступ кнопки меню автора поста (px):";
+        configFrame.appendChild(labelPopmenubuttonPadding);
+        labelPopmenubuttonPadding.appendChild(spanPopmenubuttonPadding);
+        configFrame.appendChild(inputPopmenubuttonPadding);
+        inputPopmenubuttonPadding.oninput = () => {
+            userConfig.setItem('popmenubutton_padding', inputPopmenubuttonPadding.value);
+        };
+        configFrame.appendChild(document.createElement('br'));
+        // Информация о перезагрузке страницы
         const reloadText = document.createElement('div');
         reloadText.style.textAlign = 'right';
         reloadText.innerHTML = `
