@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.12.2
+// @version      0.12.3
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -345,7 +345,7 @@ let userStyle = `
     background: #171c20;
     color: #9e9e9e;
 }
-.night .post-block:not(.cur):not(.mod):not(.code) > .block-title {
+.night .post-block:not(.cur):not(.mod):not(.ex):not(.code) > .block-title {
     background-color: #29394e;
     color: #9e9e9e;
 }
@@ -597,7 +597,7 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
     border-color: revert;
 }
 .night .popupmenu, .night .popupmenu-new, .night .borderwrap, .night .borderwrapm, .night .upopupmenu-new, .night .bar,
-.night .upopupmenu, .night .borderwrap p, .night .post-block:not(.cur):not(.mod), .night .toplinks span, .night .barb,
+.night .upopupmenu, .night .borderwrap p, .night .post-block:not(.cur):not(.mod):not(.ex), .night .toplinks span, .night .barb,
 .night .barc, .night .subtitlediv, .night .container {
     border-color: #29394e;
 }
@@ -681,7 +681,7 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 .night .sel-btn.orange {
     color: #303040 !important;
 }
-.night .post-block.cur > .block-title, .night .post-block.mod > .block-title {
+.night .post-block.cur > .block-title, .night .post-block.mod > .block-title, .night .post-block.ex > .block-title {
     color: #222;
 }
 .night .globalmesscontent a:visited, .night .globalmesscontent a:link, .night .usercp_menu_out, .night .formsubtitle,
