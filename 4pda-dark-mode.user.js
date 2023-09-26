@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.12.3
+// @version      0.12.4
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -195,8 +195,12 @@ let userStyle = `
 .night .events-popup, .night .menu-user:hover > a, .night .menu-user.open > a, .night .plainborder, .night .poll-frame,
 .night .tablefill, .night .tablepad, .night .second-menu .menu-brands, .night .second-menu .menu-brands li a:hover,
 .night .second-menu .menu-brands li a:focus, .night #twocolumns, .night .price-slider .ui-slider, .night .form-bg,
-.night .dipt, .night .bar, .night .barb, .night .barc {
+.night .dipt, .night .bar, .night .barb, .night .list-group .list-group-item[data-message-id]:not(.our-message),
+.night .list-group .list-group-item[data-message-id]:not(.our-message), .night .barc {
     background: #22272B;
+}
+.night .list-group .list-group-item[data-message-id]:not(.our-message)::before {
+    border-left-color: #22272B;
 }
 .night td.formbuttonrow, .night .borderwrap.read .row2, .night .borderwrap.read .post2, .night .borderwrap.read .post1,
 .night .borderwrap.read td.formbuttonrow, .night .post, .night .postcolor[style*="background-color: #F0F7FF"],
@@ -218,6 +222,9 @@ let userStyle = `
 }
 .night .list-group .our-message, .night .row2[style*="background-color: rgb(220, 220, 220)"] {
     background: #31383e !important;
+}
+.night .list-group .our-message::before {
+    border-right-color: #31383e !important;
 }
 .night h4, .night .borderwrap h3, .night .maintitle, .night .maintitlecollapse, .night .poll-frame .poll-frame-option,
 .night .popupmenu-category, .night .formtable td.formtitle, .night .formsubtitle, .night .footer-panel,
