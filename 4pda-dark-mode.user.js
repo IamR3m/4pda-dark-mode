@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.12.4
+// @version      0.12.5
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -180,7 +180,7 @@ let userStyle = `
 .night .post1, .night .bg1, .night .ed-wrap .ed-p-textarea, .night .qr-maintitle, .night .thread-list .date .text,
 .night form[action*="//4pda.to/forum/index.php"] ul .select-field select, .night .container, .night #ucpcontent,
 .night form[action*="//4pda.to/forum/index.php"] ul .select-field:before, .night .side-box, .night #ucpmenu,
-.night .navbar, .night .footer {
+.night .navbar, .night .footer, .night .lb-outerContainer, .night #lbOuterContainer, .night #lbDetailsContainer {
     background: #171c20;
 }
 .night .catend {
