@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.12.6
+// @version      0.12.7
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -980,6 +980,13 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 .ed-wrap .ed-color-hover, .ed-wrap .ed-bbcode-hover, .ed-wrap .ed-bbcode-normal:hover {
     border-color: transparent;
     background-color: #D6E8FF;
+}
+.ed-wrap .dropdown-menu [class^="icon-"] {
+    margin-left: 0px;
+}
+.ed-wrap .dropdown.open .dropdown-menu i.icon-cog:before,
+.ed-wrap .dropdown.open .dropdown-menu i.icon-cog i.icon-down-dir-1:before {
+    display: none;
 }
 .night div#threads-bottom-form::after, .night div#thread-bottom-form::after, .night div#create-thread-div-form::after {
     background-color: #171c20;
@@ -2202,8 +2209,8 @@ ready(async () => {
                             }
                             btn += '<div class="dropdown"><a href="#" class="btn" data-toggle="dropdown"><i class="icon-cog"/>' +
                                 '<span class="on-show-sidebar">Смайлы</span><i class="icon-down-dir-1"/></a>' +
-                                '<ul class="dropdown-menu" style="position: absolute; width: auto; margin-left: auto; height: 150px;' +
-                                ' border: 1px solid; overflow-y: auto; overflow-x: scroll; cursor: pointer;">';
+                                '<ul class="dropdown-menu" style="position: absolute; width: 262px; margin-left: auto; height: 150px;' +
+                                ' border: 1px solid; overflow-y: auto; overflow-x: auto; cursor: pointer;">';
                             const paths_to_smile = GM_getValue('4pda_script_path_to_smile');
                             for (const i in smiles) {
                                 btn += '<img src="' + paths_to_smile + smiles[i] + '.gif" border="0" class="ed-emo-normal" alt"' + i +
