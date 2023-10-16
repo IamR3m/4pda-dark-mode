@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.12.5
+// @version      0.12.6
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -387,6 +387,10 @@ let userStyle = `
     border-color: #395179;
     color: #9e9e9e;
 }
+.night .dropdown-menu > li > a[data-count]:after {
+    background: #9e9e9e;
+    color: #171c20;
+}
 
 /* Background + Border Color */
 
@@ -426,6 +430,10 @@ let userStyle = `
 }
 .night .t-row.row-1 {
     background-color: #446a80;
+    border-top-color: #395179;
+}
+.night .t-row.row-2 {
+    background-color: #305367;
     border-top-color: #395179;
 }
 .night .rz1gXXZ5pRH, .night .sidebar {
@@ -713,6 +721,10 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 .night .comment-box .comment-form [name="comment"] {
     color: #9e9e9e;
 }
+.night #t-content a:hover {
+    color: #DDD;
+}
+
 .night .advanced-area .post .list-post-title a, .night .advanced-area .post .list-post-title a:visited, .night a:link,
 .night a:visited, .night a:active, .night .advanced-area .post .list-post-title a:active {
     color: #b2b2b2;
