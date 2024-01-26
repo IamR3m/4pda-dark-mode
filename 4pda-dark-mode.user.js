@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.12.8
+// @version      0.12.9
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -165,11 +165,13 @@ let userStyle = `
 
 /* PageLinks */
 
-.night .pagelinklast > a, .night .pagelink > a, .night .pagelink-menu {
+.night .pagelinklast > a, .night .pagelink > a, .night .pagelink-menu, .night .minipagelink > a,
+.night .minipagelinklast > a {
     background: #171c20;
 }
 
-.night .pagelinklast > a, .night .pagelink > a, .night .pagelink-menu, .night .pagecurrent-wa {
+.night .pagelinklast > a, .night .pagelink > a, .night .pagelink-menu, .night .pagecurrent-wa,
+.night .minipagelink > a, .night .minipagelinklast > a {
     border-color: #395179;
 }
 
