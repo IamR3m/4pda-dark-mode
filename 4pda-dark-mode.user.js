@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.12.7
+// @version      0.12.8
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -20,26 +20,26 @@
 /* global $*/
 
 const FLAGS = {
-        SMALL_BUTTONS: false,
-        AUTO_NIGHT_MODE: false,
-        AUTO_NIGHT_START: 20,
-        AUTO_NIGHT_END: 8,
-        FAV_UNREAD_DARK_COLOR: "#111d27",
-        FAV_UNREAD_LIGHT_COLOR: "#ACD6F7",
-        SHOW_NEW_VERSIONS: false,
-        SHOW_USER_INFO: false,
-        ADS_CLEANER: false,
-        QMS_BB_PANEL: false,
-        CATEND_HEIGHT: 5,
-        TD_PADDING: 5,
-        POPMENUBUTTON_PADDING: 4,
-        POST_FOOTER_PADDING: 5,
-    },
-    favURL = '/forum/index.php?act=fav',
-    forumURL = '/forum/index.php?showforum=',
-    topicURL = '/forum/index.php?showtopic=',
-    qmsURL = '/forum/index.php?act=qms',
-    configOptions = [
+  SMALL_BUTTONS: false,
+  AUTO_NIGHT_MODE: false,
+  AUTO_NIGHT_START: 20,
+  AUTO_NIGHT_END: 8,
+  FAV_UNREAD_DARK_COLOR: "#111d27",
+  FAV_UNREAD_LIGHT_COLOR: "#ACD6F7",
+  SHOW_NEW_VERSIONS: false,
+  SHOW_USER_INFO: false,
+  ADS_CLEANER: false,
+  QMS_BB_PANEL: false,
+  CATEND_HEIGHT: 5,
+  TD_PADDING: 5,
+  POPMENUBUTTON_PADDING: 4,
+  POST_FOOTER_PADDING: 5,
+},
+      favURL = '/forum/index.php?act=fav',
+      forumURL = '/forum/index.php?showforum=',
+      topicURL = '/forum/index.php?showtopic=',
+      qmsURL = '/forum/index.php?act=qms',
+      configOptions = [
         ['SMALL_BUTTONS', 'маленькие кнопки настроек и ночного режима'],
         ['SHOW_NEW_VERSIONS', 'показывать новые версии в избранном'],
         ['SHOW_USER_INFO', 'показывать доп. информацию о пользователях в теме'],
@@ -52,65 +52,65 @@ const FLAGS = {
         ['TD_PADDING', 'отступы табличных ячеек'],
         ['POPMENUBUTTON_PADDING', 'отступ кнопки меню автора поста'],
         ['POST_FOOTER_PADDING','отступ подвала поста'],
-    ]
+      ]
 if (!GM_getValue('4pdafixFlags')) {
-    GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
+  GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
 } else {
-    const jsonString = GM_getValue('4pdafixFlags'),
+  const jsonString = GM_getValue('4pdafixFlags'),
         loadedConfig = jsonString ? JSON.parse(jsonString) : {};
-    Object.keys(FLAGS).forEach((key) => {
-        if (
-            Object.keys(loadedConfig).includes(key) &&
-            configOptions.find(arr => arr[0] === key)
-        ) FLAGS[key] = loadedConfig[key]
-    })
+  Object.keys(FLAGS).forEach((key) => {
+    if (
+      Object.keys(loadedConfig).includes(key) &&
+      configOptions.find(arr => arr[0] === key)
+    ) FLAGS[key] = loadedConfig[key]
+  })
 }
 const BUTTON_SIZE = FLAGS.SMALL_BUTTONS ? 16 : 32,
-    BUTTON_SIZE2 = FLAGS.SMALL_BUTTONS ? 15 : 25,
-    BUTTON_SIZE3 = FLAGS.SMALL_BUTTONS ? 6 : 10,
-    BUTTON_SIZE4 = FLAGS.SMALL_BUTTONS ? 48 : 88,
-    userConfig = {
+      BUTTON_SIZE2 = FLAGS.SMALL_BUTTONS ? 15 : 25,
+      BUTTON_SIZE3 = FLAGS.SMALL_BUTTONS ? 6 : 10,
+      BUTTON_SIZE4 = FLAGS.SMALL_BUTTONS ? 48 : 88,
+      userConfig = {
         key: '4pdafix',
         model: {
-            night_mode: [false, true],
-            fav_unread_dark_color: [FLAGS.FAV_UNREAD_DARK_COLOR],
-            fav_unread_light_color: [FLAGS.FAV_UNREAD_LIGHT_COLOR],
-            catend_height: [FLAGS.CATEND_HEIGHT],
-            td_padding: [FLAGS.TD_PADDING],
-            popmenubutton_padding: [FLAGS.POPMENUBUTTON_PADDING],
-            post_footer_padding: [FLAGS.POST_FOOTER_PADDING],
+          night_mode: [false, true],
+          fav_unread_dark_color: [FLAGS.FAV_UNREAD_DARK_COLOR],
+          fav_unread_light_color: [FLAGS.FAV_UNREAD_LIGHT_COLOR],
+          catend_height: [FLAGS.CATEND_HEIGHT],
+          td_padding: [FLAGS.TD_PADDING],
+          popmenubutton_padding: [FLAGS.POPMENUBUTTON_PADDING],
+          post_footer_padding: [FLAGS.POST_FOOTER_PADDING],
         },
         config: {},
         init() {
-            let jsonString = GM_getValue(userConfig.key);
-            const loadedConfig = jsonString ? JSON.parse(jsonString) : {},
+          let jsonString = GM_getValue(userConfig.key);
+          const loadedConfig = jsonString ? JSON.parse(jsonString) : {},
                 config = {};
-            Object.keys(userConfig.model).forEach(key => {
-                config[key] = Object.keys(loadedConfig).indexOf(key) >= 0 ? loadedConfig[key] : userConfig.model[key][0]
-            });
-            jsonString = JSON.stringify(config);
-            GM_setValue(userConfig.key, jsonString);
-            userConfig.config = config
+          Object.keys(userConfig.model).forEach(key => {
+            config[key] = Object.keys(loadedConfig).indexOf(key) >= 0 ? loadedConfig[key] : userConfig.model[key][0]
+          });
+          jsonString = JSON.stringify(config);
+          GM_setValue(userConfig.key, jsonString);
+          userConfig.config = config
         },
         getItem(key) {
-            return JSON.parse(GM_getValue(userConfig.key))[key]
+          return JSON.parse(GM_getValue(userConfig.key))[key]
         },
         setItem(key, value) {
-            let jsonString = GM_getValue(userConfig.key);
-            const config = JSON.parse(jsonString);
-            config[key] = value;
-            jsonString = JSON.stringify(config);
-            GM_setValue(userConfig.key, jsonString);
-            userConfig.config = config
+          let jsonString = GM_getValue(userConfig.key);
+          const config = JSON.parse(jsonString);
+          config[key] = value;
+          jsonString = JSON.stringify(config);
+          GM_setValue(userConfig.key, jsonString);
+          userConfig.config = config
         },
         shiftItem(key) {
-            const availableValues = userConfig.model[key],
+          const availableValues = userConfig.model[key],
                 nextIdx = (availableValues.indexOf(userConfig.getItem(key)) + 1) % availableValues.length,
                 nextValue = availableValues[nextIdx];
-            userConfig.setItem(key, nextValue);
-            return nextValue
+          userConfig.setItem(key, nextValue);
+          return nextValue
         }
-    };
+      };
 userConfig.init();
 const userStyleEl = document.createElement('style');
 let userStyle = `
@@ -161,6 +161,16 @@ let userStyle = `
     scrollbar-face-color: #22272b;
     scrollbar-track-color: #000;
     scrollbar-color: #22272b #000;
+}
+
+/* PageLinks */
+
+.night .pagelinklast > a, .night .pagelink > a, .night .pagelink-menu {
+    background: #171c20;
+}
+
+.night .pagelinklast > a, .night .pagelink > a, .night .pagelink-menu, .night .pagecurrent-wa {
+    border-color: #395179;
 }
 
 /* Background */
@@ -244,7 +254,7 @@ let userStyle = `
 .night .forum-attach-form .attach-btn:hover {
     background: #469ef9 !important;
 }
-.night .pagecurrent {
+.night .pagecurrent, .night .pagecurrent-wa {
     background: #4c3c32;
 }
 .night .popmenubutton-new, .night .popmenubutton {
@@ -710,6 +720,10 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 .night .popmenubutton a:visited, .night .popmenubutton, .night .popmenubutton-new, .night .globalmesscontent {
     color: #515151;
 }
+.night .dropdown-menu > .disabled > a, .night .dropdown-menu > .disabled > a:hover,
+.night .dropdown-menu > .disabled > a:focus {
+    color: #555;
+}
 .night .content-box a:link,
 .night .content-box a:visited {
     color: #5c94c8 !important;
@@ -1085,7 +1099,7 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 /* *** Curator+ options style fix end *** */
 
 `
-    /* Кнопка и фрейм настроек */
+/* Кнопка и фрейм настроек */
 userStyle += `
 .config_button {
     box-sizing: border-box;
@@ -1195,7 +1209,7 @@ userStyle += `
 }`
 userStyleEl.innerHTML = userStyle;
 const frameStyleEl = document.createElement('style'),
-    frameStyle = `
+      frameStyle = `
 .night .download-container {
     background-color: #22272B !important;
     border-color: #393d41 !important;
@@ -1214,409 +1228,409 @@ const getDateBefore = (days) => (d => new Date(d.setDate(d.getDate() - days)))(n
 const getMinutesBefore = (minutes) => (d => new Date(d.setMinutes(d.getMinutes() - minutes)))(new Date);
 
 function readyHead(fn) {
-    if (document.body) {
+  if (document.body) {
+    fn()
+  } else if (document.documentElement && !navigatorEdge) {
+    const observer = new MutationObserver(() => {
+      if (document.body) {
+        observer.disconnect();
         fn()
-    } else if (document.documentElement && !navigatorEdge) {
-        const observer = new MutationObserver(() => {
-            if (document.body) {
-                observer.disconnect();
-                fn()
-            }
-        });
-        observer.observe(document.documentElement, { childList: true })
-    } else {
-        setTimeout(() => readyHead(fn), 16)
-    }
+      }
+    });
+    observer.observe(document.documentElement, { childList: true })
+  } else {
+    setTimeout(() => readyHead(fn), 16)
+  }
 }
 readyHead(() => {
-    if (document.getElementById('4pdafixmarker')) return;
-    if (window.top === window.self) {
-        document.head.appendChild(userStyleEl)
-    } else {
-        document.head.appendChild(frameStyleEl)
-    }
-    if (userConfig.getItem('night_mode')) {
-        document.documentElement.classList.add('night')
-    }
+  if (document.getElementById('4pdafixmarker')) return;
+  if (window.top === window.self) {
+    document.head.appendChild(userStyleEl)
+  } else {
+    document.head.appendChild(frameStyleEl)
+  }
+  if (userConfig.getItem('night_mode')) {
+    document.documentElement.classList.add('night')
+  }
 });
 
 function ready(fn) {
-    const { readyState } = document;
-    if (readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            fn()
-        })
-    } else {
-        fn()
-    }
+  const { readyState } = document;
+  if (readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      fn()
+    })
+  } else {
+    fn()
+  }
 }
 ready(async () => {
-    if (document.getElementById('4pdafixmarker')) return;
-    // Автоматичский ночной режим
-    if (FLAGS.AUTO_NIGHT_MODE) {
-        setInterval(() => {
-            const currentHours = new Date().getHours();
-            userConfig.setItem('night_mode', currentHours < FLAGS.AUTO_NIGHT_END || currentHours >= FLAGS.AUTO_NIGHT_START);
-        }, 500)
-    }
-    // Переключатель дневного/ночного режима
-    const switcherEl = document.createElement('div');
-    switcherEl.classList.add('night_mode_switcher');
-    switcherEl.onclick = () => {
-        const isNightMode = userConfig.shiftItem('night_mode');
-        document.documentElement.classList.toggle('night', isNightMode);
-    };
-    document.body.appendChild(switcherEl);
+  if (document.getElementById('4pdafixmarker')) return;
+  // Автоматичский ночной режим
+  if (FLAGS.AUTO_NIGHT_MODE) {
     setInterval(() => {
-            const isNightMode = userConfig.getItem('night_mode');
-            if (document.documentElement.classList.contains('night') !== isNightMode) {
-                document.documentElement.classList.toggle('night', isNightMode)
-            }
-        }, 500)
-        // чиним страницу/фрейм с загрузкой файла
-    const dw_fname = document.querySelector('div.dw-fname');
-    if (dw_fname && dw_fname.parentNode) dw_fname.parentNode.className = 'download-container';
-    // проверяем, скрипт запустился во фрейме или основном окне
-    if (window.top === window.self) {
-        // Фрейм настроек
-        const configFrame = document.createElement('div');
-        configOptions.forEach(([key, text]) => {
-            // булевые флаги
-            if (typeof FLAGS[key] !== 'boolean') return;
-            const inputEl = document.createElement('input');
-            inputEl.type = 'checkbox';
-            inputEl.value = key;
-            inputEl.checked = FLAGS[key];
-            const labelEl = document.createElement('label');
-            labelEl.setAttribute('unselectable', 'on');
-            labelEl.setAttribute('onselectstart', 'return false');
-            const spanEl = document.createElement('span');
-            spanEl.innerHTML = text;
-            configFrame.appendChild(labelEl);
-            labelEl.appendChild(inputEl);
-            labelEl.appendChild(spanEl);
-            inputEl.onchange = () => {
-                FLAGS[key] = inputEl.checked;
-                GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
-            };
-            configFrame.appendChild(document.createElement('br'))
-        });
-        // Время автоматического переключения ночного режима
-        const inputNightStart = document.createElement('input');
-        inputNightStart.type = 'number';
-        inputNightStart.value = FLAGS.AUTO_NIGHT_START;
-        inputNightStart.min = 0;
-        inputNightStart.max = 23;
-        const labelNightStart = document.createElement('label');
-        labelNightStart.setAttribute('unselectable', 'on');
-        labelNightStart.setAttribute('onselectstart', 'return false');
-        const spanNightStart = document.createElement('span');
-        spanNightStart.innerHTML = "от (ч)";
-        configFrame.appendChild(labelNightStart);
-        labelNightStart.appendChild(spanNightStart);
-        configFrame.appendChild(inputNightStart);
-        inputNightStart.oninput = () => {
-            FLAGS.AUTO_NIGHT_START = inputNightStart.value;
-            GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
-        };
-        const inputNightEnd = document.createElement('input');
-        inputNightEnd.type = 'number';
-        inputNightEnd.value = FLAGS.AUTO_NIGHT_END;
-        inputNightEnd.min = 0;
-        inputNightEnd.max = 23;
-        const labelNightEnd = document.createElement('label');
-        labelNightEnd.setAttribute('unselectable', 'on');
-        labelNightEnd.setAttribute('onselectstart', 'return false');
-        const spanNightEnd = document.createElement('span');
-        spanNightEnd.innerHTML = " до (ч)";
-        configFrame.appendChild(labelNightEnd);
-        labelNightEnd.appendChild(spanNightEnd);
-        configFrame.appendChild(inputNightEnd);
-        inputNightEnd.oninput = () => {
-            FLAGS.AUTO_NIGHT_END = inputNightEnd.value;
-            GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
-        };
-        configFrame.appendChild(document.createElement('br'));
-        // Настройка цвета непрочитанных тем
-        const inputFavColorDark = document.createElement('input');
-        inputFavColorDark.type = 'color';
-        inputFavColorDark.value = userConfig.getItem('fav_unread_dark_color');
-        const labelFavColorDark = document.createElement('label');
-        labelFavColorDark.setAttribute('unselectable', 'on');
-        labelFavColorDark.setAttribute('onselectstart', 'return false');
-        configFrame.appendChild(inputFavColorDark);
-        const inputResetDark = document.createElement('input');
-        inputResetDark.type = 'button';
-        inputResetDark.value = "X";
-        inputResetDark.className = 'reset';
-        inputResetDark.title = 'сбросить';
-        configFrame.appendChild(inputResetDark);
-        const spanFavColorDark = document.createElement('span');
-        spanFavColorDark.innerHTML = "цвет фона непрочитанных тем (темный режим)";
-        configFrame.appendChild(labelFavColorDark);
-        labelFavColorDark.appendChild(spanFavColorDark);
-        inputResetDark.onclick = () => {
-            userConfig.setItem('fav_unread_dark_color', FLAGS.FAV_UNREAD_DARK_COLOR);
-            inputFavColorDark.value = FLAGS.FAV_UNREAD_DARK_COLOR
-        };
-        inputFavColorDark.oninput = () => {
-            userConfig.setItem('fav_unread_dark_color', inputFavColorDark.value)
-        };
-        configFrame.appendChild(document.createElement('br'))
-        const inputFavColorLight = document.createElement('input');
-        inputFavColorLight.type = 'color';
-        inputFavColorLight.value = userConfig.getItem('fav_unread_light_color');
-        const labelFavColorLight = document.createElement('label');
-        labelFavColorLight.setAttribute('unselectable', 'on');
-        labelFavColorLight.setAttribute('onselectstart', 'return false');
-        configFrame.appendChild(inputFavColorLight);
-        const inputResetLight = document.createElement('input');
-        inputResetLight.type = 'button';
-        inputResetLight.value = "X";
-        inputResetLight.className = 'reset';
-        inputResetLight.title = 'сбросить';
-        configFrame.appendChild(inputResetLight);
-        const spanFavColorLight = document.createElement('span');
-        spanFavColorLight.innerHTML = "цвет фона непрочитанных тем (светлый режим)";
-        configFrame.appendChild(labelFavColorLight);
-        labelFavColorLight.appendChild(spanFavColorLight);
-        inputResetLight.onclick = () => {
-            userConfig.setItem('fav_unread_light_color', FLAGS.FAV_UNREAD_LIGHT_COLOR);
-            inputFavColorLight.value = FLAGS.FAV_UNREAD_LIGHT_COLOR
-        };
-        inputFavColorLight.oninput = () => {
-            userConfig.setItem('fav_unread_light_color', inputFavColorLight.value)
-        };
-        configFrame.appendChild(document.createElement('br'));
-        // Настройка высоты разделителя постов
-        const inputCatendHeight = document.createElement('input');
-        inputCatendHeight.type = 'number';
-        inputCatendHeight.value = userConfig.getItem('catend_height');
-        inputCatendHeight.min = 0;
-        inputCatendHeight.max = 20;
-        const labelCatendHeight = document.createElement('label');
-        labelCatendHeight.setAttribute('unselectable', 'on');
-        labelCatendHeight.setAttribute('onselectstart', 'return false');
-        const spanCatendHeight = document.createElement('span');
-        spanCatendHeight.innerHTML = "Высота разделителя постов (px):";
-        configFrame.appendChild(labelCatendHeight);
-        labelCatendHeight.appendChild(spanCatendHeight);
-        configFrame.appendChild(inputCatendHeight);
-        inputCatendHeight.oninput = () => {
-            userConfig.setItem('catend_height', inputCatendHeight.value);
-        };
-        configFrame.appendChild(document.createElement('br'));
-        // Настройка отступа табличных ячеек
-        const inputTdPadding = document.createElement('input');
-        inputTdPadding.type = 'number';
-        inputTdPadding.value = userConfig.getItem('td_padding');
-        inputTdPadding.min = 0;
-        inputTdPadding.max = 5;
-        const labelTdPadding = document.createElement('label');
-        labelTdPadding.setAttribute('unselectable', 'on');
-        labelTdPadding.setAttribute('onselectstart', 'return false');
-        const spanTdPadding = document.createElement('span');
-        spanTdPadding.innerHTML = "Отступ табличных ячеек (px):";
-        configFrame.appendChild(labelTdPadding);
-        labelTdPadding.appendChild(spanTdPadding);
-        configFrame.appendChild(inputTdPadding);
-        inputTdPadding.oninput = () => {
-            userConfig.setItem('td_padding', inputTdPadding.value);
-        };
-        configFrame.appendChild(document.createElement('br'));
-        // Настройка отступа кнопки меню автора поста
-        const inputPostFooterPadding = document.createElement('input');
-        inputPostFooterPadding.type = 'number';
-        inputPostFooterPadding.value = userConfig.getItem('post_footer_padding');
-        inputPostFooterPadding.min = 0;
-        inputPostFooterPadding.max = 6;
-        const labelPostFooterPadding = document.createElement('label');
-        labelPostFooterPadding.setAttribute('unselectable', 'on');
-        labelPostFooterPadding.setAttribute('onselectstart', 'return false');
-        const spanPostFooterPadding = document.createElement('span');
-        spanPostFooterPadding.innerHTML = "Отступ подвала поста (px):";
-        configFrame.appendChild(labelPostFooterPadding);
-        labelPostFooterPadding.appendChild(spanPostFooterPadding);
-        configFrame.appendChild(inputPostFooterPadding);
-        inputPostFooterPadding.oninput = () => {
-            userConfig.setItem('post_footer_padding', inputPostFooterPadding.value);
-        };
-        configFrame.appendChild(document.createElement('br'));
-        // Настройка отступа кнопки меню автора поста
-        const inputPopmenubuttonPadding = document.createElement('input');
-        inputPopmenubuttonPadding.type = 'number';
-        inputPopmenubuttonPadding.value = userConfig.getItem('popmenubutton_padding');
-        inputPopmenubuttonPadding.min = 0;
-        inputPopmenubuttonPadding.max = 6;
-        const labelPopmenubuttonPadding = document.createElement('label');
-        labelPopmenubuttonPadding.setAttribute('unselectable', 'on');
-        labelPopmenubuttonPadding.setAttribute('onselectstart', 'return false');
-        const spanPopmenubuttonPadding = document.createElement('span');
-        spanPopmenubuttonPadding.innerHTML = "Отступ кнопки меню автора поста (px):";
-        configFrame.appendChild(labelPopmenubuttonPadding);
-        labelPopmenubuttonPadding.appendChild(spanPopmenubuttonPadding);
-        configFrame.appendChild(inputPopmenubuttonPadding);
-        inputPopmenubuttonPadding.oninput = () => {
-            userConfig.setItem('popmenubutton_padding', inputPopmenubuttonPadding.value);
-        };
-        configFrame.appendChild(document.createElement('br'));
-        // Информация о перезагрузке страницы
-        const reloadText = document.createElement('div');
-        reloadText.style.textAlign = 'right';
-        reloadText.innerHTML = `
+      const currentHours = new Date().getHours();
+      userConfig.setItem('night_mode', currentHours < FLAGS.AUTO_NIGHT_END || currentHours >= FLAGS.AUTO_NIGHT_START);
+    }, 500)
+  }
+  // Переключатель дневного/ночного режима
+  const switcherEl = document.createElement('div');
+  switcherEl.classList.add('night_mode_switcher');
+  switcherEl.onclick = () => {
+    const isNightMode = userConfig.shiftItem('night_mode');
+    document.documentElement.classList.toggle('night', isNightMode);
+  };
+  document.body.appendChild(switcherEl);
+  setInterval(() => {
+    const isNightMode = userConfig.getItem('night_mode');
+    if (document.documentElement.classList.contains('night') !== isNightMode) {
+      document.documentElement.classList.toggle('night', isNightMode)
+    }
+  }, 500)
+  // чиним страницу/фрейм с загрузкой файла
+  const dw_fname = document.querySelector('div.dw-fname');
+  if (dw_fname && dw_fname.parentNode) dw_fname.parentNode.className = 'download-container';
+  // проверяем, скрипт запустился во фрейме или основном окне
+  if (window.top === window.self) {
+    // Фрейм настроек
+    const configFrame = document.createElement('div');
+    configOptions.forEach(([key, text]) => {
+      // булевые флаги
+      if (typeof FLAGS[key] !== 'boolean') return;
+      const inputEl = document.createElement('input');
+      inputEl.type = 'checkbox';
+      inputEl.value = key;
+      inputEl.checked = FLAGS[key];
+      const labelEl = document.createElement('label');
+      labelEl.setAttribute('unselectable', 'on');
+      labelEl.setAttribute('onselectstart', 'return false');
+      const spanEl = document.createElement('span');
+      spanEl.innerHTML = text;
+      configFrame.appendChild(labelEl);
+      labelEl.appendChild(inputEl);
+      labelEl.appendChild(spanEl);
+      inputEl.onchange = () => {
+        FLAGS[key] = inputEl.checked;
+        GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
+      };
+      configFrame.appendChild(document.createElement('br'))
+    });
+    // Время автоматического переключения ночного режима
+    const inputNightStart = document.createElement('input');
+    inputNightStart.type = 'number';
+    inputNightStart.value = FLAGS.AUTO_NIGHT_START;
+    inputNightStart.min = 0;
+    inputNightStart.max = 23;
+    const labelNightStart = document.createElement('label');
+    labelNightStart.setAttribute('unselectable', 'on');
+    labelNightStart.setAttribute('onselectstart', 'return false');
+    const spanNightStart = document.createElement('span');
+    spanNightStart.innerHTML = "от (ч)";
+    configFrame.appendChild(labelNightStart);
+    labelNightStart.appendChild(spanNightStart);
+    configFrame.appendChild(inputNightStart);
+    inputNightStart.oninput = () => {
+      FLAGS.AUTO_NIGHT_START = inputNightStart.value;
+      GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
+    };
+    const inputNightEnd = document.createElement('input');
+    inputNightEnd.type = 'number';
+    inputNightEnd.value = FLAGS.AUTO_NIGHT_END;
+    inputNightEnd.min = 0;
+    inputNightEnd.max = 23;
+    const labelNightEnd = document.createElement('label');
+    labelNightEnd.setAttribute('unselectable', 'on');
+    labelNightEnd.setAttribute('onselectstart', 'return false');
+    const spanNightEnd = document.createElement('span');
+    spanNightEnd.innerHTML = " до (ч)";
+    configFrame.appendChild(labelNightEnd);
+    labelNightEnd.appendChild(spanNightEnd);
+    configFrame.appendChild(inputNightEnd);
+    inputNightEnd.oninput = () => {
+      FLAGS.AUTO_NIGHT_END = inputNightEnd.value;
+      GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
+    };
+    configFrame.appendChild(document.createElement('br'));
+    // Настройка цвета непрочитанных тем
+    const inputFavColorDark = document.createElement('input');
+    inputFavColorDark.type = 'color';
+    inputFavColorDark.value = userConfig.getItem('fav_unread_dark_color');
+    const labelFavColorDark = document.createElement('label');
+    labelFavColorDark.setAttribute('unselectable', 'on');
+    labelFavColorDark.setAttribute('onselectstart', 'return false');
+    configFrame.appendChild(inputFavColorDark);
+    const inputResetDark = document.createElement('input');
+    inputResetDark.type = 'button';
+    inputResetDark.value = "X";
+    inputResetDark.className = 'reset';
+    inputResetDark.title = 'сбросить';
+    configFrame.appendChild(inputResetDark);
+    const spanFavColorDark = document.createElement('span');
+    spanFavColorDark.innerHTML = "цвет фона непрочитанных тем (темный режим)";
+    configFrame.appendChild(labelFavColorDark);
+    labelFavColorDark.appendChild(spanFavColorDark);
+    inputResetDark.onclick = () => {
+      userConfig.setItem('fav_unread_dark_color', FLAGS.FAV_UNREAD_DARK_COLOR);
+      inputFavColorDark.value = FLAGS.FAV_UNREAD_DARK_COLOR
+    };
+    inputFavColorDark.oninput = () => {
+      userConfig.setItem('fav_unread_dark_color', inputFavColorDark.value)
+    };
+    configFrame.appendChild(document.createElement('br'))
+    const inputFavColorLight = document.createElement('input');
+    inputFavColorLight.type = 'color';
+    inputFavColorLight.value = userConfig.getItem('fav_unread_light_color');
+    const labelFavColorLight = document.createElement('label');
+    labelFavColorLight.setAttribute('unselectable', 'on');
+    labelFavColorLight.setAttribute('onselectstart', 'return false');
+    configFrame.appendChild(inputFavColorLight);
+    const inputResetLight = document.createElement('input');
+    inputResetLight.type = 'button';
+    inputResetLight.value = "X";
+    inputResetLight.className = 'reset';
+    inputResetLight.title = 'сбросить';
+    configFrame.appendChild(inputResetLight);
+    const spanFavColorLight = document.createElement('span');
+    spanFavColorLight.innerHTML = "цвет фона непрочитанных тем (светлый режим)";
+    configFrame.appendChild(labelFavColorLight);
+    labelFavColorLight.appendChild(spanFavColorLight);
+    inputResetLight.onclick = () => {
+      userConfig.setItem('fav_unread_light_color', FLAGS.FAV_UNREAD_LIGHT_COLOR);
+      inputFavColorLight.value = FLAGS.FAV_UNREAD_LIGHT_COLOR
+    };
+    inputFavColorLight.oninput = () => {
+      userConfig.setItem('fav_unread_light_color', inputFavColorLight.value)
+    };
+    configFrame.appendChild(document.createElement('br'));
+    // Настройка высоты разделителя постов
+    const inputCatendHeight = document.createElement('input');
+    inputCatendHeight.type = 'number';
+    inputCatendHeight.value = userConfig.getItem('catend_height');
+    inputCatendHeight.min = 0;
+    inputCatendHeight.max = 20;
+    const labelCatendHeight = document.createElement('label');
+    labelCatendHeight.setAttribute('unselectable', 'on');
+    labelCatendHeight.setAttribute('onselectstart', 'return false');
+    const spanCatendHeight = document.createElement('span');
+    spanCatendHeight.innerHTML = "Высота разделителя постов (px):";
+    configFrame.appendChild(labelCatendHeight);
+    labelCatendHeight.appendChild(spanCatendHeight);
+    configFrame.appendChild(inputCatendHeight);
+    inputCatendHeight.oninput = () => {
+      userConfig.setItem('catend_height', inputCatendHeight.value);
+    };
+    configFrame.appendChild(document.createElement('br'));
+    // Настройка отступа табличных ячеек
+    const inputTdPadding = document.createElement('input');
+    inputTdPadding.type = 'number';
+    inputTdPadding.value = userConfig.getItem('td_padding');
+    inputTdPadding.min = 0;
+    inputTdPadding.max = 5;
+    const labelTdPadding = document.createElement('label');
+    labelTdPadding.setAttribute('unselectable', 'on');
+    labelTdPadding.setAttribute('onselectstart', 'return false');
+    const spanTdPadding = document.createElement('span');
+    spanTdPadding.innerHTML = "Отступ табличных ячеек (px):";
+    configFrame.appendChild(labelTdPadding);
+    labelTdPadding.appendChild(spanTdPadding);
+    configFrame.appendChild(inputTdPadding);
+    inputTdPadding.oninput = () => {
+      userConfig.setItem('td_padding', inputTdPadding.value);
+    };
+    configFrame.appendChild(document.createElement('br'));
+    // Настройка отступа кнопки меню автора поста
+    const inputPostFooterPadding = document.createElement('input');
+    inputPostFooterPadding.type = 'number';
+    inputPostFooterPadding.value = userConfig.getItem('post_footer_padding');
+    inputPostFooterPadding.min = 0;
+    inputPostFooterPadding.max = 6;
+    const labelPostFooterPadding = document.createElement('label');
+    labelPostFooterPadding.setAttribute('unselectable', 'on');
+    labelPostFooterPadding.setAttribute('onselectstart', 'return false');
+    const spanPostFooterPadding = document.createElement('span');
+    spanPostFooterPadding.innerHTML = "Отступ подвала поста (px):";
+    configFrame.appendChild(labelPostFooterPadding);
+    labelPostFooterPadding.appendChild(spanPostFooterPadding);
+    configFrame.appendChild(inputPostFooterPadding);
+    inputPostFooterPadding.oninput = () => {
+      userConfig.setItem('post_footer_padding', inputPostFooterPadding.value);
+    };
+    configFrame.appendChild(document.createElement('br'));
+    // Настройка отступа кнопки меню автора поста
+    const inputPopmenubuttonPadding = document.createElement('input');
+    inputPopmenubuttonPadding.type = 'number';
+    inputPopmenubuttonPadding.value = userConfig.getItem('popmenubutton_padding');
+    inputPopmenubuttonPadding.min = 0;
+    inputPopmenubuttonPadding.max = 6;
+    const labelPopmenubuttonPadding = document.createElement('label');
+    labelPopmenubuttonPadding.setAttribute('unselectable', 'on');
+    labelPopmenubuttonPadding.setAttribute('onselectstart', 'return false');
+    const spanPopmenubuttonPadding = document.createElement('span');
+    spanPopmenubuttonPadding.innerHTML = "Отступ кнопки меню автора поста (px):";
+    configFrame.appendChild(labelPopmenubuttonPadding);
+    labelPopmenubuttonPadding.appendChild(spanPopmenubuttonPadding);
+    configFrame.appendChild(inputPopmenubuttonPadding);
+    inputPopmenubuttonPadding.oninput = () => {
+      userConfig.setItem('popmenubutton_padding', inputPopmenubuttonPadding.value);
+    };
+    configFrame.appendChild(document.createElement('br'));
+    // Информация о перезагрузке страницы
+    const reloadText = document.createElement('div');
+    reloadText.style.textAlign = 'right';
+    reloadText.innerHTML = `
         * чтобы увидеть изменения
         <a href="#" onclick="location.reload(); return false">
         обновите страницу
         </a>`;
-        configFrame.appendChild(reloadText);
-        configFrame.classList.add('config_frame');
-        /* Mobile version */
-        if (document.querySelector("meta[name='MobileOptimized']")) {
-            configFrame.classList.add('mobile_config_frame')
-        }
-        /* End mobile version */
-        configFrame.style.display = 'none';
-        document.body.appendChild(configFrame);
-        // Конец фрейма настроек
-        // Кнопка настроек
-        const configButton = document.createElement('div');
-        configButton.classList.add('config_button');
-        document.body.appendChild(configButton);
-        configButton.onclick = () => {
-            if (configFrame.style.display) {
-                configFrame.style.display = ''
-            } else {
-                configFrame.style.display = 'none'
+    configFrame.appendChild(reloadText);
+    configFrame.classList.add('config_frame');
+    /* Mobile version */
+    if (document.querySelector("meta[name='MobileOptimized']")) {
+      configFrame.classList.add('mobile_config_frame')
+    }
+    /* End mobile version */
+    configFrame.style.display = 'none';
+    document.body.appendChild(configFrame);
+    // Конец фрейма настроек
+    // Кнопка настроек
+    const configButton = document.createElement('div');
+    configButton.classList.add('config_button');
+    document.body.appendChild(configButton);
+    configButton.onclick = () => {
+      if (configFrame.style.display) {
+        configFrame.style.display = ''
+      } else {
+        configFrame.style.display = 'none'
+      }
+    };
+    // Подсветка непрочитанных тем в избранном и форумах
+    const URL = window.document.URL;
+    if (~URL.indexOf(favURL) || ~URL.indexOf(forumURL)) {
+      const tbl = document.getElementsByClassName('ipbtable');
+      for (let i = 0; i < tbl.length; i++) {
+        const tr = tbl[i].getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+        for (let j = 0; j < tr.length; j++) {
+          if (tr[j].hasAttribute('data-item-fid') || (
+            tr[j].getElementsByTagName('td') &&
+            tr[j].getElementsByTagName('td')[0] &&
+            tr[j].getElementsByTagName('td')[0].className === 'row2'
+          )) {
+            const td = tr[j].getElementsByTagName('td'),
+                  tdIndex = ~URL.indexOf(favURL) ? 1 : 2;
+            if (
+              td[tdIndex].getElementsByTagName('a') &&
+              td[tdIndex].getElementsByTagName('a')[0] &&
+              td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img') &&
+              td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img')[0] &&
+              td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img')[0].alt === ">N"
+            ) {
+              tr[j].setAttribute("class", "unread_row")
             }
-        };
-        // Подсветка непрочитанных тем в избранном и форумах
-        const URL = window.document.URL;
-        if (~URL.indexOf(favURL) || ~URL.indexOf(forumURL)) {
-            const tbl = document.getElementsByClassName('ipbtable');
-            for (let i = 0; i < tbl.length; i++) {
-                const tr = tbl[i].getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-                for (let j = 0; j < tr.length; j++) {
-                    if (tr[j].hasAttribute('data-item-fid') || (
-                            tr[j].getElementsByTagName('td') &&
-                            tr[j].getElementsByTagName('td')[0] &&
-                            tr[j].getElementsByTagName('td')[0].className === 'row2'
-                        )) {
-                        const td = tr[j].getElementsByTagName('td'),
-                            tdIndex = ~URL.indexOf(favURL) ? 1 : 2;
-                        if (
-                            td[tdIndex].getElementsByTagName('a') &&
-                            td[tdIndex].getElementsByTagName('a')[0] &&
-                            td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img') &&
-                            td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img')[0] &&
-                            td[tdIndex].getElementsByTagName('a')[0].getElementsByTagName('img')[0].alt === ">N"
-                        ) {
-                            tr[j].setAttribute("class", "unread_row")
-                        }
-                    }
-                }
-            }
+          }
         }
-        /* Автор Azat-777 https://4pda.to/forum/index.php?showuser=917143
+      }
+    }
+    /* Автор Azat-777 https://4pda.to/forum/index.php?showuser=917143
            Мной только адаптировано и слегка оптимизировано
         */
-        if (FLAGS.SHOW_NEW_VERSIONS) {
-            let counter = 0; // счетчик
-            // Избранное
-            if (~URL.indexOf(favURL)) {
-                // находим таблицу
-                const _tr = document.getElementsByClassName('ipbtable')[0].getElementsByTagName('tbody')[0].getElementsByTagName('tr'),
-                    // запихиваем в tr нужные нам строки таблицы
-                    tr = [];
-                for (let i = 0; i < _tr.length; i++) {
-                    if (_tr[i].hasAttribute('data-item-fid')) { // отсортировываем из таблицы только темы
-                        tr.push(_tr[i]) // запихиваем в массив tr
-                    }
-                }
-                const trLength = tr.length,
-                    name = []; // названия тем
-                for (let i = 0; i < trLength; i++) {
-                    const tmp = tr[i].getElementsByTagName('td')[1].getElementsByTagName('span')[0].getElementsByTagName('a')[0];
-                    getVersion(tmp.getAttribute('href'), i);
-                    name.push(tmp)
-                }
-                //=====================================================
-                // добавление счетчика с количеством новых версий приложений
-                let count = 0;
-                const _span = document.createElement('span');
-                _span.id = 'count';
-                const navstrip = document.getElementById('navstrip');
-                //=====================================================
-                let app_name,
-                    saveToHideName = [],
-                    saveToHideVer = [];
+    if (FLAGS.SHOW_NEW_VERSIONS) {
+      let counter = 0; // счетчик
+      // Избранное
+      if (~URL.indexOf(favURL)) {
+        // находим таблицу
+        const _tr = document.getElementsByClassName('ipbtable')[0].getElementsByTagName('tbody')[0].getElementsByTagName('tr'),
+              // запихиваем в tr нужные нам строки таблицы
+              tr = [];
+        for (let i = 0; i < _tr.length; i++) {
+          if (_tr[i].hasAttribute('data-item-fid')) { // отсортировываем из таблицы только темы
+            tr.push(_tr[i]) // запихиваем в массив tr
+          }
+        }
+        const trLength = tr.length,
+              name = []; // названия тем
+        for (let i = 0; i < trLength; i++) {
+          const tmp = tr[i].getElementsByTagName('td')[1].getElementsByTagName('span')[0].getElementsByTagName('a')[0];
+          getVersion(tmp.getAttribute('href'), i);
+          name.push(tmp)
+        }
+        //=====================================================
+        // добавление счетчика с количеством новых версий приложений
+        let count = 0;
+        const _span = document.createElement('span');
+        _span.id = 'count';
+        const navstrip = document.getElementById('navstrip');
+        //=====================================================
+        let app_name,
+            saveToHideName = [],
+            saveToHideVer = [];
 
-                function getVersion(link, i) {
-                    const xhr = new XMLHttpRequest();
-                    xhr.open('GET', link, true);
-                    xhr.send();
-                    xhr.onload = function() {
-                        if (this.readyState === 4 && this.status === 200) {
-                            const parser = new DOMParser(),
-                                doc = parser.parseFromString(xhr.responseText, 'text/html'),
-                                tbl = doc.getElementsByClassName('ipbtable');
-                            for (let j = 0; j < tbl.length; j++) {
-                                if (tbl[j].hasAttribute('data-post')) {
-                                    const span = tbl[j].getElementsByTagName('tbody')[0]
-                                        .getElementsByTagName('tr')[1]
-                                        .getElementsByTagName('td')[1]
-                                        .getElementsByClassName('postcolor')[0]
-                                        .getElementsByTagName('span');
-                                    for (let k = 0; k < span.length; k++) {
-                                        // версии приложений
-                                        if (span[k].getAttribute('style') == 'font-size:12pt;line-height:100%') {
-                                            if (~span[k].innerHTML.toLowerCase().indexOf('верси')) {
-                                                // замена
-                                                let replace_ver = span[k].innerHTML,
-                                                    alt_ver;
-                                                // если тема не была открыта
-                                                if (~name[i].innerHTML.indexOf('<strong>')) {
-                                                    replace_ver = replace_ver.toLowerCase().replace(/[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b[r]*>/g, '').trim();
-                                                    alt_ver = replace_ver;
-                                                    const alt_name = name[i].innerHTML.replace(/<[\/]*strong>/g, '');
-                                                    // сравнение версий: текущей полученной и сохраненной в локальном хранилище
-                                                    if (alt_ver.localeCompare(GM_getValue(alt_name)) !== 0) {
-                                                        showNotif(alt_name, alt_ver, link)
-                                                    }
-                                                    // если тема была открыта и просмотрена
-                                                } else {
-                                                    replace_ver = replace_ver.toLowerCase().replace(/<b>[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b>/g, '').trim();
-                                                    alt_ver = replace_ver;
-                                                    if (replace_ver.localeCompare(GM_getValue(name[i].innerHTML)) !== 0) {
-                                                        showNotif(name[i].innerHTML, alt_ver, link)
-                                                    }
-                                                }
-                                                // добавление цвета для наглядности
-                                                replace_ver = '<font color="#bb72ff"> ' + replace_ver + '</font>';
-                                                name[i].innerHTML += replace_ver
-                                            }
-                                            break
-                                        }
-                                    }
-                                    break
-                                }
-                            }
+        function getVersion(link, i) {
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', link, true);
+          xhr.send();
+          xhr.onload = function() {
+            if (this.readyState === 4 && this.status === 200) {
+              const parser = new DOMParser(),
+                    doc = parser.parseFromString(xhr.responseText, 'text/html'),
+                    tbl = doc.getElementsByClassName('ipbtable');
+              for (let j = 0; j < tbl.length; j++) {
+                if (tbl[j].hasAttribute('data-post')) {
+                  const span = tbl[j].getElementsByTagName('tbody')[0]
+                  .getElementsByTagName('tr')[1]
+                  .getElementsByTagName('td')[1]
+                  .getElementsByClassName('postcolor')[0]
+                  .getElementsByTagName('span');
+                  for (let k = 0; k < span.length; k++) {
+                    // версии приложений
+                    if (span[k].getAttribute('style') == 'font-size:12pt;line-height:100%') {
+                      if (~span[k].innerHTML.toLowerCase().indexOf('верси')) {
+                        // замена
+                        let replace_ver = span[k].innerHTML,
+                            alt_ver;
+                        // если тема не была открыта
+                        if (~name[i].innerHTML.indexOf('<strong>')) {
+                          replace_ver = replace_ver.toLowerCase().replace(/[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b[r]*>/g, '').trim();
+                          alt_ver = replace_ver;
+                          const alt_name = name[i].innerHTML.replace(/<[\/]*strong>/g, '');
+                          // сравнение версий: текущей полученной и сохраненной в локальном хранилище
+                          if (alt_ver.localeCompare(GM_getValue(alt_name)) !== 0) {
+                            showNotif(alt_name, alt_ver, link)
+                          }
+                          // если тема была открыта и просмотрена
+                        } else {
+                          replace_ver = replace_ver.toLowerCase().replace(/<b>[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b>/g, '').trim();
+                          alt_ver = replace_ver;
+                          if (replace_ver.localeCompare(GM_getValue(name[i].innerHTML)) !== 0) {
+                            showNotif(name[i].innerHTML, alt_ver, link)
+                          }
                         }
-                    };
-                    xhr.onerror = () => {
-                        console.log('onerror')
-                    };
-                    xhr.onloadend = (event) => {
-                        if (++counter === trLength) {
-                            // вешаем обработчик событий строки (появление/скрытие кноки "Скрыть")
-                            addEvent();
-                            // скрытие строки с обновленным приложением
-                            hideApp()
-                        }
+                        // добавление цвета для наглядности
+                        replace_ver = '<font color="#bb72ff"> ' + replace_ver + '</font>';
+                        name[i].innerHTML += replace_ver
+                      }
+                      break
                     }
+                  }
+                  break
                 }
-                // переопределяем стиль для кнопок
-                const btnStyle = document.createElement('style');
-                const _s = `
+              }
+            }
+          };
+          xhr.onerror = () => {
+            console.log('onerror')
+          };
+          xhr.onloadend = (event) => {
+            if (++counter === trLength) {
+              // вешаем обработчик событий строки (появление/скрытие кноки "Скрыть")
+              addEvent();
+              // скрытие строки с обновленным приложением
+              hideApp()
+            }
+          }
+        }
+        // переопределяем стиль для кнопок
+        const btnStyle = document.createElement('style');
+        const _s = `
 .myBtn {
     display: inline-block;
     font-family: arial,sans-serif;
@@ -1652,19 +1666,19 @@ ready(async () => {
     border: 1px solid #7d7d7d !important;
     background: #6d6d6d linear-gradient(#6d6d6d, #525252) !important;
 }`;
-                const _st = document.createTextNode(_s);
-                btnStyle.appendChild(_st);
-                document.head.appendChild(btnStyle);
-                navstrip.appendChild(_span);
-                _span.innerHTML = '<br/><br/>Обновлений: <font id="_cnt" color="red">' + count + '</font> <input id="hideBtn" class="myBtn" type="button" value="Скрыть обновления" style="display: none;" /><br/>' +
-                    `<table id="_tbl" style="border-collapse: collapse; border: 0px"><thead><tr><th class="one">#</th><th class="two">Название</th><th>Версия</th></tr></thead><tbody></tbody></table>`;
-                const _tbl = document.querySelector('#_tbl'),
-                    _tbody = _tbl.querySelector('tbody'),
-                    _cnt = document.querySelector('#_cnt');
-                let n = 0;
-                _tbl.style.display = 'none';
-                const tblStyle = document.createElement('style');
-                const s = `
+        const _st = document.createTextNode(_s);
+        btnStyle.appendChild(_st);
+        document.head.appendChild(btnStyle);
+        navstrip.appendChild(_span);
+        _span.innerHTML = '<br/><br/>Обновлений: <font id="_cnt" color="red">' + count + '</font> <input id="hideBtn" class="myBtn" type="button" value="Скрыть обновления" style="display: none;" /><br/>' +
+          `<table id="_tbl" style="border-collapse: collapse; border: 0px"><thead><tr><th class="one">#</th><th class="two">Название</th><th>Версия</th></tr></thead><tbody></tbody></table>`;
+        const _tbl = document.querySelector('#_tbl'),
+              _tbody = _tbl.querySelector('tbody'),
+              _cnt = document.querySelector('#_cnt');
+        let n = 0;
+        _tbl.style.display = 'none';
+        const tblStyle = document.createElement('style');
+        const s = `
 #_tbl th {
     color: brown;
     background-color: white;
@@ -1683,108 +1697,108 @@ ready(async () => {
 #_tbl .one, .two {
     border-right: 1px solid
 }`;
-                const st = document.createTextNode(s);
-                tblStyle.appendChild(st);
-                document.head.appendChild(tblStyle);
-                // кнопка скрытия обновлений вручную
-                const hideBtn = document.querySelector('#hideBtn');
-                hideBtn.onclick = () => {
-                        hideBtn.style.display = 'none';
-                        // сразу сохраняем обновленные версии в память, чтобы при следующем обновлении не всплыли в таблице обновлений
-                        for (let i = 0; i < saveToHideName.length; i++) {
-                            GM_setValue(saveToHideName[i], saveToHideVer[i])
-                        }
-                        // скрываем таблицу с обновлениями и обнуляем счетчик
-                        _tbl.style.display = 'none';
-                        count = 0;
-                        _cnt.innerHTML = count;
-                        for (; _tbody.querySelectorAll('tr').length > 0;) {
-                            _tbl.deleteRow(1)
-                        }
-                    }
-                    // вывод обновленных приложений вверху
-                function showNotif(alt_name, alt_ver, link) {
-                    // показываем скрытую кнопку, если есть обновления
-                    hideBtn.style.display = 'inline';
-                    count++;
-                    const goto = '<a href="' + link + '&amp;view=getnewpost"><img src="//4pda.to/s/PXtiv0SJz25I1LFK93vEIDz09EWP3igNulg0lq5cZxWOKJ.gif" alt=">N" title="Перейти к первому непрочитанному" border="0"></a> ';
-                    app_name = goto + '<a href="' + link + '" title="Перейти к первому сообщению">' + alt_name + '</a>';
-                    saveToHideName.push(alt_name);
-                    saveToHideVer.push(alt_ver);
-                    showUpdates(app_name, alt_ver)
-                }
-                // показ количества обновлений и вывод их в таблице
-                function showUpdates(app_name, ver) {
-                    _tbl.style.display = 'block';
-                    n++;
-                    const row = _tbody.insertRow(-1),
-                        cell1 = row.insertCell(-1),
-                        cell2 = row.insertCell(-1),
-                        cell3 = row.insertCell(-1),
-                        cell4 = row.insertCell(-1);
-                    row.className = 'myTr';
-                    cell1.className = 'one';
-                    cell2.className = 'two';
-                    cell1.innerHTML = n;
-                    _cnt.innerHTML = count;
-                    cell2.innerHTML = app_name;
-                    cell3.innerHTML = ver;
-                    cell4.innerHTML = '<input class="myBtn hidden" type="button" value="Скрыть" style="display: none;">'
-                }
-
-                function addEvent() {
-                    const myTr = document.querySelectorAll('.myTr');
-                    for (let i = 0; i < myTr.length; i++) {
-                        myTr[i].addEventListener('mouseover', function showButton() {
-                            this.querySelector('.hidden').style.display = 'block'
-                        });
-                        myTr[i].addEventListener('mouseout', function hideButton() {
-                            this.querySelector('.hidden').style.display = 'none'
-                        })
-                    }
-                }
-
-                function hideApp() {
-                    let hBut = document.querySelectorAll('.myBtn.hidden');
-                    for (let i = 0; i < hBut.length; i++) {
-                        hBut[i].onclick = function() {
-                            const n = this.parentNode.parentNode.firstChild.innerHTML,
-                                name = this.parentNode.parentNode.children[1].children[1].innerHTML,
-                                ver = this.parentNode.parentNode.children[2].innerHTML;
-                            GM_setValue(name, ver);
-                            // сброс # таблицы и удаление строк(и)
-                            _tbl.deleteRow(n);
-                            let num = _tbl.querySelectorAll('td.one');
-                            // если было скрыто последнее обновление, скрываем шапку таблицы и кнопку "Скрыть обновления"
-                            if (num.length === 0) {
-                                _tbl.style.display = 'none';
-                                hideBtn.style.display = 'none'
-                            }
-                            for (var j = 0; j < num.length; j++) {
-                                num[j].innerHTML = j + 1
-                            }
-                            _cnt.innerHTML = j
-                        }
-                    }
-                }
-            }
+        const st = document.createTextNode(s);
+        tblStyle.appendChild(st);
+        document.head.appendChild(tblStyle);
+        // кнопка скрытия обновлений вручную
+        const hideBtn = document.querySelector('#hideBtn');
+        hideBtn.onclick = () => {
+          hideBtn.style.display = 'none';
+          // сразу сохраняем обновленные версии в память, чтобы при следующем обновлении не всплыли в таблице обновлений
+          for (let i = 0; i < saveToHideName.length; i++) {
+            GM_setValue(saveToHideName[i], saveToHideVer[i])
+          }
+          // скрываем таблицу с обновлениями и обнуляем счетчик
+          _tbl.style.display = 'none';
+          count = 0;
+          _cnt.innerHTML = count;
+          for (; _tbody.querySelectorAll('tr').length > 0;) {
+            _tbl.deleteRow(1)
+          }
         }
-        if (FLAGS.SHOW_USER_INFO) {
-            if (~URL.indexOf(topicURL)) {
-                const post = document.querySelectorAll('.postdetails > center'),
-                    userLink = document.getElementsByClassName('normalname'),
-                    link = [], // собираем все ссылки на профили
-                    ulLength = userLink.length;
-                // создание области для новых данных
-                const addInfoDiv = document.createElement('div');
-                addInfoDiv.className = 'addInfo';
-                addInfoDiv.innerText = "Дополнительная информация";
-                const div = document.createElement('div');
-                div.className = 'myDiv';
-                addInfoDiv.appendChild(div);
-                // Стиль для новой области
-                const style = document.createElement('style');
-                const styleData = `
+        // вывод обновленных приложений вверху
+        function showNotif(alt_name, alt_ver, link) {
+          // показываем скрытую кнопку, если есть обновления
+          hideBtn.style.display = 'inline';
+          count++;
+          const goto = '<a href="' + link + '&amp;view=getnewpost"><img src="//4pda.to/s/PXtiv0SJz25I1LFK93vEIDz09EWP3igNulg0lq5cZxWOKJ.gif" alt=">N" title="Перейти к первому непрочитанному" border="0"></a> ';
+          app_name = goto + '<a href="' + link + '" title="Перейти к первому сообщению">' + alt_name + '</a>';
+          saveToHideName.push(alt_name);
+          saveToHideVer.push(alt_ver);
+          showUpdates(app_name, alt_ver)
+        }
+        // показ количества обновлений и вывод их в таблице
+        function showUpdates(app_name, ver) {
+          _tbl.style.display = 'block';
+          n++;
+          const row = _tbody.insertRow(-1),
+                cell1 = row.insertCell(-1),
+                cell2 = row.insertCell(-1),
+                cell3 = row.insertCell(-1),
+                cell4 = row.insertCell(-1);
+          row.className = 'myTr';
+          cell1.className = 'one';
+          cell2.className = 'two';
+          cell1.innerHTML = n;
+          _cnt.innerHTML = count;
+          cell2.innerHTML = app_name;
+          cell3.innerHTML = ver;
+          cell4.innerHTML = '<input class="myBtn hidden" type="button" value="Скрыть" style="display: none;">'
+        }
+
+        function addEvent() {
+          const myTr = document.querySelectorAll('.myTr');
+          for (let i = 0; i < myTr.length; i++) {
+            myTr[i].addEventListener('mouseover', function showButton() {
+              this.querySelector('.hidden').style.display = 'block'
+            });
+            myTr[i].addEventListener('mouseout', function hideButton() {
+              this.querySelector('.hidden').style.display = 'none'
+            })
+          }
+        }
+
+        function hideApp() {
+          let hBut = document.querySelectorAll('.myBtn.hidden');
+          for (let i = 0; i < hBut.length; i++) {
+            hBut[i].onclick = function() {
+              const n = this.parentNode.parentNode.firstChild.innerHTML,
+                    name = this.parentNode.parentNode.children[1].children[1].innerHTML,
+                    ver = this.parentNode.parentNode.children[2].innerHTML;
+              GM_setValue(name, ver);
+              // сброс # таблицы и удаление строк(и)
+              _tbl.deleteRow(n);
+              let num = _tbl.querySelectorAll('td.one');
+              // если было скрыто последнее обновление, скрываем шапку таблицы и кнопку "Скрыть обновления"
+              if (num.length === 0) {
+                _tbl.style.display = 'none';
+                hideBtn.style.display = 'none'
+              }
+              for (var j = 0; j < num.length; j++) {
+                num[j].innerHTML = j + 1
+              }
+              _cnt.innerHTML = j
+            }
+          }
+        }
+      }
+    }
+    if (FLAGS.SHOW_USER_INFO) {
+      if (~URL.indexOf(topicURL)) {
+        const post = document.querySelectorAll('.postdetails > center'),
+              userLink = document.getElementsByClassName('normalname'),
+              link = [], // собираем все ссылки на профили
+              ulLength = userLink.length;
+        // создание области для новых данных
+        const addInfoDiv = document.createElement('div');
+        addInfoDiv.className = 'addInfo';
+        addInfoDiv.innerText = "Дополнительная информация";
+        const div = document.createElement('div');
+        div.className = 'myDiv';
+        addInfoDiv.appendChild(div);
+        // Стиль для новой области
+        const style = document.createElement('style');
+        const styleData = `
 .myDiv {
     display: none;
     position: absolute;
@@ -1819,467 +1833,469 @@ ready(async () => {
 .addInfo:hover .myDiv {
     display: block;
 }`;
-                const styleNode = document.createTextNode(styleData);
-                style.appendChild(styleNode);
-                document.head.appendChild(style);
+        const styleNode = document.createTextNode(styleData);
+        style.appendChild(styleNode);
+        document.head.appendChild(style);
 
-                for (let i = 0; i < ulLength; i++) {
-                    const link = userLink[i].querySelector('a').getAttribute('href');
-                    insertUserDataContainer(link, i);
-                }
-
-                function insertUserDataContainer(link, index) {
-                    post[index].appendChild(addInfoDiv.cloneNode(true));
-                    post[index].getElementsByClassName('addInfo')[0].addEventListener("mouseenter", async () => await getUserData(link, index));
-                }
-
-                function getUserData(link, index) {
-                    return new Promise(resolve => {
-                        //debugger;
-                        const usersInfo = GM_getValue('usersInfo') || new Map();
-                        const userInfo = usersInfo[link];
-                        if (!userInfo || isNaN(new Date(userInfo.updated)) || new Date(userInfo.updated) < getMinutesBefore(10)) {
-                            const xhr = new XMLHttpRequest();
-                            xhr.open('GET', link, true);
-                            xhr.send();
-                            xhr.onload = function() {
-                                if (this.readyState === 4 && this.status === 200) {
-                                    const response = xhr.responseText;
-                                    const parser = new DOMParser();
-                                    const doc = parser.parseFromString(response, 'text/html');
-                                    const personalData = doc.getElementsByClassName('info-list width1 black-link')[0];
-                                    personalData.style.marginLeft = 0;
-                                    personalData.style.paddingLeft = 0;
-                                    personalData.style.display = 'block';
-                                    personalData.style.listStyle = 'none';
-                                    const personalDataList = personalData.querySelectorAll('li');
-                                    const mainData = doc.getElementsByClassName('info-list black-link')[0];
-                                    mainData.style.marginLeft = 0;
-                                    mainData.style.paddingLeft = 0;
-                                    mainData.style.display = 'block';
-                                    mainData.style.listStyle = 'none';
-                                    const mainDataList = mainData.querySelectorAll('li');
-                                    const personalDataFilter = [
-                                        'Мужчина',
-                                        'Женщина',
-                                        'Город:',
-                                        'Дата рождения:',
-                                        'Время у юзера:',
-                                    ];
-                                    const list = Array.prototype.slice.call(personalDataList)
-                                    .filter(li => personalDataFilter.filter(el => li.innerText.includes(el)).length > 0)
-                                    .concat(
-                                        Array.prototype.slice.call(mainDataList)
-                                        .filter(li => li.innerText.includes('посещение')));
-                                    let userData = '';
-                                    for (let i = 0; i < list.length; i++) {
-                                        const reg = new RegExp(/Город:\n(.*)/);
-                                        // console.log(list[i].innerText);
-                                        userData += '<p>' + list[i].innerText
-                                            .replace(/(Город:)/, '$1 ')
-                                            .replace(/(рождения:)/, '$1<br/>')
-                                            .replace(/(юзера:)/, '$1<br/>')
-                                            .replace(/(посещение:)/, '$1<br/>') +
-                                            '</p><br/>'
-                                    }
-                                    //debugger;
-                                    usersInfo[link] = {userData, updated: Date.now()};
-                                    GM_setValue("usersInfo", usersInfo);
-                                    insertData(userData, index);
-                                    resolve();
-                                }
-                            };
-                            xhr.onerror = () => {
-                                console.log('error');
-                            }
-                        } else {
-                            insertData(userInfo.userData, index);
-                            resolve();
-                        }
-                    });
-                }
-
-                function insertData(userData, index) {
-                    post[index].getElementsByClassName('myDiv')[0].innerHTML = userData;
-                }
-            }
+        for (let i = 0; i < ulLength; i++) {
+          const link = userLink[i].querySelector('a').getAttribute('href');
+          insertUserDataContainer(link, i);
         }
-        if (FLAGS.ADS_CLEANER) {
-            let div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(2):not(div)');
-            div && div.remove();
-            div = document.querySelector('article > :first-child:not(div)');
-            div && div.remove();
-            div = document.querySelector('div[itemprop="description"]');
-            div && div.remove();
-            div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(6):not(div)');
-            if (div) div.id = 'ad';
+
+        function insertUserDataContainer(link, index) {
+          post[index].appendChild(addInfoDiv.cloneNode(true));
+          post[index].getElementsByClassName('addInfo')[0].addEventListener("mouseenter", async () => await getUserData(link, index));
         }
-        if (FLAGS.QMS_BB_PANEL) {
-            if (~URL.indexOf(qmsURL)) {
-                const smiles = {
-                    ":happy:": "happy",
-                    ";)": "wink",
-                    ":P": "tongue",
-                    ":-D": "biggrin",
-                    ":lol:": "laugh",
-                    ":rolleyes:": "rolleyes",
-                    ":)": "smile_good",
-                    ":beee:": "beee",
-                    ":rofl:": "rofl",
-                    ":sveta:": "sveta",
-                    ":thank_you:": "thank_you",
-                    "}-)": "devil",
-                    ":girl_cray:": "girl_cray",
-                    ":D": "biggrin",
-                    "o.O": "blink",
-                    ":blush:": "blush",
-                    ":yes2:": "yes",
-                    ":mellow:": "mellow",
-                    ":huh:": "huh",
-                    ":o": "ohmy",
-                    "B)": "cool",
-                    "-_-": "sleep",
-                    "<_<": "dry",
-                    ":wub:": "wub",
-                    ":angry:": "angry",
-                    ":(": "sad",
-                    ":unsure:": "unsure",
-                    ":wacko:": "wacko",
-                    ":blink:": "blink",
-                    ":ph34r:": "ph34r",
-                    ":banned:": "banned",
-                    ":antifeminism:": "antifeminism",
-                    ":beta:": "beta",
-                    ":boy_girl:": "boy_girl",
-                    ":butcher:": "butcher",
-                    ":bubble:": "bubble",
-                    ":censored:": "censored",
-                    ":clap:": "clap",
-                    ":close_tema:": "close_tema",
-                    ":clapping:": "clapping",
-                    ":coldly:": "coldly",
-                    ":comando:": "comando",
-                    ":congratulate:": "congratulate",
-                    ":dance:": "dance",
-                    ":daisy:": "daisy",
-                    ":dancer:": "dancer",
-                    ":derisive:": "derisive",
-                    ":dinamo:": "dinamo",
-                    ":dirol:": "dirol",
-                    ":diver:": "diver",
-                    ":drag:": "drag",
-                    ":download:": "download",
-                    ":drinks:": "drinks",
-                    ":first_move:": "first_move",
-                    ":feminist:": "feminist",
-                    ":flood:": "flood",
-                    ":fool:": "fool",
-                    ":friends:": "friends",
-                    ":foto:": "foto",
-                    ":girl_blum:": "girl_blum",
-                    ":girl_crazy:": "girl_crazy",
-                    ":girl_curtsey:": "girl_curtsey",
-                    ":girl_dance:": "girl_dance",
-                    ":girl_flirt:": "girl_flirt",
-                    ":girl_hospital:": "girl_hospital",
-                    ":girl_hysterics:": "girl_hysterics",
-                    ":girl_in_love:": "girl_in_love",
-                    ":girl_kiss:": "girl_kiss",
-                    ":girl_pinkglassesf:": "girl_pinkglassesf",
-                    ":girl_parting:": "girl_parting",
-                    ":girl_prepare_fish:": "girl_prepare_fish",
-                    ":good:": "good",
-                    ":girl_spruce_up:": "girl_spruce_up",
-                    ":girl_tear:": "girl_tear",
-                    ":girl_tender:": "girl_tender",
-                    ":girl_teddy:": "girl_teddy",
-                    ":girl_to_babruysk:": "girl_to_babruysk",
-                    ":girl_to_take_umbrage:": "girl_to_take_umbrage",
-                    ":girl_triniti:": "girl_triniti",
-                    ":girl_tongue:": "girl_tongue",
-                    ":girl_wacko:": "girl_wacko",
-                    ":girl_werewolf:": "girl_werewolf",
-                    ":girl_witch:": "girl_witch",
-                    ":grabli:": "grabli",
-                    ":good_luck:": "good_luck",
-                    ":guess:": "guess",
-                    ":hang:": "hang",
-                    ":heart:": "heart",
-                    ":help:": "help",
-                    ":helpsmilie:": "helpsmilie",
-                    ":hemp:": "hemp",
-                    ":heppy_dancing:": "heppy_dancing",
-                    ":hysterics:": "hysterics",
-                    ":indeec:": "indeec",
-                    ":i-m_so_happy:": "i-m_so_happy",
-                    ":kindness:": "kindness",
-                    ":king:": "king",
-                    ":laugh_wild:": "laugh_wild",
-                    ":4PDA:": "love_4PDA",
-                    ":nea:": "nea",
-                    ":moil:": "moil",
-                    ":no:": "no",
-                    ":nono:": "nono",
-                    ":offtopic:": "offtopic",
-                    ":ok:": "ok",
-                    ":papuas:": "papuas",
-                    ":party:": "party",
-                    ":pioneer_smoke:": "pioneer_smoke",
-                    ":pipiska:": "pipiska",
-                    ":protest:": "protest",
-                    ":popcorm:": "popcorm",
-                    ":rabbi:": "rabbi",
-                    ":resent:": "resent",
-                    ":roll:": "roll",
-                    ":rtfm:": "rtfm",
-                    ":russian_garmoshka:": "russian_garmoshka",
-                    ":russian:": "russian",
-                    ":russian_ru:": "russian_ru",
-                    ":scratch_one-s_head:": "scratch_one-s_head",
-                    ":scare:": "scare",
-                    ":search:": "search",
-                    ":secret:": "secret",
-                    ":skull:": "skull",
-                    ":shok:": "shok",
-                    ":sorry:": "sorry",
-                    ":smoke:": "smoke",
-                    ":spiteful:": "spiteful",
-                    ":stop_flood:": "stop_flood",
-                    ":suicide:": "suicide",
-                    ":stop_holywar:": "stop_holywar",
-                    ":superman:": "superman",
-                    ":superstition:": "superstition",
-                    ":tablet_za:": "tablet_protiv",
-                    ":tablet_protiv:": "tablet_za",
-                    ":this:": "this",
-                    ":tomato:": "tomato",
-                    ":to_clue:": "to_clue",
-                    ":tommy:": "tommy",
-                    ":tongue3:": "tongue3",
-                    ":umnik:": "umnik",
-                    ":victory:": "victory",
-                    ":vinsent:": "vinsent",
-                    ":wallbash:": "wallbash",
-                    ":whistle:": "whistle",
-                    ":wink_kind:": "wink_kind",
-                    ":yahoo:": "yahoo",
-                    ":yes:": "yes",
-                    ":blush:": "confusion",
-                    "-:{": "girl_devil",
-                    ":*": "kiss",
-                    "@}-'-,-": "give_rose",
-                    ":'(": "cry",
-                    ":-{": "mad",
-                    "=^.^=": "kitten",
-                    "(-=": "girl_hide",
-                    "(-;": "girl_wink",
-                    ")-:{": "girl_angry",
-                    "*-:": "girl_chmok",
-                    ")-:": "girl_sad",
-                    ":girl_mad:": "girl_mad",
-                    "(-:": "girl_smile",
-                    ":acute:": "acute",
-                    ":aggressive:": "aggressive",
-                    ":air_kiss:": "air_kiss",
-                    "o_O": "blink",
-                    ":-": "confusion",
-                    ":'-(": "cry",
-                    ":lol_girl:": "girl_haha",
-                    ")-':": "girl_cray",
-                    "(;": "girl_wink",
-                    ":-*": "kiss",
-                    ":laugh:": "laugh",
-                    ":ohmy:": "ohmy",
-                    ":-(": "sad",
-                    "8-)": "rolleyes",
-                    ":-)": "smile",
-                    ":smile:": "smile",
-                    ":-P": "tongue",
-                    ";-)": "wink"
-                }
-                const bbButtons = [{
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/b.png",
-                        title: "Жирный",
-                        name: "B"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/i.png",
-                        title: "Курсив",
-                        name: "I"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/u.png",
-                        title: "Подчёркивание",
-                        name: "U"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/s.png",
-                        title: "Зачёркивание",
-                        name: "S"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/sub.png",
-                        title: "Подстрочный текст",
-                        name: "SUB"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/sup.png",
-                        title: "Надстрочный текст",
-                        name: "SUP"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/left.png",
-                        title: "Влево",
-                        name: "LEFT"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/center.png",
-                        title: "По центру",
-                        name: "CENTER"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/right.png",
-                        title: "Вправо",
-                        name: "RIGHT"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/url.png",
-                        title: "Вставить гиперссылку",
-                        name: "URL"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/quote.png",
-                        title: "Вставить цитату",
-                        name: "QUOTE"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/offtop.png",
-                        title: "Оффтоп",
-                        name: "OFFTOP"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/code.png",
-                        title: "Вставить код",
-                        name: "CODE"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/spoiler.png",
-                        title: "Сделать текст сворачиваемым",
-                        name: "SPOILER"
-                    },
-                    {
-                        src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/list.png",
-                        title: "Вставить список",
-                        name: "LIST"
-                    },
-                ];
 
-                function getSelectionText() {
-                    let text = "";
-                    if (window.getSelection) {
-                        text = window.getSelection().toString()
-                    } else if (document.selection && document.selection.type != "Control") {
-                        text = document.selection.createRange().text
-                    }
-                    return text
+        function getUserData(link, index) {
+          return new Promise(resolve => {
+            //debugger;
+            const usersInfo = GM_getValue('usersInfo') || new Map();
+            const userInfo = usersInfo[link];
+            if (!userInfo || isNaN(new Date(userInfo.updated)) || new Date(userInfo.updated) < getMinutesBefore(10)) {
+              const xhr = new XMLHttpRequest();
+              xhr.open('GET', link, true);
+              xhr.send();
+              xhr.onload = function() {
+                if (this.readyState === 4 && this.status === 200) {
+                  const response = xhr.responseText;
+                  const parser = new DOMParser();
+                  const doc = parser.parseFromString(response, 'text/html');
+                  const personalData = doc.getElementsByClassName('info-list width1 black-link')[0];
+                  personalData.style.marginLeft = 0;
+                  personalData.style.paddingLeft = 0;
+                  personalData.style.display = 'block';
+                  personalData.style.listStyle = 'none';
+                  const personalDataList = personalData.querySelectorAll('li');
+                  const mainData = doc.getElementsByClassName('info-list black-link')[0];
+                  mainData.style.marginLeft = 0;
+                  mainData.style.paddingLeft = 0;
+                  mainData.style.display = 'block';
+                  mainData.style.listStyle = 'none';
+                  const mainDataList = mainData.querySelectorAll('li');
+                  const personalDataFilter = [
+                    'Мужчина',
+                    'Женщина',
+                    'Город:',
+                    'Дата рождения:',
+                    'Время у юзера:',
+                  ];
+                  const list = Array.prototype.slice.call(personalDataList)
+                  .filter(li => personalDataFilter.filter(el => li.innerText.includes(el)).length > 0)
+                  .concat(
+                    Array.prototype.slice.call(mainDataList)
+                    .filter(li => li.innerText.includes('посещение')));
+                  let userData = '';
+                  for (let i = 0; i < list.length; i++) {
+                    const reg = new RegExp(/Город:\n(.*)/);
+                    // console.log(list[i].innerText);
+                    userData += '<p>' + list[i].innerText
+                      .replace(/(Город:)/, '$1 ')
+                      .replace(/(рождения:)/, '$1<br/>')
+                      .replace(/(юзера:)/, '$1<br/>')
+                      .replace(/(посещение:)/, '$1<br/>') +
+                      '</p><br/>'
+                  }
+                  //debugger;
+                  usersInfo[link] = {userData, updated: Date.now()};
+                  GM_setValue("usersInfo", usersInfo);
+                  insertData(userData, index);
+                  resolve();
                 }
-
-                function quoteClick() {
-                    const appendText = getSelectionText();
-                    const textArea = $('#thread-msg');
-                    textArea.val(textArea.val() + '[QUOTE]' + appendText + '[/QUOTE]')
-                }
-
-                $('#body').on('click', (e) => {
-                    if (e.target.id == 'btn-bb-codes') {
-                        if (!($('div').is('#btn-bb'))) {
-                            $('#btn-bb-codes').attr('data-options', '{"class":"show"}');
-                            let btn = '<table cellspacing="0" cellpadding="0" border="0" width="100%" class="ed-wrap"><tbody><tr>' +
-                                '<td id="ed--1_bbc" style="text-align: left; width: 100%; padding-left: 4px;" class="ed-panel">';
-                            for (const bbButton of bbButtons) {
-                                if (bbButton.name == "QUOTE") {
-                                    btn += '<img src="' + bbButton.src + '" border="0" align="top" class="ed-bbcode-normal" alt="' + bbButton.title +
-                                        '" title="' + bbButton.title + '" id="bb-quote">'
-                                } else {
-                                    btn += '<img data-toggle="bb" data-options={"target":"#thread-msg","before":"[' + bbButton.name +
-                                        (bbButton.name == "URL" ? '=' : '') + ']","after":"[/' + bbButton.name + ']"} src="' + bbButton.src +
-                                        '" border="0" align="top" class="ed-bbcode-normal" alt=" ' + bbButton.title + '" title="' + bbButton.title +
-                                        '">'
-                                }
-                            }
-                            btn += '<div class="dropdown"><a href="#" class="btn" data-toggle="dropdown"><i class="icon-cog"/>' +
-                                '<span class="on-show-sidebar">Смайлы</span><i class="icon-down-dir-1"/></a>' +
-                                '<ul class="dropdown-menu" style="position: absolute; width: 262px; margin-left: auto; height: 150px;' +
-                                ' border: 1px solid; overflow-y: auto; overflow-x: auto; cursor: pointer;">';
-                            const paths_to_smile = GM_getValue('4pda_script_path_to_smile');
-                            for (const i in smiles) {
-                                btn += '<img src="' + paths_to_smile + smiles[i] + '.gif" border="0" class="ed-emo-normal" alt"' + i +
-                                    '" title="' + i + '" data-toggle="bb" data-options={"target":"#thread-msg","before":"","after":"&#32;' + i + '&#32;"}>'
-                            }
-                            btn += '</ul></td></tr></tbody></table>';
-                            let sep1;
-                            if ($('div').is('.form-thread[data-form="create-thread"]')) {
-                                sep1 = 'div.form-thread[data-form="create-thread"]'
-                            } else if ($('div').is('.form-thread[data-form="send-message"]')) {
-                                sep1 = 'div.form-thread[data-form="send-message"]'
-                            } else if ($('form').is('#create-thread-form')) {
-                                sep1 = '#create-thread-form'
-                            }
-                            $(sep1).prepend('<div id="btn-bb" style="display: block;">' + btn + '</div>');
-                            $('#bb-quote').on('click', () => quoteClick())
-                        } else {
-                            if ($('#btn-bb').attr('style').indexOf('display: block;') != -1) {
-                                $('#btn-bb').attr('style', 'display: none;')
-                            } else {
-                                $('#btn-bb').attr('style', 'display: block;')
-                            }
-                        }
-                    }
-                })
+              };
+              xhr.onerror = () => {
+                console.log('error');
+              }
             } else {
-                if (GM_getValue('4pda_script_path_to_smile') == null) {
-                    const smilesPath = BBSmiles.toString().match(/b\.src\=\"(\/\/\S+\/)/)[1];
-                    GM_setValue('4pda_script_path_to_smile', smilesPath)
-                }
+              insertData(userInfo.userData, index);
+              resolve();
             }
+          });
         }
-        // Исправление кнопок
-        const fixedButton = "data:image/gif;base64,R0lGODlhHgAVAOeCAAcpWgcpZRI0bBg5cSRIhSRLiC9OgS9VkztXh0NVhzRalzRbmThfnDpfnThgnj5hmzpjoD1jojtkoTxkojxnpUFmoD1npD9npj1opj9op0Fopj5ppj9pqEBqqE5okkNrpEFsqkFtrEJtq1FrlUVtrEZuqEdvrEhxsElyrE5xp1BzqE12tUt3tkx3tlN5rll4qVN5uVV6sE98uVV9vVF/vlWAv1aAv1OBwVeBwFWDwlWEw1mDw1uGxlaIyGOGuGiFslyHx12KyluLyl+NzF+NzWyLuWCOzmGOzmGR0WOR0WGT0naQuWKV1maW13iTvGuX1mWZ2WeZ2mmZ2XqWwGea22ib3Gmb3Wic3Gmd3mqd3mue322g4G2h4m2i42+j42+m53Gm53Gn6YmjyHKo6XKp63Op6pGmx3Ws7nWt75Opynev8ZSrzJatzpeu0J+xzoW59aK107HD27rH27zK377N4cnT5MnU5MrW5svW58vX59ff7Nfg7OPo8eTp8fH0+PL0+PL0+fL1+f///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEKAP8ALAAAAAAeABUAAAj+AP8JHEiwoMGDAxMEWMiwocOHDgcGeEOxosWLGC8GEBjgicePIEOKDLnxXwAYKFOqXMlyZckAM2LKnEmzJs2XOHLq1EliwQISFw5MWLGz6MsdSJMitfGAD58HLwTJiaC06ksgWLNi5aFhiSAzDdwI+nFCq9aXRNKqTTukhoI6glJU8NPHQZC1al8m2cuX7xETKv7YYeBEUJoWffm+bMK4CZPGjI1AmCPowwdAejBAbvwyiucoUj57vlFEEJwMawRNYSH680stsGPHrhJiT6ASLgTdkYBEduySAqx4GU58uA42gsRswCMohowtxYmXNNADjPXrYLigoBPHgo88bUROZMGOveQ/AmHKqF8/RgiIDjlocBChZMz6+2XMe6CApr//M19QccUXXUCBBRn+Jdifef+MUEAPXKgh4YQUVmghAAYhMABEHD6E0IcgFhQQADs=";
-        const goButtons = document.getElementsByClassName('gobutton');
-        for (let i = 0; i < goButtons.length; i++) {
-            goButtons[i].src = fixedButton;
-            goButtons[i].style.backgroundColor = 'transparent'
+
+        function insertData(userData, index) {
+          post[index].getElementsByClassName('myDiv')[0].innerHTML = userData;
         }
-        const searchButtons = document.getElementsByClassName('button');
-        for (let i = 0; i < searchButtons.length; i++) {
-            if (searchButtons[i].getAttribute('type') == 'image') {
-                searchButtons[i].src = fixedButton;
-                searchButtons[i].style.backgroundColor = 'transparent'
-            }
-        }
-        // Закрываемый контейнер уведомления
-        const notifyObserver = new MutationObserver((mutations, obs) => {
-            const notifyDiv = document.querySelector('div[style*="background:#dff0d8"]');
-            if (notifyDiv) {
-                const closeSpan = document.createElement('span');
-                closeSpan.className = 'closable';
-                closeSpan.innerHTML = 'X';
-                notifyDiv.appendChild(closeSpan);
-                closeSpan.addEventListener("click", () => {
-                    notifyDiv.remove();
-                });
-                obs.disconnect();
-                return;
-            }
-        });
-        notifyObserver.observe(document.documentElement, {
-            childList: true,
-            subtree: true
-        });
+      }
     }
-    setTimeout(() => {
-        const marker = document.createElement('meta');
-        marker.id = '4pdafixmarker';
-        document.head.appendChild(marker)
-    }, 300)
+    if (FLAGS.ADS_CLEANER) {
+      let div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(2):not(div)');
+      div && div.remove();
+      div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > div:nth-child(2)');
+      div && div.remove();
+      div = document.querySelector('article > :first-child:not(div)');
+      div && div.remove();
+      div = document.querySelector('div[itemprop="description"]');
+      div && div.remove();
+      div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(6):not(div)');
+      if (div) div.id = 'ad';
+    }
+    if (FLAGS.QMS_BB_PANEL) {
+      if (~URL.indexOf(qmsURL)) {
+        const smiles = {
+          ":happy:": "happy",
+          ";)": "wink",
+          ":P": "tongue",
+          ":-D": "biggrin",
+          ":lol:": "laugh",
+          ":rolleyes:": "rolleyes",
+          ":)": "smile_good",
+          ":beee:": "beee",
+          ":rofl:": "rofl",
+          ":sveta:": "sveta",
+          ":thank_you:": "thank_you",
+          "}-)": "devil",
+          ":girl_cray:": "girl_cray",
+          ":D": "biggrin",
+          "o.O": "blink",
+          ":blush:": "blush",
+          ":yes2:": "yes",
+          ":mellow:": "mellow",
+          ":huh:": "huh",
+          ":o": "ohmy",
+          "B)": "cool",
+          "-_-": "sleep",
+          "<_<": "dry",
+          ":wub:": "wub",
+          ":angry:": "angry",
+          ":(": "sad",
+          ":unsure:": "unsure",
+          ":wacko:": "wacko",
+          ":blink:": "blink",
+          ":ph34r:": "ph34r",
+          ":banned:": "banned",
+          ":antifeminism:": "antifeminism",
+          ":beta:": "beta",
+          ":boy_girl:": "boy_girl",
+          ":butcher:": "butcher",
+          ":bubble:": "bubble",
+          ":censored:": "censored",
+          ":clap:": "clap",
+          ":close_tema:": "close_tema",
+          ":clapping:": "clapping",
+          ":coldly:": "coldly",
+          ":comando:": "comando",
+          ":congratulate:": "congratulate",
+          ":dance:": "dance",
+          ":daisy:": "daisy",
+          ":dancer:": "dancer",
+          ":derisive:": "derisive",
+          ":dinamo:": "dinamo",
+          ":dirol:": "dirol",
+          ":diver:": "diver",
+          ":drag:": "drag",
+          ":download:": "download",
+          ":drinks:": "drinks",
+          ":first_move:": "first_move",
+          ":feminist:": "feminist",
+          ":flood:": "flood",
+          ":fool:": "fool",
+          ":friends:": "friends",
+          ":foto:": "foto",
+          ":girl_blum:": "girl_blum",
+          ":girl_crazy:": "girl_crazy",
+          ":girl_curtsey:": "girl_curtsey",
+          ":girl_dance:": "girl_dance",
+          ":girl_flirt:": "girl_flirt",
+          ":girl_hospital:": "girl_hospital",
+          ":girl_hysterics:": "girl_hysterics",
+          ":girl_in_love:": "girl_in_love",
+          ":girl_kiss:": "girl_kiss",
+          ":girl_pinkglassesf:": "girl_pinkglassesf",
+          ":girl_parting:": "girl_parting",
+          ":girl_prepare_fish:": "girl_prepare_fish",
+          ":good:": "good",
+          ":girl_spruce_up:": "girl_spruce_up",
+          ":girl_tear:": "girl_tear",
+          ":girl_tender:": "girl_tender",
+          ":girl_teddy:": "girl_teddy",
+          ":girl_to_babruysk:": "girl_to_babruysk",
+          ":girl_to_take_umbrage:": "girl_to_take_umbrage",
+          ":girl_triniti:": "girl_triniti",
+          ":girl_tongue:": "girl_tongue",
+          ":girl_wacko:": "girl_wacko",
+          ":girl_werewolf:": "girl_werewolf",
+          ":girl_witch:": "girl_witch",
+          ":grabli:": "grabli",
+          ":good_luck:": "good_luck",
+          ":guess:": "guess",
+          ":hang:": "hang",
+          ":heart:": "heart",
+          ":help:": "help",
+          ":helpsmilie:": "helpsmilie",
+          ":hemp:": "hemp",
+          ":heppy_dancing:": "heppy_dancing",
+          ":hysterics:": "hysterics",
+          ":indeec:": "indeec",
+          ":i-m_so_happy:": "i-m_so_happy",
+          ":kindness:": "kindness",
+          ":king:": "king",
+          ":laugh_wild:": "laugh_wild",
+          ":4PDA:": "love_4PDA",
+          ":nea:": "nea",
+          ":moil:": "moil",
+          ":no:": "no",
+          ":nono:": "nono",
+          ":offtopic:": "offtopic",
+          ":ok:": "ok",
+          ":papuas:": "papuas",
+          ":party:": "party",
+          ":pioneer_smoke:": "pioneer_smoke",
+          ":pipiska:": "pipiska",
+          ":protest:": "protest",
+          ":popcorm:": "popcorm",
+          ":rabbi:": "rabbi",
+          ":resent:": "resent",
+          ":roll:": "roll",
+          ":rtfm:": "rtfm",
+          ":russian_garmoshka:": "russian_garmoshka",
+          ":russian:": "russian",
+          ":russian_ru:": "russian_ru",
+          ":scratch_one-s_head:": "scratch_one-s_head",
+          ":scare:": "scare",
+          ":search:": "search",
+          ":secret:": "secret",
+          ":skull:": "skull",
+          ":shok:": "shok",
+          ":sorry:": "sorry",
+          ":smoke:": "smoke",
+          ":spiteful:": "spiteful",
+          ":stop_flood:": "stop_flood",
+          ":suicide:": "suicide",
+          ":stop_holywar:": "stop_holywar",
+          ":superman:": "superman",
+          ":superstition:": "superstition",
+          ":tablet_za:": "tablet_protiv",
+          ":tablet_protiv:": "tablet_za",
+          ":this:": "this",
+          ":tomato:": "tomato",
+          ":to_clue:": "to_clue",
+          ":tommy:": "tommy",
+          ":tongue3:": "tongue3",
+          ":umnik:": "umnik",
+          ":victory:": "victory",
+          ":vinsent:": "vinsent",
+          ":wallbash:": "wallbash",
+          ":whistle:": "whistle",
+          ":wink_kind:": "wink_kind",
+          ":yahoo:": "yahoo",
+          ":yes:": "yes",
+          ":blush:": "confusion",
+          "-:{": "girl_devil",
+          ":*": "kiss",
+          "@}-'-,-": "give_rose",
+          ":'(": "cry",
+          ":-{": "mad",
+          "=^.^=": "kitten",
+          "(-=": "girl_hide",
+          "(-;": "girl_wink",
+          ")-:{": "girl_angry",
+          "*-:": "girl_chmok",
+          ")-:": "girl_sad",
+          ":girl_mad:": "girl_mad",
+          "(-:": "girl_smile",
+          ":acute:": "acute",
+          ":aggressive:": "aggressive",
+          ":air_kiss:": "air_kiss",
+          "o_O": "blink",
+          ":-": "confusion",
+          ":'-(": "cry",
+          ":lol_girl:": "girl_haha",
+          ")-':": "girl_cray",
+          "(;": "girl_wink",
+          ":-*": "kiss",
+          ":laugh:": "laugh",
+          ":ohmy:": "ohmy",
+          ":-(": "sad",
+          "8-)": "rolleyes",
+          ":-)": "smile",
+          ":smile:": "smile",
+          ":-P": "tongue",
+          ";-)": "wink"
+        }
+        const bbButtons = [{
+          src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/b.png",
+          title: "Жирный",
+          name: "B"
+        },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/i.png",
+                             title: "Курсив",
+                             name: "I"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/u.png",
+                             title: "Подчёркивание",
+                             name: "U"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/s.png",
+                             title: "Зачёркивание",
+                             name: "S"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/sub.png",
+                             title: "Подстрочный текст",
+                             name: "SUB"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/sup.png",
+                             title: "Надстрочный текст",
+                             name: "SUP"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/left.png",
+                             title: "Влево",
+                             name: "LEFT"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/center.png",
+                             title: "По центру",
+                             name: "CENTER"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/right.png",
+                             title: "Вправо",
+                             name: "RIGHT"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/url.png",
+                             title: "Вставить гиперссылку",
+                             name: "URL"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/quote.png",
+                             title: "Вставить цитату",
+                             name: "QUOTE"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/offtop.png",
+                             title: "Оффтоп",
+                             name: "OFFTOP"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/code.png",
+                             title: "Вставить код",
+                             name: "CODE"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/spoiler.png",
+                             title: "Сделать текст сворачиваемым",
+                             name: "SPOILER"
+                           },
+                           {
+                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/list.png",
+                             title: "Вставить список",
+                             name: "LIST"
+                           },
+                          ];
+
+        function getSelectionText() {
+          let text = "";
+          if (window.getSelection) {
+            text = window.getSelection().toString()
+          } else if (document.selection && document.selection.type != "Control") {
+            text = document.selection.createRange().text
+          }
+          return text
+        }
+
+        function quoteClick() {
+          const appendText = getSelectionText();
+          const textArea = $('#thread-msg');
+          textArea.val(textArea.val() + '[QUOTE]' + appendText + '[/QUOTE]')
+        }
+
+        $('#body').on('click', (e) => {
+          if (e.target.id == 'btn-bb-codes') {
+            if (!($('div').is('#btn-bb'))) {
+              $('#btn-bb-codes').attr('data-options', '{"class":"show"}');
+              let btn = '<table cellspacing="0" cellpadding="0" border="0" width="100%" class="ed-wrap"><tbody><tr>' +
+                  '<td id="ed--1_bbc" style="text-align: left; width: 100%; padding-left: 4px;" class="ed-panel">';
+              for (const bbButton of bbButtons) {
+                if (bbButton.name == "QUOTE") {
+                  btn += '<img src="' + bbButton.src + '" border="0" align="top" class="ed-bbcode-normal" alt="' + bbButton.title +
+                    '" title="' + bbButton.title + '" id="bb-quote">'
+                } else {
+                  btn += '<img data-toggle="bb" data-options={"target":"#thread-msg","before":"[' + bbButton.name +
+                    (bbButton.name == "URL" ? '=' : '') + ']","after":"[/' + bbButton.name + ']"} src="' + bbButton.src +
+                    '" border="0" align="top" class="ed-bbcode-normal" alt=" ' + bbButton.title + '" title="' + bbButton.title +
+                    '">'
+                }
+              }
+              btn += '<div class="dropdown"><a href="#" class="btn" data-toggle="dropdown"><i class="icon-cog"/>' +
+                '<span class="on-show-sidebar">Смайлы</span><i class="icon-down-dir-1"/></a>' +
+                '<ul class="dropdown-menu" style="position: absolute; width: 262px; margin-left: auto; height: 150px;' +
+                ' border: 1px solid; overflow-y: auto; overflow-x: auto; cursor: pointer;">';
+              const paths_to_smile = GM_getValue('4pda_script_path_to_smile');
+              for (const i in smiles) {
+                btn += '<img src="' + paths_to_smile + smiles[i] + '.gif" border="0" class="ed-emo-normal" alt"' + i +
+                  '" title="' + i + '" data-toggle="bb" data-options={"target":"#thread-msg","before":"","after":"&#32;' + i + '&#32;"}>'
+              }
+              btn += '</ul></td></tr></tbody></table>';
+              let sep1;
+              if ($('div').is('.form-thread[data-form="create-thread"]')) {
+                sep1 = 'div.form-thread[data-form="create-thread"]'
+              } else if ($('div').is('.form-thread[data-form="send-message"]')) {
+                sep1 = 'div.form-thread[data-form="send-message"]'
+              } else if ($('form').is('#create-thread-form')) {
+                sep1 = '#create-thread-form'
+              }
+              $(sep1).prepend('<div id="btn-bb" style="display: block;">' + btn + '</div>');
+              $('#bb-quote').on('click', () => quoteClick())
+            } else {
+              if ($('#btn-bb').attr('style').indexOf('display: block;') != -1) {
+                $('#btn-bb').attr('style', 'display: none;')
+              } else {
+                $('#btn-bb').attr('style', 'display: block;')
+              }
+            }
+          }
+        })
+      } else {
+        if (GM_getValue('4pda_script_path_to_smile') == null) {
+          const smilesPath = BBSmiles.toString().match(/b\.src\=\"(\/\/\S+\/)/)[1];
+          GM_setValue('4pda_script_path_to_smile', smilesPath)
+        }
+      }
+    }
+    // Исправление кнопок
+    const fixedButton = "data:image/gif;base64,R0lGODlhHgAVAOeCAAcpWgcpZRI0bBg5cSRIhSRLiC9OgS9VkztXh0NVhzRalzRbmThfnDpfnThgnj5hmzpjoD1jojtkoTxkojxnpUFmoD1npD9npj1opj9op0Fopj5ppj9pqEBqqE5okkNrpEFsqkFtrEJtq1FrlUVtrEZuqEdvrEhxsElyrE5xp1BzqE12tUt3tkx3tlN5rll4qVN5uVV6sE98uVV9vVF/vlWAv1aAv1OBwVeBwFWDwlWEw1mDw1uGxlaIyGOGuGiFslyHx12KyluLyl+NzF+NzWyLuWCOzmGOzmGR0WOR0WGT0naQuWKV1maW13iTvGuX1mWZ2WeZ2mmZ2XqWwGea22ib3Gmb3Wic3Gmd3mqd3mue322g4G2h4m2i42+j42+m53Gm53Gn6YmjyHKo6XKp63Op6pGmx3Ws7nWt75Opynev8ZSrzJatzpeu0J+xzoW59aK107HD27rH27zK377N4cnT5MnU5MrW5svW58vX59ff7Nfg7OPo8eTp8fH0+PL0+PL0+fL1+f///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////yH5BAEKAP8ALAAAAAAeABUAAAj+AP8JHEiwoMGDAxMEWMiwocOHDgcGeEOxosWLGC8GEBjgicePIEOKDLnxXwAYKFOqXMlyZckAM2LKnEmzJs2XOHLq1EliwQISFw5MWLGz6MsdSJMitfGAD58HLwTJiaC06ksgWLNi5aFhiSAzDdwI+nFCq9aXRNKqTTukhoI6glJU8NPHQZC1al8m2cuX7xETKv7YYeBEUJoWffm+bMK4CZPGjI1AmCPowwdAejBAbvwyiucoUj57vlFEEJwMawRNYSH680stsGPHrhJiT6ASLgTdkYBEduySAqx4GU58uA42gsRswCMohowtxYmXNNADjPXrYLigoBPHgo88bUROZMGOveQ/AmHKqF8/RgiIDjlocBChZMz6+2XMe6CApr//M19QccUXXUCBBRn+Jdifef+MUEAPXKgh4YQUVmghAAYhMABEHD6E0IcgFhQQADs=";
+    const goButtons = document.getElementsByClassName('gobutton');
+    for (let i = 0; i < goButtons.length; i++) {
+      goButtons[i].src = fixedButton;
+      goButtons[i].style.backgroundColor = 'transparent'
+    }
+    const searchButtons = document.getElementsByClassName('button');
+    for (let i = 0; i < searchButtons.length; i++) {
+      if (searchButtons[i].getAttribute('type') == 'image') {
+        searchButtons[i].src = fixedButton;
+        searchButtons[i].style.backgroundColor = 'transparent'
+      }
+    }
+    // Закрываемый контейнер уведомления
+    const notifyObserver = new MutationObserver((mutations, obs) => {
+      const notifyDiv = document.querySelector('div[style*="background:#dff0d8"]');
+      if (notifyDiv) {
+        const closeSpan = document.createElement('span');
+        closeSpan.className = 'closable';
+        closeSpan.innerHTML = 'X';
+        notifyDiv.appendChild(closeSpan);
+        closeSpan.addEventListener("click", () => {
+          notifyDiv.remove();
+        });
+        obs.disconnect();
+        return;
+      }
+    });
+    notifyObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true
+    });
+  }
+  setTimeout(() => {
+    const marker = document.createElement('meta');
+    marker.id = '4pdafixmarker';
+    document.head.appendChild(marker)
+  }, 300)
 });
