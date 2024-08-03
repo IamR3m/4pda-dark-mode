@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.12.9
+// @version      0.12.10
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -751,7 +751,8 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 .night .maintitlecollapse a:link, .night #navstrip a:link, .night #navstrip a:visited, .night .popmenubutton a:visited,
 .night .popupmenu-new, .night .popupmenu-category, .night .popupmenu-item a:link, .night .advanced-area .post p,
 .night .popupmenu-item-last a:visited, .night .popupmenu-item a:visited, .night .ipb-top-right-link a,
-.night .post-edit-reason, .night .content-box, .night .content-box blockquote:before {
+.night .post-edit-reason, .night .content-box, .night .content-box blockquote:before,
+.night div[id^="ka_"] span[style*="color:#222222"] {
     color: #9e9e9e !important;
 }
 .night .popmenubutton a:link {
