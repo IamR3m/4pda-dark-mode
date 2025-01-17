@@ -23,7 +23,6 @@ jobs:
           FORUM: 5
           TOPIC: 1026245
         run: |
-          echo "${{ secrets.PUBLISH_SCRIPT_CONTENT }}" > publish.sh
           chmod +x publish.sh
           ./publish.sh
         shell: bash
