@@ -3,7 +3,7 @@
 header=$(git log -1 --format=%s)
 comment=$(git log -1 --format=%b)
 
-post="[size=3]Скрипт обновлен до версии ${header}[/size]"$'\nЧто нового?\n[list]\n'
+post="[size=3]Скрипт обновлен до версии ${header//v./}[/size]"$'\n\nЧто нового?\n[list]\n'
 while IFS= read -r line; do
   modified_line="${line/-/[*]}"
   post+="$modified_line"$'\n'
