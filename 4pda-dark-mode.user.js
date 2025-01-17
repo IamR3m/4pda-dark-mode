@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.12.11
+// @version      0.12.12
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1232,7 +1232,6 @@ const frameStyleEl = document.createElement('style'),
 frameStyleEl.innerHTML = frameStyle;
 const navigatorEdge = /Edge/.test(navigator.userAgent);
 
-const getDateBefore = (days) => (d => new Date(d.setDate(d.getDate() - days)))(new Date);
 const getMinutesBefore = (minutes) => (d => new Date(d.setMinutes(d.getMinutes() - minutes)))(new Date);
 
 function readyHead(fn) {
@@ -1546,7 +1545,9 @@ ready(async () => {
       // Избранное
       if (~URL.indexOf(favURL)) {
         // находим таблицу
-        const _tr = document.getElementsByClassName('ipbtable')[0].getElementsByTagName('tbody')[0].getElementsByTagName('tr'),
+        const _tr = document.getElementsByClassName('ipbtable')[0]
+            .getElementsByTagName('tbody')[0]
+            .getElementsByTagName('tr'),
               // запихиваем в tr нужные нам строки таблицы
               tr = [];
         for (let i = 0; i < _tr.length; i++) {
@@ -1590,30 +1591,34 @@ ready(async () => {
                   .getElementsByTagName('span');
                   for (let k = 0; k < span.length; k++) {
                     // версии приложений
-                    if (span[k].getAttribute('style') == 'font-size:12pt;line-height:100%') {
+                    if (span[k].getAttribute('style') === 'font-size:12pt;line-height:100%') {
                       if (~span[k].innerHTML.toLowerCase().indexOf('верси')) {
                         // замена
                         let replace_ver = span[k].innerHTML,
                             alt_ver;
                         // если тема не была открыта
                         if (~name[i].innerHTML.indexOf('<strong>')) {
-                          replace_ver = replace_ver.toLowerCase().replace(/[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b[r]*>/g, '').trim();
+                          replace_ver = replace_ver.toLowerCase()
+                            .replace(/[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.')
+                            .replace(/<[/]*br*>/g, '').trim();
                           alt_ver = replace_ver;
-                          const alt_name = name[i].innerHTML.replace(/<[\/]*strong>/g, '');
+                          const alt_name = name[i].innerHTML.replace(/<[/]*strong>/g, '');
                           // сравнение версий: текущей полученной и сохраненной в локальном хранилище
                           if (alt_ver.localeCompare(GM_getValue(alt_name)) !== 0) {
                             showNotif(alt_name, alt_ver, link)
                           }
                           // если тема была открыта и просмотрена
                         } else {
-                          replace_ver = replace_ver.toLowerCase().replace(/<b>[А-Яа-я\s]*верси[ия]:[\s]*/, 'v.').replace(/<[\/]*b>/g, '').trim();
+                          replace_ver = replace_ver.toLowerCase()
+                            .replace(/<b>[А-Яа-я\s]*верси[ия]:\s*/, 'v.')
+                            .replace(/<\/*b>/g, '').trim();
                           alt_ver = replace_ver;
                           if (replace_ver.localeCompare(GM_getValue(name[i].innerHTML)) !== 0) {
                             showNotif(name[i].innerHTML, alt_ver, link)
                           }
                         }
                         // добавление цвета для наглядности
-                        replace_ver = '<font color="#bb72ff"> ' + replace_ver + '</font>';
+                        replace_ver = '<span style="color: #bb72ff;"> ' + replace_ver + '</span>';
                         name[i].innerHTML += replace_ver
                       }
                       break
@@ -1627,12 +1632,12 @@ ready(async () => {
           xhr.onerror = () => {
             console.log('onerror')
           };
-          xhr.onloadend = (event) => {
+          xhr.onloadend = (_event) => {
             if (++counter === trLength) {
               // вешаем обработчик событий строки (появление/скрытие кноки "Скрыть")
               addEvent();
               // скрытие строки с обновленным приложением
-              hideApp()
+              hideApp();
             }
           }
         }
@@ -1678,8 +1683,11 @@ ready(async () => {
         btnStyle.appendChild(_st);
         document.head.appendChild(btnStyle);
         navstrip.appendChild(_span);
-        _span.innerHTML = '<br/><br/>Обновлений: <font id="_cnt" color="red">' + count + '</font> <input id="hideBtn" class="myBtn" type="button" value="Скрыть обновления" style="display: none;" /><br/>' +
-          `<table id="_tbl" style="border-collapse: collapse; border: 0px"><thead><tr><th class="one">#</th><th class="two">Название</th><th>Версия</th></tr></thead><tbody></tbody></table>`;
+        _span.innerHTML = '<br/><br/>Обновлений: <span id="_cnt" style=" color: red;">' + count +
+          '</span> <input id="hideBtn" class="myBtn" type="button"' +
+          ' value="Скрыть обновления" style="display: none;" /><br/>' +
+          '<table id="_tbl" style="border-collapse: collapse; border: 0"><thead>' +
+          '<tr><th class="one">#</th><th class="two">Название</th><th>Версия</th></tr></thead><tbody></tbody></table>';
         const _tbl = document.querySelector('#_tbl'),
               _tbody = _tbl.querySelector('tbody'),
               _cnt = document.querySelector('#_cnt');
@@ -1729,7 +1737,9 @@ ready(async () => {
           // показываем скрытую кнопку, если есть обновления
           hideBtn.style.display = 'inline';
           count++;
-          const goto = '<a href="' + link + '&amp;view=getnewpost"><img src="//4pda.to/s/PXtiv0SJz25I1LFK93vEIDz09EWP3igNulg0lq5cZxWOKJ.gif" alt=">N" title="Перейти к первому непрочитанному" border="0"></a> ';
+          const goto = '<a href="' + link + '&amp;view=getnewpost">' +
+            '<img src="//4pda.to/s/PXtiv0SJz25I1LFK93vEIDz09EWP3igNulg0lq5cZxWOKJ.gif"' +
+            ' alt=">N" title="Перейти к первому непрочитанному" style="border: 0;"></a> ';
           app_name = goto + '<a href="' + link + '" title="Перейти к первому сообщению">' + alt_name + '</a>';
           saveToHideName.push(alt_name);
           saveToHideVer.push(alt_ver);
@@ -1795,7 +1805,6 @@ ready(async () => {
       if (~URL.indexOf(topicURL)) {
         const post = document.querySelectorAll('.postdetails > center'),
               userLink = document.getElementsByClassName('normalname'),
-              link = [], // собираем все ссылки на профили
               ulLength = userLink.length;
         // создание области для новых данных
         const addInfoDiv = document.createElement('div');
@@ -1852,7 +1861,8 @@ ready(async () => {
 
         function insertUserDataContainer(link, index) {
           post[index].appendChild(addInfoDiv.cloneNode(true));
-          post[index].getElementsByClassName('addInfo')[0].addEventListener("mouseenter", async () => await getUserData(link, index));
+          post[index].getElementsByClassName('addInfo')[0]
+            .addEventListener("mouseenter", async () => await getUserData(link, index));
         }
 
         function getUserData(link, index) {
@@ -1860,7 +1870,7 @@ ready(async () => {
             //debugger;
             const usersInfo = GM_getValue('usersInfo') || new Map();
             const userInfo = usersInfo[link];
-            if (!userInfo || isNaN(new Date(userInfo.updated)) || new Date(userInfo.updated) < getMinutesBefore(10)) {
+            if (!userInfo || isNaN(userInfo.updated) || new Date(userInfo.updated) < getMinutesBefore(10)) {
               const xhr = new XMLHttpRequest();
               xhr.open('GET', link, true);
               xhr.send();
@@ -1895,8 +1905,6 @@ ready(async () => {
                     .filter(li => li.innerText.includes('посещение')));
                   let userData = '';
                   for (let i = 0; i < list.length; i++) {
-                    const reg = new RegExp(/Город:\n(.*)/);
-                    // console.log(list[i].innerText);
                     userData += '<p>' + list[i].innerText
                       .replace(/(Город:)/, '$1 ')
                       .replace(/(рождения:)/, '$1<br/>')
@@ -1927,15 +1935,21 @@ ready(async () => {
       }
     }
     if (FLAGS.ADS_CLEANER) {
-      let div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(2):not(div)');
+      let div = document.querySelector(
+        'body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(2):not(div)'
+      );
       div && div.remove();
-      div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > div:nth-child(2)');
+      div = document.querySelector(
+        'body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > div:nth-child(2)'
+      );
       div && div.remove();
       div = document.querySelector('article > :first-child:not(div)');
       div && div.remove();
       div = document.querySelector('div[itemprop="description"]');
       div && div.remove();
-      div = document.querySelector('body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(6):not(div)');
+      div = document.querySelector(
+        'body > div:first-of-type > :nth-child(2):not(div) > :first-child:not(div) > :nth-child(6):not(div)'
+      );
       if (div) div.id = 'ad';
     }
     if (FLAGS.QMS_BB_PANEL) {
@@ -2088,7 +2102,6 @@ ready(async () => {
           ":wink_kind:": "wink_kind",
           ":yahoo:": "yahoo",
           ":yes:": "yes",
-          ":blush:": "confusion",
           "-:{": "girl_devil",
           ":*": "kiss",
           "@}-'-,-": "give_rose",
@@ -2121,88 +2134,89 @@ ready(async () => {
           ":-P": "tongue",
           ";-)": "wink"
         }
-        const bbButtons = [{
-          src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/b.png",
-          title: "Жирный",
-          name: "B"
-        },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/i.png",
-                             title: "Курсив",
-                             name: "I"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/u.png",
-                             title: "Подчёркивание",
-                             name: "U"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/s.png",
-                             title: "Зачёркивание",
-                             name: "S"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/sub.png",
-                             title: "Подстрочный текст",
-                             name: "SUB"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/sup.png",
-                             title: "Надстрочный текст",
-                             name: "SUP"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/left.png",
-                             title: "Влево",
-                             name: "LEFT"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/center.png",
-                             title: "По центру",
-                             name: "CENTER"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/right.png",
-                             title: "Вправо",
-                             name: "RIGHT"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/url.png",
-                             title: "Вставить гиперссылку",
-                             name: "URL"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/quote.png",
-                             title: "Вставить цитату",
-                             name: "QUOTE"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/offtop.png",
-                             title: "Оффтоп",
-                             name: "OFFTOP"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/code.png",
-                             title: "Вставить код",
-                             name: "CODE"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/spoiler.png",
-                             title: "Сделать текст сворачиваемым",
-                             name: "SPOILER"
-                           },
-                           {
-                             src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/list.png",
-                             title: "Вставить список",
-                             name: "LIST"
-                           },
-                          ];
+        const bbButtons = [
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/b.png",
+            title: "Жирный",
+            name: "B"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/i.png",
+            title: "Курсив",
+            name: "I"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/u.png",
+            title: "Подчёркивание",
+            name: "U"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/s.png",
+            title: "Зачёркивание",
+            name: "S"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/sub.png",
+            title: "Подстрочный текст",
+            name: "SUB"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/sup.png",
+            title: "Надстрочный текст",
+            name: "SUP"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/left.png",
+            title: "Влево",
+            name: "LEFT"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/center.png",
+            title: "По центру",
+            name: "CENTER"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/right.png",
+            title: "Вправо",
+            name: "RIGHT"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/url.png",
+            title: "Вставить гиперссылку",
+            name: "URL"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/quote.png",
+            title: "Вставить цитату",
+            name: "QUOTE"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/offtop.png",
+            title: "Оффтоп",
+            name: "OFFTOP"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/code.png",
+            title: "Вставить код",
+            name: "CODE"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/spoiler.png",
+            title: "Сделать текст сворачиваемым",
+            name: "SPOILER"
+          },
+          {
+            src: "//4pda.to/s/Zy0hOXnvtW2qrwxoyQORE95VPgds/1/folder_editor_buttons/list.png",
+            title: "Вставить список",
+            name: "LIST"
+          },
+        ];
 
         function getSelectionText() {
           let text = "";
           if (window.getSelection) {
             text = window.getSelection().toString()
-          } else if (document.selection && document.selection.type != "Control") {
+          } else if (document.selection && document.selection.type !== "Control") {
             text = document.selection.createRange().text
           }
           return text
@@ -2215,54 +2229,60 @@ ready(async () => {
         }
 
         $('#body').on('click', (e) => {
-          if (e.target.id == 'btn-bb-codes') {
-            if (!($('div').is('#btn-bb'))) {
+          if (e.target.id === 'btn-bb-codes') {
+            const $div = $('div');
+            if (!($div.is('#btn-bb'))) {
               $('#btn-bb-codes').attr('data-options', '{"class":"show"}');
-              let btn = '<table cellspacing="0" cellpadding="0" border="0" width="100%" class="ed-wrap"><tbody><tr>' +
+              let btn = '<table style="width: 100%" class="ed-wrap"><tbody><tr>' +
                   '<td id="ed--1_bbc" style="text-align: left; width: 100%; padding-left: 4px;" class="ed-panel">';
               for (const bbButton of bbButtons) {
-                if (bbButton.name == "QUOTE") {
-                  btn += '<img src="' + bbButton.src + '" border="0" align="top" class="ed-bbcode-normal" alt="' + bbButton.title +
+                if (bbButton.name === "QUOTE") {
+                  btn += '<img src="' + bbButton.src + '" class="ed-bbcode-normal" alt="' + bbButton.title +
                     '" title="' + bbButton.title + '" id="bb-quote">'
                 } else {
                   btn += '<img data-toggle="bb" data-options={"target":"#thread-msg","before":"[' + bbButton.name +
-                    (bbButton.name == "URL" ? '=' : '') + ']","after":"[/' + bbButton.name + ']"} src="' + bbButton.src +
-                    '" border="0" align="top" class="ed-bbcode-normal" alt=" ' + bbButton.title + '" title="' + bbButton.title +
+                    (bbButton.name === "URL" ? '=' : '') + ']","after":"[/' + bbButton.name + ']"} src="' +
+                    bbButton.src +'" class="ed-bbcode-normal" alt=" ' + bbButton.title + '" title="' + bbButton.title +
                     '">'
                 }
               }
-              btn += '<div class="dropdown"><a href="#" class="btn" data-toggle="dropdown"><i class="icon-cog"/>' +
-                '<span class="on-show-sidebar">Смайлы</span><i class="icon-down-dir-1"/></a>' +
+              btn += '<div class="dropdown"><a id="smile-dropdown" href="#" class="btn">' +
+                '<i class="icon-cog"/><span class="on-show-sidebar">Смайлы</span><i class="icon-down-dir-1"/></a>' +
                 '<ul class="dropdown-menu" style="position: absolute; width: 262px; margin-left: auto; height: 150px;' +
                 ' border: 1px solid; overflow-y: auto; overflow-x: auto; cursor: pointer;">';
               const paths_to_smile = GM_getValue('4pda_script_path_to_smile');
               for (const i in smiles) {
                 btn += '<img src="' + paths_to_smile + smiles[i] + '.gif" border="0" class="ed-emo-normal" alt"' + i +
-                  '" title="' + i + '" data-toggle="bb" data-options={"target":"#thread-msg","before":"","after":"&#32;' + i + '&#32;"}>'
+                  '" title="' + i +
+                  '" data-toggle="bb" data-options={"target":"#thread-msg","before":"","after":"&#32;' + i + '&#32;"}>'
               }
               btn += '</ul></td></tr></tbody></table>';
               let sep1;
-              if ($('div').is('.form-thread[data-form="create-thread"]')) {
+              if ($div.is('.form-thread[data-form="create-thread"]')) {
                 sep1 = 'div.form-thread[data-form="create-thread"]'
-              } else if ($('div').is('.form-thread[data-form="send-message"]')) {
+              } else if ($div.is('.form-thread[data-form="send-message"]')) {
                 sep1 = 'div.form-thread[data-form="send-message"]'
               } else if ($('form').is('#create-thread-form')) {
                 sep1 = '#create-thread-form'
               }
               $(sep1).prepend('<div id="btn-bb" style="display: block;">' + btn + '</div>');
               $('#bb-quote').on('click', () => quoteClick())
+              $('#smile-dropdown').on('click', function() {
+                $(this).parent().toggleClass("open")
+              });
             } else {
-              if ($('#btn-bb').attr('style').indexOf('display: block;') != -1) {
-                $('#btn-bb').attr('style', 'display: none;')
+              const $btn = $('#btn-bb');
+              if ($btn.attr('style').indexOf('display: block;') !== -1) {
+                $btn.attr('style', 'display: none;')
               } else {
-                $('#btn-bb').attr('style', 'display: block;')
+                $btn.attr('style', 'display: block;')
               }
             }
           }
-        })
+        });
       } else {
         if (GM_getValue('4pda_script_path_to_smile') == null) {
-          const smilesPath = BBSmiles.toString().match(/b\.src\=\"(\/\/\S+\/)/)[1];
+          const smilesPath = BBSmiles.toString().match(/b\.src="(\/\/\S+\/)/)[1];
           GM_setValue('4pda_script_path_to_smile', smilesPath)
         }
       }
@@ -2276,7 +2296,7 @@ ready(async () => {
     }
     const searchButtons = document.getElementsByClassName('button');
     for (let i = 0; i < searchButtons.length; i++) {
-      if (searchButtons[i].getAttribute('type') == 'image') {
+      if (searchButtons[i].getAttribute('type') === 'image') {
         searchButtons[i].src = fixedButton;
         searchButtons[i].style.backgroundColor = 'transparent'
       }
@@ -2293,7 +2313,6 @@ ready(async () => {
           notifyDiv.remove();
         });
         obs.disconnect();
-        return;
       }
     });
     notifyObserver.observe(document.documentElement, {
