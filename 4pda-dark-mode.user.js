@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.12.13
+// @version      0.12.14
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -2320,16 +2320,29 @@ ready(async () => {
               }
               $(sep1).prepend('<div id="btn-bb" style="display: block;">' + $btn[0].outerHTML + '</div>');
               $('#bb-quote').on('click', () => quoteClick())
-              const $dropdownMenu = $('.dropdown .dropdown-menu');
-              $dropdownMenu.children().off();
-              $dropdownMenu.find('.ed-emo-normal').click(function() {
-                const options = JSON.parse($(this).attr("data-options"));
-                const textarea = document.getElementById('thread-msg');
-                insertToTextarea(textarea, options.after);
-                $('#smile-dropdown').parent().toggleClass("open");
-                textarea.focus();
+
+              const $smileDropdown = $('#smile-dropdown');
+              function handleClick(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                  const options = JSON.parse($(event.target).attr("data-options"));
+                  const textarea = document.getElementById('thread-msg');
+                  insertToTextarea(textarea, options.after);
+                  $smileDropdown.parent().toggleClass("open");
+                  textarea.focus();
+              }
+              $(document).on('click', '.ed-emo-normal', handleClick);
+              $('.ed-emo-normal').each(function() {
+                const $element = $(this);
+                const currentOnClick = $element[0].onclick;
+                $element[0].onclick = function(event) {
+                  handleClick(event);
+                  if (currentOnClick) {
+                    currentOnClick.call(this, event);
+                  }
+                };
               });
-              $('#smile-dropdown').click(function() {
+              $smileDropdown.click(function() {
                 $(this).parent().toggleClass("open");
               });
 
