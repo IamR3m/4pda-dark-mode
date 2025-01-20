@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.12.12
+// @version      0.12.13
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1271,6 +1271,12 @@ function ready(fn) {
     fn()
   }
 }
+
+function insertToTextarea(textarea, text) {
+  const position = textarea.selectionStart;
+  textarea.setRangeText(text, position, position, "end");
+}
+
 ready(async () => {
   if (document.getElementById('4pdafixmarker')) return;
   // Автоматичский ночной режим
@@ -2233,43 +2239,100 @@ ready(async () => {
             const $div = $('div');
             if (!($div.is('#btn-bb'))) {
               $('#btn-bb-codes').attr('data-options', '{"class":"show"}');
-              let btn = '<table style="width: 100%" class="ed-wrap"><tbody><tr>' +
-                  '<td id="ed--1_bbc" style="text-align: left; width: 100%; padding-left: 4px;" class="ed-panel">';
-              for (const bbButton of bbButtons) {
-                if (bbButton.name === "QUOTE") {
-                  btn += '<img src="' + bbButton.src + '" class="ed-bbcode-normal" alt="' + bbButton.title +
-                    '" title="' + bbButton.title + '" id="bb-quote">'
-                } else {
-                  btn += '<img data-toggle="bb" data-options={"target":"#thread-msg","before":"[' + bbButton.name +
-                    (bbButton.name === "URL" ? '=' : '') + ']","after":"[/' + bbButton.name + ']"} src="' +
-                    bbButton.src +'" class="ed-bbcode-normal" alt=" ' + bbButton.title + '" title="' + bbButton.title +
-                    '">'
-                }
-              }
-              btn += '<div class="dropdown"><a id="smile-dropdown" href="#" class="btn">' +
-                '<i class="icon-cog"/><span class="on-show-sidebar">Смайлы</span><i class="icon-down-dir-1"/></a>' +
-                '<ul class="dropdown-menu" style="position: absolute; width: 262px; margin-left: auto; height: 150px;' +
-                ' border: 1px solid; overflow-y: auto; overflow-x: auto; cursor: pointer;">';
-              const paths_to_smile = GM_getValue('4pda_script_path_to_smile');
-              for (const i in smiles) {
-                btn += '<img src="' + paths_to_smile + smiles[i] + '.gif" border="0" class="ed-emo-normal" alt"' + i +
-                  '" title="' + i +
-                  '" data-toggle="bb" data-options={"target":"#thread-msg","before":"","after":"&#32;' + i + '&#32;"}>'
-              }
-              btn += '</ul></td></tr></tbody></table>';
+              const pathToSmile = GM_getValue('4pda_script_path_to_smile');
+              let $btn = $('<table>', { class: 'ed-wrap', style: 'width: 100%' })
+                .append($('<tbody>')
+                  .append($('<tr>')
+                    .append($(
+                      '<td>',
+                      { id: 'ed--1_bbc', class: 'ed-panel', style: 'text-align: left; width: 100%; padding-left: 4px;' }
+                      )
+                      .append($.map(bbButtons, bbButton => {
+                        if (bbButton.name === 'QUOTE') {
+                          // noinspection HtmlRequiredAltAttribute,RequiredAttributes
+                          return $(
+                            '<img>',
+                            {
+                              src: bbButton.src,
+                              class: 'ed-bbcode-normal',
+                              alt: bbButton.title,
+                              title: bbButton.title,
+                              id: 'bb-quote'
+                            }
+                          );
+                        } else {
+                          // noinspection HtmlRequiredAltAttribute,RequiredAttributes
+                          return $('<img>', {
+                            src: bbButton.src,
+                            class: 'ed-bbcode-normal',
+                            alt: bbButton.title,
+                            title: bbButton.title,
+                            'data-toggle': 'bb',
+                            'data-options': JSON.stringify({
+                              target: '#thread-msg',
+                              before: `[${bbButton.name}${bbButton.name === "URL" ? '=' : ''}]`,
+                              after: `[/${bbButton.name}]`
+                            })
+                          });
+                        }
+                      }))
+                      .append($('<div>', { class: 'dropdown' })
+                        .append($('<a>', { id: 'smile-dropdown', href: '#', class: 'btn' })
+                          .append($('<i>', { class: 'icon-cog' }))
+                          .append($('<span>', { class: 'on-show-sidebar' }).text('Смайлы'))
+                          .append($('<i>', { class: 'icon-down-dir-1' }))
+                        )
+                        .append($(
+                          '<ul>',
+                          {
+                            class: 'dropdown-menu',
+                            style: 'position: absolute; width: 262px; margin-left: auto; height: 150px;' +
+                              ' border: 1px solid; overflow-y: auto; overflow-x: auto; cursor: pointer;'
+                          })
+                          .append($.map(smiles, (smile, i) => {
+                            // noinspection HtmlRequiredAltAttribute,RequiredAttributes
+                            return $('<img>', {
+                              src: `${pathToSmile}${smile}.gif`,
+                              class: 'ed-emo-normal',
+                              alt: i,
+                              title: i,
+                              'data-toggle': 'bb',
+                              'data-options': JSON.stringify({
+                                target: '#thread-msg',
+                                before: '',
+                                after: ` ${i} `
+                              })
+                            });
+                          }))
+                        )
+                      )
+                    )
+                  )
+                );
+
               let sep1;
               if ($div.is('.form-thread[data-form="create-thread"]')) {
-                sep1 = 'div.form-thread[data-form="create-thread"]'
+                sep1 = 'div.form-thread[data-form="create-thread"]';
               } else if ($div.is('.form-thread[data-form="send-message"]')) {
-                sep1 = 'div.form-thread[data-form="send-message"]'
+                sep1 = 'div.form-thread[data-form="send-message"]';
               } else if ($('form').is('#create-thread-form')) {
-                sep1 = '#create-thread-form'
+                sep1 = '#create-thread-form';
               }
-              $(sep1).prepend('<div id="btn-bb" style="display: block;">' + btn + '</div>');
+              $(sep1).prepend('<div id="btn-bb" style="display: block;">' + $btn[0].outerHTML + '</div>');
               $('#bb-quote').on('click', () => quoteClick())
-              $('#smile-dropdown').on('click', function() {
-                $(this).parent().toggleClass("open")
+              const $dropdownMenu = $('.dropdown .dropdown-menu');
+              $dropdownMenu.children().off();
+              $dropdownMenu.find('.ed-emo-normal').click(function() {
+                const options = JSON.parse($(this).attr("data-options"));
+                const textarea = document.getElementById('thread-msg');
+                insertToTextarea(textarea, options.after);
+                $('#smile-dropdown').parent().toggleClass("open");
+                textarea.focus();
               });
+              $('#smile-dropdown').click(function() {
+                $(this).parent().toggleClass("open");
+              });
+
             } else {
               const $btn = $('#btn-bb');
               if ($btn.attr('style').indexOf('display: block;') !== -1) {
