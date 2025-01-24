@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.13.0
+// @version      0.13.1
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -1265,16 +1265,9 @@ function ready(fn) {
   }
 }
 
-function insertToTextarea(textarea, text) {
-  const position = textarea.selectionStart;
-  textarea.setRangeText(text, position, position, "end");
-}
 
 function fetchUserData(url) {
-  return $.ajax({
-    url,
-    method: "GET"
-  });
+  return $.get({url});
 }
 
 function handleAutoNightMode() {
@@ -1413,10 +1406,7 @@ function handleShowNewVersions(URL) {
         saveToHideVer = [];
 
       function getVersion(url, i) {
-        $.ajax({
-          url,
-          method: 'GET',
-        }).done(response => {
+        $.get({url}).done(response => {
           const parser = new DOMParser(),
             doc = parser.parseFromString(response, 'text/html'),
             tbl = $(doc).find('.ipbtable');
@@ -2175,10 +2165,34 @@ function initializeQmsBBPanel() {
     return text;
   }
 
-  function quoteClick() {
+  function insertToTextarea(textarea, before, after) {
+    const start = $(textarea)[0].selectionStart;
+    const end = $(textarea)[0].selectionEnd;
+    const text = $(textarea).val().substring(start, end);
+    const newText = before + text + after;
+    $(textarea)[0].setRangeText(newText, start, end, "end");
+  }
+
+  function quoteClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
     const appendText = getSelectionText();
     const textArea = $('#thread-msg');
     textArea.val(textArea.val() + '[QUOTE]' + appendText + '[/QUOTE]')
+  }
+
+  function handleButtonClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const options = JSON.parse($(event.target).attr('data-options'));
+    const $textarea = $(options.target);
+
+    if (options.before.includes('URL')) {
+      const url = prompt('Введите URL:');
+      if (url) options.before = `[URL=${url}]`;
+    }
+    insertToTextarea($textarea, options.before, options.after);
+    $textarea.focus();
   }
 
   $('#body').on('click', (e) => {
@@ -2266,24 +2280,17 @@ function initializeQmsBBPanel() {
           sep1 = '#create-thread-form';
         }
         $(sep1).prepend('<div id="btn-bb" style="display: block;">' + $btn[0].outerHTML + '</div>');
-        $('#bb-quote').on('click', () => quoteClick())
 
         const $smileDropdown = $('#smile-dropdown');
-        function handleClick(event) {
-          event.preventDefault();
-          event.stopPropagation();
-          const options = JSON.parse($(event.target).attr("data-options"));
-          const textarea = document.getElementById('thread-msg');
-          insertToTextarea(textarea, options.after);
-          $smileDropdown.parent().toggleClass("open");
-          textarea.focus();
-        }
-        $(document).on('click', '.ed-emo-normal', handleClick);
-        $('.ed-emo-normal').each(function() {
+        $('.ed-emo-normal, .ed-bbcode-normal').each(function() {
           const $element = $(this);
           const currentOnClick = $element[0].onclick;
           $element[0].onclick = function(event) {
-            handleClick(event);
+            if ($(event.target).attr('id') === "bb-quote") {
+              quoteClick(event);
+            } else {
+              handleButtonClick(event);
+            }
             if (currentOnClick) {
               currentOnClick.call(this, event);
             }
