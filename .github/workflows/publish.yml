@@ -23,6 +23,6 @@ jobs:
           FORUM: 5
           TOPIC: 1026245
         run: |
-          chmod +x publish.sh
-          ./publish.sh
+          chmod +x ./.github/publish.sh
+          ./.github/publish.sh
         shell: bash
