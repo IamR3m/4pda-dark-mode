@@ -18,8 +18,7 @@ jobs:
 
       - name: Publish post on 4pda
         env:
-          COOKIE: ${{ secrets.COOKIE_4PDA }}
-          AUTH_KEY: ${{ secrets.AUTH_KEY_4PDA }}
+          SIGNAL_SECRET: ${{ secrets.SIGNAL_SECRET }}
           FORUM: 5
           TOPIC: 1026245
         run: |
