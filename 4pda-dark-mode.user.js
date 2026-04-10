@@ -2,7 +2,7 @@
 // @name         4pda Dark Mode
 // @namespace    4PDA
 // @homepage     https://4pda.to/forum/index.php?showtopic=1026245
-// @version      0.13.4
+// @version      0.13.5
 // @description  Dark Mode to 4pda
 // @author       IamR3m
 // @match        https://4pda.ru/*
@@ -17,47 +17,47 @@
 // @grant        GM_setValue
 // ==/UserScript==
 
-/* global $, BBsmiles*/
+/* global $, BBSmiles*/
 
 const FLAGS = {
-  SMALL_BUTTONS: false,
-  AUTO_NIGHT_MODE: false,
-  AUTO_NIGHT_START: 20,
-  AUTO_NIGHT_END: 8,
-  FAV_UNREAD_DARK_COLOR: "#111d27",
-  FAV_UNREAD_LIGHT_COLOR: "#ACD6F7",
-  SHOW_NEW_VERSIONS: false,
-  SHOW_USER_INFO: false,
-  ADS_CLEANER: false,
-  QMS_BB_PANEL: false,
-  CATEND_HEIGHT: 5,
-  TD_PADDING: 5,
-  POPMENUBUTTON_PADDING: 4,
-  POST_FOOTER_PADDING: 5,
-},
-      favURL = '/forum/index.php?act=fav',
-      forumURL = '/forum/index.php?showforum=',
-      topicURL = '/forum/index.php?showtopic=',
-      qmsURL = '/forum/index.php?act=qms',
-      configOptions = [
-        ['SMALL_BUTTONS', 'маленькие кнопки настроек и ночного режима'],
-        ['SHOW_NEW_VERSIONS', 'показывать новые версии в избранном'],
-        ['SHOW_USER_INFO', 'показывать доп. информацию о пользователях в теме'],
-        ['QMS_BB_PANEL', 'модифицированная панель BB-кодов в QMS'],
-        ['ADS_CLEANER', 'удалять рекламу'],
-        ['AUTO_NIGHT_MODE', 'aвтоматически включать ночной режим'],
-        ['AUTO_NIGHT_START', 'начало ночного режима'],
-        ['AUTO_NIGHT_END', 'окончание ночного режима'],
-        ['CATEND_HEIGHT', 'высота разделителя постов'],
-        ['TD_PADDING', 'отступы табличных ячеек'],
-        ['POPMENUBUTTON_PADDING', 'отступ кнопки меню автора поста'],
-        ['POST_FOOTER_PADDING','отступ подвала поста'],
-      ]
+    SMALL_BUTTONS: false,
+    AUTO_NIGHT_MODE: false,
+    AUTO_NIGHT_START: 20,
+    AUTO_NIGHT_END: 8,
+    FAV_UNREAD_DARK_COLOR: "#111d27",
+    FAV_UNREAD_LIGHT_COLOR: "#ACD6F7",
+    SHOW_NEW_VERSIONS: false,
+    SHOW_USER_INFO: false,
+    ADS_CLEANER: false,
+    QMS_BB_PANEL: false,
+    CATEND_HEIGHT: 5,
+    TD_PADDING: 5,
+    POPMENUBUTTON_PADDING: 4,
+    POST_FOOTER_PADDING: 5,
+  },
+  favURL = '/forum/index.php?act=fav',
+  forumURL = '/forum/index.php?showforum=',
+  topicURL = '/forum/index.php?showtopic=',
+  qmsURL = '/forum/index.php?act=qms',
+  configOptions = [
+    ['SMALL_BUTTONS', 'маленькие кнопки настроек и ночного режима'],
+    ['SHOW_NEW_VERSIONS', 'показывать новые версии в избранном'],
+    ['SHOW_USER_INFO', 'показывать доп. информацию о пользователях в теме'],
+    ['QMS_BB_PANEL', 'модифицированная панель BB-кодов в QMS'],
+    ['ADS_CLEANER', 'удалять рекламу'],
+    ['AUTO_NIGHT_MODE', 'aвтоматически включать ночной режим'],
+    ['AUTO_NIGHT_START', 'начало ночного режима'],
+    ['AUTO_NIGHT_END', 'окончание ночного режима'],
+    ['CATEND_HEIGHT', 'высота разделителя постов'],
+    ['TD_PADDING', 'отступы табличных ячеек'],
+    ['POPMENUBUTTON_PADDING', 'отступ кнопки меню автора поста'],
+    ['POST_FOOTER_PADDING','отступ подвала поста'],
+  ]
 if (!GM_getValue('4pdafixFlags')) {
   GM_setValue('4pdafixFlags', JSON.stringify(FLAGS))
 } else {
   const jsonString = GM_getValue('4pdafixFlags'),
-        loadedConfig = jsonString ? JSON.parse(jsonString) : {};
+    loadedConfig = jsonString ? JSON.parse(jsonString) : {};
   Object.keys(FLAGS).forEach((key) => {
     if (
       Object.keys(loadedConfig).includes(key) &&
@@ -66,112 +66,208 @@ if (!GM_getValue('4pdafixFlags')) {
   })
 }
 const BUTTON_SIZE = FLAGS.SMALL_BUTTONS ? 16 : 32,
-      BUTTON_SIZE2 = FLAGS.SMALL_BUTTONS ? 15 : 25,
-      BUTTON_SIZE3 = FLAGS.SMALL_BUTTONS ? 6 : 10,
-      BUTTON_SIZE4 = FLAGS.SMALL_BUTTONS ? 48 : 88,
-      userConfig = {
-        key: '4pdafix',
-        model: {
-          night_mode: [false, true],
-          fav_unread_dark_color: [FLAGS.FAV_UNREAD_DARK_COLOR],
-          fav_unread_light_color: [FLAGS.FAV_UNREAD_LIGHT_COLOR],
-          catend_height: [FLAGS.CATEND_HEIGHT],
-          td_padding: [FLAGS.TD_PADDING],
-          popmenubutton_padding: [FLAGS.POPMENUBUTTON_PADDING],
-          post_footer_padding: [FLAGS.POST_FOOTER_PADDING],
-        },
-        config: {},
-        init() {
-          let jsonString = GM_getValue(userConfig.key);
-          const loadedConfig = jsonString ? JSON.parse(jsonString) : {},
-                config = {};
-          Object.keys(userConfig.model).forEach(key => {
-            config[key] = Object.keys(loadedConfig).indexOf(key) >= 0 ? loadedConfig[key] : userConfig.model[key][0]
-          });
-          jsonString = JSON.stringify(config);
-          GM_setValue(userConfig.key, jsonString);
-          userConfig.config = config
-        },
-        getItem(key) {
-          return JSON.parse(GM_getValue(userConfig.key))[key]
-        },
-        setItem(key, value) {
-          let jsonString = GM_getValue(userConfig.key);
-          const config = JSON.parse(jsonString);
-          config[key] = value;
-          jsonString = JSON.stringify(config);
-          GM_setValue(userConfig.key, jsonString);
-          userConfig.config = config
-        },
-        shiftItem(key) {
-          const availableValues = userConfig.model[key],
-                nextIdx = (availableValues.indexOf(userConfig.getItem(key)) + 1) % availableValues.length,
-                nextValue = availableValues[nextIdx];
-          userConfig.setItem(key, nextValue);
-          return nextValue
-        }
-      };
+  BUTTON_SIZE2 = FLAGS.SMALL_BUTTONS ? 15 : 25,
+  BUTTON_SIZE3 = FLAGS.SMALL_BUTTONS ? 6 : 10,
+  BUTTON_SIZE4 = FLAGS.SMALL_BUTTONS ? 48 : 88,
+  userConfig = {
+    key: '4pdafix',
+    model: {
+      night_mode: [false, true],
+      fav_unread_dark_color: [FLAGS.FAV_UNREAD_DARK_COLOR],
+      fav_unread_light_color: [FLAGS.FAV_UNREAD_LIGHT_COLOR],
+      catend_height: [FLAGS.CATEND_HEIGHT],
+      td_padding: [FLAGS.TD_PADDING],
+      popmenubutton_padding: [FLAGS.POPMENUBUTTON_PADDING],
+      post_footer_padding: [FLAGS.POST_FOOTER_PADDING],
+    },
+    config: {},
+    init() {
+      let jsonString = GM_getValue(userConfig.key);
+      const loadedConfig = jsonString ? JSON.parse(jsonString) : {},
+        config = {};
+      Object.keys(userConfig.model).forEach(key => {
+        config[key] = Object.keys(loadedConfig).indexOf(key) >= 0 ? loadedConfig[key] : userConfig.model[key][0]
+      });
+      jsonString = JSON.stringify(config);
+      GM_setValue(userConfig.key, jsonString);
+      userConfig.config = config
+    },
+    getItem(key) {
+      return JSON.parse(GM_getValue(userConfig.key))[key]
+    },
+    setItem(key, value) {
+      let jsonString = GM_getValue(userConfig.key);
+      const config = JSON.parse(jsonString);
+      config[key] = value;
+      jsonString = JSON.stringify(config);
+      GM_setValue(userConfig.key, jsonString);
+      userConfig.config = config
+    },
+    shiftItem(key) {
+      const availableValues = userConfig.model[key],
+        nextIdx = (availableValues.indexOf(userConfig.getItem(key)) + 1) % availableValues.length,
+        nextValue = availableValues[nextIdx];
+      userConfig.setItem(key, nextValue);
+      return nextValue
+    }
+  };
 userConfig.init();
+console.log(BUTTON_SIZE);
 let userStyle = `
+/* Theme */
+:root {
+  /* neutral */
+  --gray-100: #ddd;
+  --gray-200: #aaa;
+  --gray-300: #9e9e9e;
+  --gray-400: #515151;
+  --gray-500: #333;
+
+  /* dark surfaces */
+  --dark-100: #31383e;
+  --dark-200: #22272b;
+  --dark-300: #171c20;
+
+  /* blue */
+
+  --blue-base: #4c678d;
+  --blue-dark: #3a4f6c;
+  --blue-darker: #29394e;
+
+  /* red */
+
+  --red-base: #7a4a4a;
+  --red-dark: #5b3636;
+  --red-darker: #402525;
+
+  /* green */
+
+  --green-base: #4a6a5a;
+  --green-dark: #354f42;
+  --green-darker: #24352c;
+  --green-darkest: #102a1c;
+
+  /* surfaces */
+
+  --bg-main: var(--dark-300);
+  --bg-panel: var(--dark-200);
+  --bg-soft: var(--dark-100);
+  --bg-gray: var(--gray-300);
+
+  /* borders */
+  --border-main: var(--blue-dark);
+  --border-soft: var(--gray-400);
+
+  /* text */
+  --text-main: var(--gray-100);
+  --text-muted: var(--gray-300);
+  --text-soft: var(--gray-200);
+  --text-header-muted: #b0c4de;
+
+  /* accents */
+  --accent-main: var(--blue-dark);
+  --accent-soft: var(--blue-darker);
+  --accent-light: var(--blue-base);
+  --accent-header: var(--blue-dark);
+  --accent-button: #4c80a0;
+  --accent-button-hover: #5a94b9;
+  --text-on-accent: var(--gray-100);
+
+  --bg-header-gradient: linear-gradient(to bottom, #4a668c 0%, var(--accent-header) 100%);
+  --bg-page-current: #4c3c32;
+
+  --post-deleted-bg: #30363e;
+
+  --highlight-yellow-bg: #4e4623;
+  --highlight-green-bg: #26351f;
+  --highlight-green-border: #597540;
+  --highlight-red-bg: #633033;
+
+  /* forum rows */
+  --bg-row-1: #355263;
+  --bg-row-2: #284454;
+  --bg-row-open: #4d441a;
+
+  /* status rows */
+  --bg-status-todo: #992a2a;
+  --bg-status-in-progress: #1e3d1e;
+
+  /* config */
+  --button-size: ${BUTTON_SIZE}px;
+  --border-right-width: ${BUTTON_SIZE / 2}px;
+  --catend-height: ${userConfig.getItem('catend_height')}px;
+  --td-padding: ${userConfig.getItem('td_padding')}px;
+  --popmenubutton-padding-out: ${userConfig.getItem('popmenubutton_padding')}px;
+  --popmenubutton-padding: ${Math.max(0, userConfig.getItem('popmenubutton_padding')-1)}px;
+  --post-footer-padding: ${userConfig.getItem('post_footer_padding')}px;
+  --fav-unread-light-bg: ${userConfig.getItem('fav_unread_light_color')};
+  --fav-unread-dark-bg: ${userConfig.getItem('fav_unread_dark_color')};
+
+  --control-light: var(--gray-200);
+  --control-dark: var(--gray-400);
+
+  --control-hover-light: var(--gray-500);
+  --control-hover-dark: var(--bg-soft);
+}
+
 /* Night mode Swhitcher */
 
 .night_mode_switcher {
     box-sizing: border-box;
     position: fixed;
-    width: ${BUTTON_SIZE}px;
-    height: ${BUTTON_SIZE}px;
-    right: ${BUTTON_SIZE}px;
-    bottom: ${BUTTON_SIZE}px;
+    width: var(--button-size);
+    height: var(--button-size);
+    right: var(--button-size);
+    bottom: var(--button-size);
     z-index: 10000;
     background-color: transparent;
     border-radius: 50%;
-    border: 4px solid #aaa;
-    border-right-width: ${BUTTON_SIZE / 2}px;
-    transition: border-color 0.1s ease-out;
+    border: 4px solid var(--control-light);
+    border-right-width: var(--border-right-width);
+    transition:
+      background 0.12s ease,
+      border-color 0.12s ease;
 }
 .night_mode_switcher:hover {
-    border-color: #333;
+    border-color: var(--control-hover-light);
 }
 .night .night_mode_switcher {
-    border-color: #515151;
+    border-color: var(--control-dark);
 }
 .night .night_mode_switcher:hover {
-    border-color: #9e9e9e;
+    border-color: var(--control-hover-dark);
 }
 
 /* Scrollbar */
 
 .night ::-webkit-scrollbar, .night ::-webkit-scrollbar-corner, .night ::-webkit-scrollbar-track-piece {
-    background-color: #000;
+    background-color: black;
 }
 .night ::-webkit-scrollbar-thumb {
-    background-color: #22272b;
-    border: 1px solid #000;
+    background-color: var(--bg-panel);
+    border: 1px solid black;
 }
 .night ::-webkit-scrollbar-thumb:hover {
-    background-color: #2C3237;
+    background-color: var(--dark-200);
 }
 .night body.custom-scroll .scrollframe::-webkit-scrollbar-thumb {
-    background: #22272b !important;
-    border: 1px solid #000 !important;
+    background: var(--bg-panel) !important;
+    border: 1px solid black !important;
 }
 .night {
-    scrollbar-color: dark;
-    scrollbar-face-color: #22272b;
-    scrollbar-track-color: #000;
-    scrollbar-color: #22272b #000;
+    scrollbar-color: var(--bg-panel) black;
 }
 
 /* PageLinks */
 
 .night .pagelinklast > a, .night .pagelink > a, .night .pagelink-menu, .night .minipagelink > a,
 .night .minipagelinklast > a {
-    background: #171c20;
+    background: var(--bg-main)
 }
 
 .night .pagelinklast > a, .night .pagelink > a, .night .pagelink-menu, .night .pagecurrent-wa,
 .night .minipagelink > a, .night .minipagelinklast > a {
-    border-color: #395179;
+    border-color: var(--blue-dark);
 }
 
 /* Background */
@@ -180,10 +276,10 @@ let userStyle = `
     background: transparent;
 }
 .unread_row > td {
-    background: ${userConfig.getItem('fav_unread_light_color')};
+    background: var(--fav-unread-light-bg);
 }
 .night .unread_row > td {
-    background: ${userConfig.getItem('fav_unread_dark_color')};
+    background: var(--fav-unread-dark-bg);
 }
 .night .popupmenu, .night select, .night .borderwrap, .night .borderwrapm, .night .ed-p-textarea, .night .pagelinklast,
 .night .ed-textarea, .night .copyright, .night body, .night #logostrip, .night .pagelink, .night .ed-wrap .ed-textarea,
@@ -193,10 +289,11 @@ let userStyle = `
 .night form[action*="//4pda.to/forum/index.php"] ul .select-field:before, .night .side-box, .night #ucpmenu,
 .night .navbar, .night .footer, .night .lb-outerContainer, .night #lbOuterContainer, .night #lbDetailsContainer,
 .night div:has(> h2[data-revive-zoneid]), .night div:has(+div > h2[data-revive-zoneid]) {
-    background: #171c20;
+    background: var(--bg-main);
 }
 .night .catend {
-    background: #1b4466;
+    background: var(--accent-soft);
+    opacity: 0.65;
 }
 .night #userlinks, .night #userlinksguest, .night .upopupmenu-new, .night .popupmenu-new, .night #gc_1, .night #footer,
 .night #go_1, .night .borderwrap p, .night .row1, .night .row2, .night .post-edit-reason, .night .menu-main-item:hover,
@@ -209,20 +306,23 @@ let userStyle = `
 .night .second-menu .menu-brands li a:focus, .night #twocolumns, .night .price-slider .ui-slider, .night .form-bg,
 .night .dipt, .night .bar, .night .barb, .night .list-group .list-group-item[data-message-id]:not(.our-message),
 .night .list-group .list-group-item[data-message-id]:not(.our-message), .night .barc {
-    background: #22272B;
+    background: var(--bg-panel);
 }
 .night .list-group .list-group-item[data-message-id]:not(.our-message)::before {
-    border-left-color: #22272B;
+    border-left-color: var(--bg-panel);
 }
 .night td.formbuttonrow, .night .borderwrap.read .row2, .night .borderwrap.read .post2, .night .borderwrap.read .post1,
 .night .borderwrap.read td.formbuttonrow, .night .post, .night .postcolor[style*="background-color: #F0F7FF"],
 .night body > div:first-of-type > :nth-child(2) > :first-child > :nth-child(7) > :nth-child(2) > :nth-child(4),
 .night .ed-emo-panel div:last-of-type {
-    background: #22272B !important;
+    background: var(--bg-panel) !important;
 }
 .night .deletedpost .post1shaded, .night .deletedpost .post2shaded, .night .deletedpost td.formbuttonrow,
 .night .deletedpost .row2 {
-    background: #2c0707 !important;
+    background: var(--post-deleted-bg) !important;
+}
+.night .deletedpost, .night .hidepin {
+    border-left: 2px solid color-mix(in srgb, var(--gray-500) 80%, black);
 }
 .night .list-group .list-group-item.active, .night .list-group .list-group-item.active, .night #events-list > a:hover,
 .night .forum-attach-form .forum-attach-file-border, .night .comment-box .comment-list.level-1 > li, .night #print h3,
@@ -230,113 +330,90 @@ let userStyle = `
 .night .comment-box .comment-list.level-7 > li, .night .comment-box .comment-list.level-9 > li, .night .td-comment,
 .night .comment-box .comment-list.level-11 > li, .night .forum-attach-form .view-preview, .night .paginator .active a,
 .night .paginator a:hover {
-    background: #31383e;
+    background: var(--bg-soft);
 }
 .night .list-group .our-message, .night .row2[style*="background-color: rgb(220, 220, 220)"] {
-    background: #31383e !important;
+    background: var(--bg-soft) !important;
 }
 .night .list-group .our-message::before {
-    border-right-color: #31383e !important;
+    border-right-color: var(--bg-soft) !important;
 }
 .night .logo-in-qms .show-checkboxes .thread-list .list-group-item:hover::before,
 .night .logo-in-qms .show-checkboxes .thread-list .list-group-item:focus::before {
-    border-right-color: #3a4f6c !important;
-    border-left-color: #3a4f6c !important;
+    border-right-color: var(--accent-header) !important;
+    border-left-color: var(--accent-header) !important;
 }
-.night h4, .night .borderwrap h3, .night .maintitle, .night .maintitlecollapse, .night .poll-frame .poll-frame-option,
+.night h4, .night .poll-frame .poll-frame-option,
 .night .popupmenu-category, .night .formtable td.formtitle, .night .formsubtitle, .night .footer-panel,
 .night body > div:first-of-type > :nth-child(2) > :first-child > :nth-child(4), .night .second-menu .menu-brands li a,
 .night #gfooter, .night .ac_over, .night .menu-sub-item:hover, .night .comment-box .comment-list .karma .num-wrap,
 .night .price-slider .ui-slider .ui-slider-range, .night .comment-box .comment-list .karma .num, .night .userevents,
 .night .dropdown-menu > li > a:hover, .night .dropdown-menu > li > a:focus, .night .forum-attach-form .attach-btn,
 .night .menu-sub-item:active, .night .menu-right #events-count {
-    background: #3A4F6C;
+    background: var(--accent-header);
+}
+.night .borderwrap h3, .night .maintitle, .night .maintitlecollapse {
+    background: var(--bg-header-gradient);
 }
 .night h4 {
-    background: #3A4F6C !important;
+    background: var(--accent-header) !important;
 }
 .night td.row1[style*="background:#FFE87F"] {
-    background: #4e4623 !important;
+    background: var(--highlight-yellow-bg) !important;
 }
 .night .forum-attach-form .attach-btn:hover {
-    background: #469ef9 !important;
+    background: var(--blue-base);
 }
 .night .pagecurrent, .night .pagecurrent-wa {
-    background: #4c3c32;
+    background: var(--bg-page-current);
 }
 .night .popmenubutton-new, .night .popmenubutton {
-    background-color: #4c80a0;
+    background-color: var(--accent-button);
 }
 .night .forum-attach-list-before {
-    background: #22272b;
-    background: -moz-linear-gradient(top, #22272b 0%, rgba(214,232,255,0) 100%);
-    background: -webkit-gradient(left top, left bottom, color-stop(0%, #22272b), color-stop(100%, rgba(214,232,255,0)));
-    background: -webkit-linear-gradient(top, #22272b 0%, rgba(214,232,255,0) 100%);
-    background: -o-linear-gradient(top, #22272b 0%, rgba(214,232,255,0) 100%);
-    background: -ms-linear-gradient(top, #22272b 0%, rgba(214,232,255,0) 100%);
-    background: linear-gradient(to bottom, #22272b 0%, rgba(214,232,255,0) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#22272b', endColorstr='#22272b', GradientType=0 );
+    background: linear-gradient(to bottom, var(--bg-panel) 0%, transparent 100%);
 }
 .night .forum-attach-list-after {
-    background: #22272b;
-    background: -moz-linear-gradient(top, rgba(214,232,255,0) 0%, #22272b 100%);
-    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(214,232,255,0)), color-stop(100%, #22272b));
-    background: -webkit-linear-gradient(top, rgba(214,232,255,0) 0%, #22272b 100%);
-    background: -o-linear-gradient(top, rgba(214,232,255,0) 0%, #22272b 100%);
-    background: -ms-linear-gradient(top, rgba(214,232,255,0) 0%, #22272b 100%);
-    background: linear-gradient(to bottom, rgba(214,232,255,0) 0%, #22272b 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#22272b', endColorstr='#22272b', GradientType=0 );
+    background: linear-gradient(to bottom, transparent 0%, var(--bg-panel) 100%);
 }
 .night .list-group .list-group-item .bage, .night .list-group .list-group-item .icon-close {
-    background: #22272b;
-    background: -moz-linear-gradient(left, rgba(0,0,0,0) 0%, #22272b 20%, #22272b 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255,255,255,0)), color-stop(20%, #22272b), color-stop(100%, #22272b));
-    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, #22272b 20%, #22272b 100%);
-    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%, #22272b 20%, #22272b 100%);
-    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%, #22272b 20%, #22272b 100%);
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%, #22272b 20%, #22272b 100%);
+    background: linear-gradient(to right, transparent 0%, var(--bg-panel) 20%, var(--bg-panel) 100%);
 }
 .night .list-group .list-group-item.active .bage, .night .sidebar .list-group .list-group-item.active .bage {
-    background: #31383e;
-    background: -moz-linear-gradient(left, rgba(0,0,0,0) 0%, #31383e 20%, #31383e 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255,255,255,0)), color-stop(20%, #31383e), color-stop(100%, #31383e));
-    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, #31383e 20%, #31383e 100%);
-    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%, #31383e 20%, #31383e 100%);
-    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%, #31383e 20%, #31383e 100%);
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%, #31383e 20%, #31383e 100%);
+    background: linear-gradient(to right, transparent 0%, var(--bg-soft) 20%, var(--bg-soft) 100%);
 }
 .night .fosy-captcha {
-    background: #4b80b5;
-    background: -moz-linear-gradient(top, #4b80b5 0%, #335d88 44%, #14395f 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4b80b5), color-stop(44%,#335d88), color-stop(100%,#14395f));
-    background: -webkit-linear-gradient(top, #4b80b5 0%, #335d88 44%, #14395f 100%);
+    background: linear-gradient(top, #4b80b5 0%, #335d88 44%, #14395f 100%);
 }
 
 /* Background Color */
 
 .night .status-1 {
-    background-color: #0f480f;
+    background-color: var(--bg-status-in-progress);
 }
 .night .usercp_menu {
-    background-color: #171c20;
+    background-color: var(--bg-main);
 }
 .night .ed-wrap .ed-vtoggle-normal, .night .ed-wrap .ed-vtoggle-hover, .night .zbtn-default:active:hover,
 .night .ed-wrap .ed-vtoggle-down, .night .ed-wrap .ed-panel, .night .dropdown-menu .divider,
 .night .pp-contentbox-back, .night .zbtn-default.active:hover, .night .post-block.quote > .block-title {
-    background-color: #3A4F6C;
+    background-color: var(--accent-header);
+}
+.night .row4shaded, .night .post2shaded {
+    background-color: var(--green-darkest);
 }
 .night .deletedpostlight .row2, .night .deletedpostlight .post1shaded, .night .deletedpostlight td.formbuttonrow,
 .night .deletedpostlight .post2shaded {
-    background: #3a4f6c !important;
+    background: var(--accent-header) !important;
 }
 .night .t-row.row-open.row-1, .night .t-row.row-open.row-2 {
-    background-color: #5a5a0a;
+    background-color: var(--bg-row-open);
 }
 .night .status-0 {
-    background-color: #992a2a;
+    background-color: var(--bg-status-todo);
 }
 .night .row4shaded2, .night .post1shaded2, .night .post2shaded2 {
-    background-color: #fa052a5c;
+    background-color: var(--highlight-red-bg);
 }
 .night .post-block.code > .block-title {
     background-color: #fd919170;
@@ -348,112 +425,113 @@ let userStyle = `
 /* Background + Color */
 
 .night .wr.va-m .content {
-    background: #22272B;
-    color: #9e9e9e;
+    background: var(--bg-panel);
+    color: var(--text-muted);
 }
 .night .zbtn-default {
-    background: #31383e;
-    color: #9e9e9e;
+    background: var(--bg-soft);
+    color: var(--text-muted);
 }
 .night .resized-linked-image {
     background-color: #000;
-    color: #DDD;
+    color: var(--text-main);
 }
 .night .post-block > .block-body {
-    background: #171c20;
-    color: #9e9e9e;
+    background: var(--bg-main);
+    color: var(--text-muted);
 }
 .night .post-block:not(.cur):not(.mod):not(.ex):not(.code) > .block-title {
-    background-color: #29394e;
-    color: #9e9e9e;
+    background-color: var(--blue-darker);
+    color: var(--text-muted);
 }
 .night .comment-box .heading .btn {
-    background: #3a4f6c;
-    color: #DDD !important;
+    background: var(--accent-header);
+    color: var(--text-main) !important;
 }
 .night .price-slider .ui-slider .ui-slider-handle {
-    background: #4c80a0;
-    color: #DDD !important;
+    background: var(--accent-button);
+    color: var(--text-main) !important;
 }
 .night table th, .night .borderwrap table th, .night .subtitle, .night .subtitlediv, .night .postlinksbar {
-    background-color: #4c678d;
-    color: #8faed8;
+    background-color: var(--blue-dark);
+    color: var(--text-main);
+    border-bottom: 1px solid var(--blue-base);
 }
 .night .pp-title {
-    background: #4c678d;
-    color: #ddd;
+    background: var(--blue-base);
+    color: var(--text-main);
 }
 .night .darkrow1 {
-    background: #5f80af;
-    color: #1d2735;
+    background: var(--blue-darker);
+    color: var(--text-header-muted);
 }
 .night textarea.t-comment-text {
-    background: #31383e;
-    background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, #31383e 50%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255,255,255,0)), color-stop(50%, #31383e));
-    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, #31383e 50%);
-    background: -o-linear-gradient(top, rgba(255,255,255,0) 0%, #31383e 50%);
-    background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%, #31383e 50%);
-    background: linear-gradient(top, rgba(255,255,255,0) 0%, #31383e 50%);
-    border-color: #395179;
-    color: #9e9e9e;
+    background: var(--bg-soft);
+    background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, var(--bg-soft) 50%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255,255,255,0)), color-stop(50%, var(--bg-soft)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, var(--bg-soft) 50%);
+    background: -o-linear-gradient(top, rgba(255,255,255,0) 0%, var(--bg-soft) 50%);
+    background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%, var(--bg-soft) 50%);
+    background: linear-gradient(top, rgba(255,255,255,0) 0%, var(--bg-soft) 50%);
+    border-color: var(--blue-dark);
+    color: var(--text-muted);
 }
 .night .dropdown-menu > li > a[data-count]:after {
-    background: #9e9e9e;
-    color: #171c20;
+    background: var(--bg-gray);
+    color: var(--bg-main);
 }
 
 /* Background + Border Color */
 
 .night .list-group .list-group-item, .night .dropdown-menu {
-    background: #22272B;
-    border-color: #29394e;
+    background: var(--bg-panel);
+    border-color: var(--blue-darker);
 }
 .night .pp-contentbox-entry-noheight-mod, .night .pp-contentbox-entry-noheight-sel, .night .pp-contentbox-entry,
 .night .pp-contentbox-entry-noheight {
-    background-color: #22272b;
-    border-color: #29394e;
+    background-color: var(--bg-panel);
+    border-color: var(--blue-darker);
 }
 .night .events-popup {
-    background: #22272B;
-    border: 1px #395179 solid;
+    background: var(--bg-panel);
+    border: 1px var(--blue-dark) solid;
 }
 .night div[style*="background:#dff0d8"] {
-    background: #26351f !important;
-    border-color: #597540 !important;
+    background: var(--highlight-green-bg) !important;
+    border-color: var(--highlight-green-border) !important;
     position: relative;
 }
 .night .profile-textarea {
-    background: #31383e;
-    border-color: #395179;
+    background: var(--bg-soft);
+    border-color: var(--blue-dark);
 }
 .night .t-row.row-1.row-status-2, .night .t-row.row-2.row-status-2 {
-    background: #31383e;
-    border-top-color: #395179;
+    background: var(--bg-soft);
+    border-top-color: var(--blue-dark);
 }
 .night .navbar .btn, .night .bb-codes, .night .ed-panel .dropdown .btn {
-    background-color: #3A4F6C;
+    background-color: var(--accent-header);
     border-color: #5d7397;
 }
 .night td.formbuttonrow, .night .pformstrip, .night .borderwrap p.formbuttonrow, .night .borderwrap p.formbuttonrow1 {
-    background-color: #3A4F6C !important;
-    border-color: #395179;
+    background-color: var(--accent-header) !important;
+    border-color: var(--blue-dark);
 }
 .night .t-row.row-1 {
-    background-color: #446a80;
-    border-top-color: #395179;
+    background-color: var(--bg-row-1);
+    border-top-color: var(--blue-dark);
 }
 .night .t-row.row-2 {
-    background-color: #305367;
-    border-top-color: #395179;
+    background-color: var(--bg-row-2);
+    border-top-color: var(--blue-dark);
 }
 .night .rz1gXXZ5pRH, .night .sidebar {
-    background: #171c20;
-    border-right-color: #395179;
+    background: var(--bg-main);
+    border-right-color: var(--blue-dark);
 }
 .night .post-block.spoil.open > .block-body:after {
-    background: #29394e;
-    outline-color: #29394e;
+    background: var(--blue-darker);
+    outline-color: var(--blue-darker);
 }
 
 /* Border */
@@ -474,100 +552,84 @@ let userStyle = `
 
 /* Buttons */
 
-.night .g-btn.blue {
-    background: linear-gradient(to bottom, #556B7A 0%, #435563 100%);
-    background-color: #556B7A;
-    border: 1px solid #3A4A57;
-    box-shadow:
+.night .g-btn {
+  box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.05),
         0 1px 2px rgba(0,0,0,0.4);
     text-shadow: 0 1px 0 rgba(0,0,0,0.4);
-    transition: background 0.15s ease,
-                box-shadow 0.15s ease,
-                transform 0.05s ease;
-    color: #DDD;
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.05s ease;
+    color: var(--text-soft);
+}
+
+.night .g-btn.blue {
+    background: linear-gradient(to bottom, var(--blue-base) 0%, var(--blue-dark) 100%);
+    background-color: var(--blue-base);
+    border: 1px solid var(--blue-darker);
 }
 .night .g-btn.blue:hover {
-    background: linear-gradient(to bottom, #4C606E 0%, #3D4F5C 100%);
-    background-color: #4C606E;
+    background: linear-gradient(to bottom, var(--blue-dark) 0%, var(--blue-darker) 100%);
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.06),
         0 2px 4px rgba(0,0,0,0.5);
 }
 .night .g-btn.blue:active {
-    background: linear-gradient(to bottom, #3F515E 0%, #344451 100%);
-    background-color: #3F515E;
+    background-color: var(--blue-darker);
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
     transform: translateY(1px);
 }
 .night .g-btn.red {
-    background: linear-gradient(to bottom, #7A4A4A 0%, #5B3636 100%);
-    background-color: #7A4A4A;
-    border: 1px solid #4A2C2C;
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.05),
-        0 1px 2px rgba(0,0,0,0.45);
-    text-shadow: 0 1px 0 rgba(0,0,0,0.4);
-    transition: background 0.15s ease,
-                box-shadow 0.15s ease,
-                transform 0.05s ease;
+    background: linear-gradient(to bottom, var(--red-base) 0%, var(--red-dark) 100%);
+    background-color: var(--red-base);
+    border: 1px solid var(--red-darker);
 }
 .night .g-btn.red:hover {
-    background: linear-gradient(to bottom, #6A4040 0%, #503030 100%);
-    background-color: #6A4040;
+    background: linear-gradient(to bottom, var(--red-dark) 0%, var(--red-darker) 100%);
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.06),
         0 2px 4px rgba(0,0,0,0.55);
 }
 .night .g-btn.red:active {
-    background: linear-gradient(to bottom, #503030 0%, #402525 100%);
-    background-color: #503030;
+    background-color: var(--red-darker);
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.65);
     transform: translateY(1px);
 }
 .night .g-btn.green {
-    background: linear-gradient(to bottom, #4A6A5A 0%, #354F42 100%);
-    background-color: #4A6A5A;
-    border: 1px solid #2E4338;
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.05),
-        0 1px 2px rgba(0,0,0,0.45);
-    text-shadow: 0 1px 0 rgba(0,0,0,0.4);
-    transition: background 0.15s ease,
-                box-shadow 0.15s ease,
-                transform 0.05s ease;
+    background: linear-gradient(to bottom, var(--green-base) 0%, var(--green-dark) 100%);
+    background-color: var(--green-base);
+    border: 1px solid var(--green-darker);
 }
 .night .g-btn.green:hover {
-    background: linear-gradient(to bottom, #3F5C4E 0%, #2E4338 100%);
-    background-color: #3F5C4E;
+    background: linear-gradient(to bottom, var(--green-dark) 0%, var(--green-darker) 100%);
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.06),
         0 2px 4px rgba(0,0,0,0.55);
 }
 .night .g-btn.green:active {
-    background: linear-gradient(to bottom, #2E4338 0%, #24352C 100%);
-    background-color: #2E4338;
+    background-color: var(--green-darker);
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.65);
     transform: translateY(1px);
 }
 
 /* Catend height */
 .catend {
-    height: ${userConfig.getItem('catend_height')}px;
+    height: var(--catend-height);
 }
 
 /* padding */
 .ipbtable td, .divpad {
-    padding: ${userConfig.getItem('td_padding')}px;
+    padding: var(--td-padding);
 }
 .popmenubutton-new-out {
-    padding: ${userConfig.getItem('popmenubutton_padding')}px;
+    padding: var(--popmenubutton-padding-out);
 }
 .popmenubutton-new {
-    padding: ${Math.max(0, userConfig.getItem('popmenubutton_padding')-1)}px;
+    padding: var(--popmenubutton-padding);
 }
 td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbuttonrow1 {
-    padding: ${userConfig.getItem('post_footer_padding')}px !important;
+    padding: var(--post-footer-padding);
 }
 
 /* Closable notification */
@@ -599,8 +661,8 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
     filter: brightness(0.7) contrast(1.3);
 }
 .night input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 30px #31383e inset !important;
-    -webkit-text-fill-color: #9e9e9e !important;
+    -webkit-box-shadow: 0 0 0 30px var(--bg-soft) inset !important;
+    -webkit-text-fill-color: var(--text-muted) !important;
 }
 
 /* Border Color */
@@ -611,7 +673,7 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 .night .popupmenu, .night .popupmenu-new, .night .borderwrap, .night .borderwrapm, .night .upopupmenu-new, .night .bar,
 .night .upopupmenu, .night .borderwrap p, .night .post-block:not(.cur):not(.mod):not(.ex), .night .toplinks span, .night .barb,
 .night .barc, .night .subtitlediv, .night .container {
-    border-color: #29394e;
+    border-color: var(--blue-darker);
 }
 .night #userlinks, .night #userlinksguest, .night .usercp_menu, .night .usercp_menu_out, .night .qr-maintitle .sel-btn,
 .night .post-edit-reason, .night .pagelink, .night .pagelinklast, .night .pagecurrent, .night #t-content .paginator a,
@@ -620,63 +682,54 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 .night .profile-text, .night form[action*="//4pda.to/forum/index.php"] ul .select-field select, .night .form-input,
 .night .fosy-div, .night .fosy-form input, .night .fosy-form textarea, .night .fosy-form select, .night fieldset,
 .night .paginator span.static {
-    border-color: #395179;
+    border-color: var(--blue-dark);
 }
 .night h4, .night #gc_1, .night #go_1, .night .ed-wrap td, .night .ed-wrap td table {
-    border-color: #395179 !important;
+    border-color: var(--blue-dark) !important;
 }
 .night .menu-main-item.w-sub > a:after {
-    border-top-color: #9e9e9e;
+    border-top-color: var(--bg-gray);
 }
 .night .body-thread-form, .night .header.logo-in-qms .footer {
-    border-top-color: #395179;
+    border-top-color: var(--blue-dark);
 }
 .night .price-slider .ui-slider .ui-slider-handle span {
-    border-top-color: #4c80a0;
+    border-top-color: var(--accent-button);
 }
 .night .content-box blockquote {
-    border-left-color: #29394e;
+    border-left-color: var(--blue-darker);
 }
 .night #print h2, .night #print h3, .night #print p {
-    border-bottom-color: #29394e;
+    border-bottom-color: var(--blue-darker);
 }
 .night .borderwrap h3, .night .maintitle, .night .maintitlecollapse, .night .upopupmenu-item, .night .popupmenu-item,
 .night .product-detail, .night .rz1gXXZ5pRH .clear-members-form, .night .sidebar .clear-members-form, .night .t-row,
 .night .t-row-content, .night .t-form-post {
-    border-bottom-color: #395179;
+    border-bottom-color: var(--blue-dark);
 }
 .night .post-block.code {
     border-left-color: #ff43436e !important;
 }
 .night .comment-box .comment-list li [name="comment"] {
-    outline-color: #395179;
+    outline-color: var(--blue-dark);
 }
 
 /* Box Shadow */
 
 .night form[action*="//4pda.to/forum/index.php"] ul .select-field select {
-    -webkit-box-shadow: 0 0 0 1px #395179;
-    -moz-box-shadow: 0 0 0 1px #395179;
-    box-shadow: 0 0 0 1px #395179;
+    box-shadow: 0 0 0 1px var(--blue-dark);
 }
 .night .dipt:after, .night .dipt-hor-border {
-    -webkit-box-shadow: 0 1px 0 0 #395179 inset;
-    -moz-box-shadow: 0 1px 0 0 #395179 inset;
-    box-shadow: 0 1px 0 0 #395179 inset;
+    box-shadow: 0 1px 0 0 var(--blue-dark) inset;
 }
 .night .dipt .dfrml {
-    -webkit-box-shadow: -1px 0 0 0 #395179 inset;
-    -moz-box-shadow: -1px 0 0 0 #395179 inset;
-    box-shadow: -1px 0 0 0 #395179 inset;
+    box-shadow: -1px 0 0 0 var(--blue-dark) inset;
 }
 .night .dipt .dfrml + .dfrmr, .night .dipt .dfrmrbrd {
-    -webkit-box-shadow: -1px 0 0 0 #395179;
-    -moz-box-shadow: -1px 0 0 0 #395179;
-    box-shadow: -1px 0 0 0 #395179;
+    box-shadow: -1px 0 0 0 var(--blue-dark);
 }
 .night .fosy-form input, .night .fosy-form textarea, .night .fosy-form select {
-    -webkit-box-shadow: inset 0px 1px 3px 0px #395179;
-    box-shadow: inset 0px 1px 3px 0px #395179;
+    box-shadow: inset 0px 1px 3px 0px var(--blue-dark);
 }
 
 /* Color */
@@ -687,11 +740,11 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 {
     color: #000;
 }
-.night a:hover {
-    color: #13A4F4;
+.night :not(.normalname) > a:link:hover:not(.g-btn), .night :not(.normalname) > a:visited:hover:not(.g-btn) {
+    color: var(--blue-base);
 }
-.night .sel-btn.orange {
-    color: #303040 !important;
+.night a.sel-btn.orange:link {
+    color: var(--gray-400);
 }
 .night .post-block.cur > .block-title, .night .post-block.mod > .block-title, .night .post-block.ex > .block-title {
     color: #222;
@@ -705,7 +758,7 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 .night .upopupmenu-item-last a:link, .night .popmenubutton-new a:visited,.night .upopupmenu-item a:visited,
 .night .ipb-top-left-link a:link, .night .popmenubutton-new a:link, .night #submenu, .night .upopupmenu-item a:link,
 .night .popmenubutton a:visited, .night .popmenubutton, .night .popmenubutton-new, .night .globalmesscontent {
-    color: #515151;
+    color: var(--text-on-accent);
 }
 .night .dropdown-menu > .disabled > a, .night .dropdown-menu > .disabled > a:hover,
 .night .dropdown-menu > .disabled > a:focus {
@@ -720,14 +773,15 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 }
 .night #t-content, .night #t-content a, .night .wr-t + .footer, .night .article-footer-item,
 .night .comment-box .comment-form [name="comment"], .night #lbNumberDisplay {
-    color: #9e9e9e;
+    color: var(--text-muted);
 }
 .night #t-content a:hover, .night #lbCaption {
-    color: #DDD;
+    color: var(--text-main);
 }
 
-.night .advanced-area .post .list-post-title a, .night .advanced-area .post .list-post-title a:visited, .night a:link,
-.night a:visited, .night a:active, .night .advanced-area .post .list-post-title a:active {
+.night .advanced-area .post .list-post-title a, .night .advanced-area .post .list-post-title a:visited,
+.night a:link:not(.g-btn), .night a:visited:not(.g-btn), .night a:active,
+.night .advanced-area .post .list-post-title a:active {
     color: #b2b2b2;
 }
 .night table.ipbtable, .night tr.ipbtable, .night td.ipbtable, .night body, .night #events-wrapper, .night tr.ipbtable,
@@ -738,10 +792,13 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 .night .popupmenu-item-last a:visited, .night .popupmenu-item a:visited, .night .ipb-top-right-link a,
 .night .post-edit-reason, .night .content-box, .night .content-box blockquote:before,
 .night div[id^="ka_"] span[style*="color:#222222"] {
-    color: #9e9e9e !important;
+    color: var(--text-muted) !important;
 }
 .night .popmenubutton a:link {
     color: #484848 !important;
+}
+.night .popmenubutton:hover {
+    background-color: var(--accent-button-hover);
 }
 .night span[style*="color:red"], .night span[style*="color:#FF0000"], .night span[style*="color:#ff0000"] {
     color: #c70000 !important;
@@ -756,24 +813,24 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 .night select, .night .popupmenu-item-last, .night .textarea, .night .searchinput,.night .button, .night .normalname,
 .night label.select-field select, .night button.editor_button, .night .gobutton, .night .comment-box .comment-list,
 .night .catend, .night .ed-wrap .ed-textarea, .night .comment-box .comment-list .nickname {
-    color: #DDD;
+    color: var(--text-main);
 }
 .night a.btn.noborder.iblock.rounded.green, .night .comment-box .wrap-menu a {
-    color: #DDD !important;
+    color: var(--text-main) !important;
 }
 .night form[action*="//4pda.to/forum/index.php"] ul .heading .ico {
     color: rgba(255,255,255,0.2);
 }
 .night .body-tbl path, .night .body-tbl circle {
-    fill: #3A4F6C;
+    fill: var(--accent-header);
 }
 
 /* Fix download screen */
 
 .night .download-container {
-    background-color: #22272B !important;
-    border-color: #393d41 !important;
-    color: #9e9e9e;
+    background-color: var(--bg-panel) !important;
+    border-color: var(--border-main) !important;
+    color: var(--text-muted);
 }
 .night .dw-fname, .night .dw-fsize, .night .dw-fdwlink, .night .dw-descr, .night .download-container div:last-of-type {
     text-shadow: 0 0 4px black !important;
@@ -963,11 +1020,11 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 /* QMS Plus fix */
 
 .night .logo-in-qms #contacts {
-    background: #171c20;
+    background: var(--bg-main);
 }
 
 .night .qms-search-form .btn.blue {
-    color: #9e9e9e;
+    color: var(--text-muted);
 }
 .ed-wrap .ed-bbcode-normal, .ed-wrap .ed-bbcode-hover, .ed-wrap .ed-bbcode-down {
     border: solid;
@@ -1004,31 +1061,31 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
     display: none;
 }
 .night div#threads-bottom-form::after, .night div#thread-bottom-form::after, .night div#create-thread-div-form::after {
-    background-color: #171c20;
-    border-bottom: #395179 solid 1px;
+    background-color: var(--bg-main);
+    border-bottom: var(--blue-dark) solid 1px;
 }
 .night .logo-in-qms .dropdown-menu > li > a:hover, .night .logo-in-qms .dropdown .chk-wrap:hover {
-    background-color: #3A4F6C;
+    background-color: var(--accent-header);
 }
 .night .logo-in-qms .starred {
     background-color: #1B4466;
     border-color: #1B4466;
 }
 .night .ac_odd, .night .ac_even {
-    background: #22272b;
-    color: #9e9e9e;
+    background: var(--bg-panel);
+    color: var(--text-muted);
 }
 .night .ac_over {
-    background: #3A4F6C;
+    background: var(--accent-header);
 }
 .night .logo-in-qms #message-preview {
-    background-color: #171c20;
-    border-color: #395179;
+    background-color: var(--bg-main);
+    border-color: var(--blue-dark);
 }
 .night .logo-in-qms .show-checkboxes .thread-list .list-group-item:hover,
 .night .logo-in-qms .show-checkboxes .thread-list .list-group-item:focus,
 .night .logo-in-qms .show-checkboxes .thread-list .list-group-item:active {
-    background: #3a4f6c !important;
+    background: var(--accent-header) !important;
 }
 
 /* Ticket paginator fix */
@@ -1048,29 +1105,29 @@ td.formbuttonrow, .pformstrip, .borderwrap p.formbuttonrow, .borderwrap p.formbu
 */
 
 .night .post_header, .night .quick_editor, .night .makepost_link, .night .board_forum_row {
-    background: #22272B;
+    background: var(--bg-panel);
 }
 .night .post_header_editor, .night .forum_search, .night .topic_title_post, .night .cat_name {
-    background: #3A4F6C;
+    background: var(--accent-header);
 }
 .night .anonce_body {
-    background: #4e4623 !important;
-    border-bottom-color: #171c20;
+    background: var(--highlight-yellow-bg) !important;
+    border-bottom-color: var(--bg-main);
 }
 .night .cat_name + [data-post] > div[style*="background-color:#CFFFE3"] {
     background: #2C0707 !important;
 }
 .night [data-spoil-poll-pinned-container] {
-    border-color: #395179 !important;
+    border-color: var(--blue-dark) !important;
 }
 .night .post_header, .night .cat_name {
-    border-bottom-color: #395179;
+    border-bottom-color: var(--blue-dark);
 }
 .night .topic_title_post, .night #gfooter {
     color: #000;
 }
 .night .post_header_editor, .night .forum_search, .night .cat_name, .night .board_forum_row {
-    color: #9e9e9e !important;
+    color: var(--text-muted) !important;
 }
 .night .board_forum_date {
     color: #5f6772;
@@ -1110,28 +1167,46 @@ userStyle += `
     right: ${BUTTON_SIZE}px;
     bottom: ${BUTTON_SIZE4}px;
     z-index: 10000;
-    background: -webkit-linear-gradient(top, #aaa 50%, transparent 50%);
-    background: -moz-linear-gradient(top, #aaa 50%, transparent 50%);
-    background: -moz-linear-gradient(top, #aaa 50%, transparent 50%);
+    background: repeating-linear-gradient(
+        to bottom,
+        var(--control-light),
+        var(--control-light) 50%,
+        transparent 50%,
+        transparent 100%
+    );
     background-size: 10px ${BUTTON_SIZE3}px;
-    transition: background 0.1s ease-out;
+    transition:
+      background 0.12s ease,
+      border-color 0.12s ease;
 }
 .config_button:hover {
-    background: -webkit-linear-gradient(top, #333 50%, transparent 50%);
-    background: -moz-linear-gradient(top, #333 50%, transparent 50%);
-    background: -moz-linear-gradient(top, #333 50%, transparent 50%);
+    background: repeating-linear-gradient(
+        to bottom,
+        var(--control-hover-light),
+        var(--control-hover-light) 50%,
+        transparent 50%,
+        transparent 100%
+    );
     background-size: 10px ${BUTTON_SIZE3}px;
 }
 .night .config_button {
-    background: -webkit-linear-gradient(top, #515151 50%, transparent 50%);
-    background: -moz-linear-gradient(top, #515151 50%, transparent 50%);
-    background: -moz-linear-gradient(top, #515151 50%, transparent 50%);
+    background: repeating-linear-gradient(
+        to bottom,
+        var(--control-dark),
+        var(--control-dark) 50%,
+        transparent 50%,
+        transparent 100%
+    );
     background-size: 10px ${BUTTON_SIZE3}px;
 }
 .night .config_button:hover {
-    background: -webkit-linear-gradient(top, #9e9e9e 50%, transparent 50%);
-    background: -moz-linear-gradient(top, #9e9e9e 50%, transparent 50%);
-    background: -moz-linear-gradient(top, #9e9e9e 50%, transparent 50%);
+    background: repeating-linear-gradient(
+        to bottom,
+        var(--control-hover-dark),
+        var(--control-hover-dark) 50%,
+        transparent 50%,
+        transparent 100%
+    );
     background-size: 10px ${BUTTON_SIZE3}px;
 }
 .config_frame {
@@ -1140,7 +1215,7 @@ userStyle += `
     right: 80px;
     bottom: 32px;
     z-index: 10000;
-    border: 1px solid #aaa;
+    border: 1px solid var(--gray-200);
     padding: 8px;
     background: #f7f7f7;
     -webkit-user-select: none;
@@ -1205,14 +1280,24 @@ userStyle += `
     position: initial;
 }
 .night .config_frame {
-    background: #22272B;
-    border-color: #393d41;
+    background: var(--bg-panel);
+    border-color: var(--border-main);
 }`;
 const frameStyle = `
+:root.night {
+  --dark-200: #22272b;
+  --blue-dark: #395179;
+  --gray-300: #9e9e9e;
+
+  --bg-panel: var(--dark-200);
+  --border-main: var(--blue-dark);
+  --text-muted: var(--gray-300);
+}
+
 .night .download-container {
-    background-color: #22272B !important;
-    border-color: #393d41 !important;
-    color: #9e9e9e;
+    background-color: var(--bg-panel) !important;
+    border-color: var(--border-main) !important;
+    color: var(--text-muted);
 }
 .night .dw-fname, .night .dw-fsize, .night .dw-fdwlink, .night .dw-descr, .night .download-container div:last-of-type {
     text-shadow: 0 0 4px black !important;
@@ -1288,161 +1373,198 @@ function handleShowNewVersions(URL) {
   /* Автор Azat-777 https://4pda.to/forum/index.php?showuser=917143
        Мной только адаптировано и оптимизировано
     */
-  if (FLAGS.SHOW_NEW_VERSIONS) {
+  if (!FLAGS.SHOW_NEW_VERSIONS) return;
 
-    let counter = 0; // счетчик
-    // Избранное
-    if (~URL.indexOf(favURL)) {
-      const _tbl = $('#_tbl'),
-        _tbody = _tbl.find('tbody'),
-        _cnt = $('#_cnt');
-      let n = 0;
-      _tbl.css('display', 'none');
+  // Избранное
+  if (~URL.indexOf(favURL)) {
+    let count = 0,      // общий счётчик найденных обновлений
+      asyncCounter = 0, // счётчик завершённых ajax-запросов
+      n = 0,            // поярдковый номер в таблице обновлений
+      saveToHideName = [],
+      saveToHideVer = [];
+    const _tbl = $('#_tbl'),
+      _tbody = _tbl.find('tbody'),
+      _cnt = $('#_cnt'),
+      hideBtn = $('#hideBtn');
+    _tbl.css('display', 'none');
 
-      function parseVersion(html) {
-        return html.toLowerCase()
-          .replace(/[А-Яа-я\s]*верси[ия]:\s*/, 'v.')
-          .replace(/<\/?br>/g, '')
-          .replace(/<\/?b>/g, '')
-          .trim();
+    function parseVersion(html) {
+      return html.toLowerCase()
+        .replace(/[А-Яа-я\s]*верси[ия]:\s*/, 'v.')
+        .replace(/<[^>]+>/g, '')
+        .trim();
+    }
+
+    // вывод обновленных приложений вверху
+    function showNotif(altName, altVer, link) {
+      console.log(`%c[RENDER] Попытка отрисовать строку для: ${altName}`, "color: orange");
+
+      const $table = $('#_tbl');
+      const $tbody = $('tbody', $table);
+      const $countLabel = $('#_cnt');
+      const $mainHideBtn = $('#hideBtn');
+
+      if ($table.length === 0) {
+        console.error("Критическая ошибка: Таблица #_tbl не найдена в DOM!");
+        return;
       }
+      const gotoImg = '//4pda.to/s/PXtiv0SJz25I1LFK93vEIDz09EWP3igNulg0lq5cZxWOKJ.gif';
+      const $row = $('<tr>', { class: 'myTr' });
 
-      function checkAndUpdateVersion(replaceVer, altName, link) {
-        if (replaceVer.localeCompare(GM_getValue(altName)) !== 0) {
-          showNotif(altName, replaceVer, link);
+      const $colNum = $(
+        '<td>',
+        { class: 'one', align: 'center', style: 'color: var(--text-muted)', text: ++n },
+      );
+      const $colName = $('<td>', { class: 'two' });
+      const $linkNewPost = $('<a>', { href: `${link}&view=getnewpost` }).append(
+        $(
+          '<img>',
+          {
+            src: gotoImg,
+            style: 'border: 0;',
+            alt: '>N',
+            title: 'Перейи к первому непрочитанному',
+          },
+        ),
+      );
+      const $linkTopic = $(
+        '<a>',
+        { href: link, css: { color: 'var(--accent-button)', fontWeight: 'bold' }, text: altName },
+      );
+      $colName.append($linkNewPost, $linkTopic);
+
+      const $colVer = $(
+        '<td>',
+        { align: 'center', css: { color: '#bb72ff', fontWeight: 'bold' }, text: altVer },
+      );
+
+      const $colAction = $( '<td>', { align: 'center', css: { padding: 5 } });
+
+      const $hideBtn = $(
+        '<input>',
+        {
+          type: 'button',
+          value: 'Скрыть',
+          class: 'myBtn row-hide-btn hidden',
+          css: { display: 'none' },
+        },
+      );
+
+      $colAction.append($hideBtn);
+
+      $row.append($colNum, $colName, $colVer, $colAction);
+      $tbody.append($row);
+
+      $table.show();
+      $mainHideBtn.show();
+      console.log(`%c[SUCCESS] Объект $row успешно добавлен в DOM`, "color: cyan");
+
+      // Сохраняем данные для массовых действий
+      saveToHideName.push(altName);
+      saveToHideVer.push(altVer);
+    }
+
+    function addEvent() {
+      $('.myTr').hover(
+        function() { $(this).find('.hidden').show(); },
+        function() { $(this).find('.hidden').hide(); },
+      );
+    }
+
+    function hideApp() {
+      $('.myBtn.hidden').on('click', function() {
+        const $row = $(this).closest('tr');
+        const name = $row.find('td.two a').last().text(),
+          ver = $row.find('td').eq(2).text();
+        GM_setValue(name, ver);
+        $row.remove();
+
+        const remaining = _tbody.find('tr');
+        if (remaining.length === 0) {
+          _tbl.hide();
+          hideBtn.hide();
         }
-      }
+        remaining.each((i, el) => $(el).find('td.one').html(i + 1));
+        _cnt.html(remaining.length);
+      });
+    }
 
-      function updateHtml($name, replaceVer) {
-        $name.html($name.html() + '<span style="color: #bb72ff;"> ' + replaceVer + '</span>');
-      }
+    function getVersion($a, altName) {
+      const url = $a.attr('href');
+      const cleanName = altName.replace(/\[.*?\]/g, '').trim();
 
-      // вывод обновленных приложений вверху
-      function showNotif(altName, altVer, link) {
-        // показываем скрытую кнопку, если есть обновления
-        hideBtn.css('display', 'inline');
-        count++;
-        const goto = '<a href="' + link + '&amp;view=getnewpost">' +
-          '<img src="//4pda.to/s/PXtiv0SJz25I1LFK93vEIDz09EWP3igNulg0lq5cZxWOKJ.gif"' +
-          ' alt=">N" title="Перейти к первому непрочитанному" style="border: 0;"></a> ';
-        const appName = goto + '<a href="' + link + '" title="Перейти к первому сообщению">' + altName + '</a>';
-        saveToHideName.push(altName);
-        saveToHideVer.push(altVer);
-        showUpdates(appName, altVer)
-      }
-      // показ количества обновлений и вывод их в таблице
-      function showUpdates(appName, ver) {
-        _tbl.css('display', 'block');
-        n++;
-        const row = $('<tr>').addClass('myTr').appendTo(_tbody);
-        $('<td>').addClass('one').html(n).appendTo(row);
-        $('<td>').addClass('two').html(appName).appendTo(row);
-        $('<td>').html(ver).appendTo(row);
-        $('<td>').html('<input class="myBtn hidden" type="button" value="Скрыть" style="display: none;">')
-          .appendTo(row);
-        _cnt.html(count);
-      }
+      $.get(url).done(response => {
+        const doc = new DOMParser().parseFromString(response, 'text/html'),
+          $firstPost = $(doc).find('.postcolor').first();
+        if ($firstPost.length) {
+          const $versionElement = $firstPost.find('span, b, strong').filter(function() {
+            const text = $(this).text().toLowerCase();
+            return text.includes('версия') || text.includes('версии');
+          }).first();
+          if ($versionElement.length) {
+            const replaceVer = parseVersion($versionElement.html());
+            const shortVer = replaceVer.split('/')[0].trim();
 
-      function addEvent() {
-        $('.myTr').on('mouseover', function() {
-          $(this).find('.hidden').css('display', 'block');
-        }).on('mouseout', function() {
-          $(this).find('.hidden').css('display', 'none');
-        });
-      }
+            const savedVer = GM_getValue(cleanName);
 
-      function hideApp() {
-        $('.myBtn.hidden').each(function() {
-          $(this).on('click', function() {
-            const n = $(this).parent().parent().children().eq(0).text(),
-              name = $(this).parent().parent().children().eq(1).children().eq(1).html(),
-              ver = $(this).parent().parent().children().eq(2).html();
-            GM_setValue(name, ver);
-            // сброс # таблицы и удаление строк(и)
-            _tbl[0].deleteRow(n);
-            const num = _tbl.find('td.one');
-            // если было скрыто последнее обновление, скрываем шапку таблицы и кнопку "Скрыть обновления"
-            if (num.length === 0) {
-              _tbl.css('display', 'none');
-              hideBtn.css('display', 'none');
+            if (!savedVer) {
+              GM_setValue(cleanName, shortVer);
+              console.log(
+                `%c[INIT] %c${cleanName} добавлена в базу: ${shortVer}`,
+                "color: green; font-weight: bold", "color: default",
+              );
+            } else if (shortVer !== savedVer) {
+              console.log(
+                `%c[UPDATE] %cНайдено обновление для ${cleanName}: ${savedVer} -> ${shortVer}`,
+                "color: red; font-weight: bold", "color: default",
+              );
+              showNotif(cleanName, shortVer, url);
             }
-            num.each(function(index) {
-              $(this).html(index + 1);
-            });
-            _cnt.html(num.length);
-          });
-        });
-      }
 
-      const _tr = $('.ipbtable').eq(0)
-        .find('tbody').eq(0)
-        .find('tr');
-      const tr = [];
-      _tr.each(function() {
-        if ($(this).attr('data-item-fid')) {
-          tr.push($(this)[0]);
+            $a.after(`<span style="color: #bb72ff; font-size: 0.8em;"> [${shortVer}]</span>`);
+          } else {
+            console.log('Слово "версия" не найдено в посте:', cleanName);
+          }
+        }
+      }).always(() => {
+        asyncCounter++;
+        if (asyncCounter === trLength) {
+          addEvent();
+          hideApp();
         }
       });
+    }
 
-      const trLength = tr.length,
-        name = []; // названия тем
-      for (let i = 0; i < trLength; i++) {
-        const tmp = $(tr[i]).find('td').eq(1).find('span').eq(0).find('a').eq(0);
-        getVersion(tmp.attr('href'), i);
-        name.push(tmp[0]);
+
+    const rows = $('.ipbtable tr[data-item-fid]');
+    const trLength = rows.length;
+
+    rows.each(function() {
+      const linkElement = $(this).find('td').eq(1).find('a[href*="showtopic="]').filter(function() {
+        return $(this).text().trim().length > 0;
+      }).first();
+      const url = linkElement.attr('href');
+      const name = linkElement.text().trim();
+      if (url && url !== '#' && name) {
+        getVersion(linkElement, name);
+      } else {
+        asyncCounter++;
       }
-      //=====================================================
-      // добавление счетчика с количеством новых версий приложений
-      let count = 0;
-      const _span = $('<span>', { id: 'count' });
-      //=====================================================
-      let saveToHideName = [],
-        saveToHideVer = [];
+    });
 
-      function getVersion(url, i) {
-        $.get({url}).done(response => {
-          const parser = new DOMParser(),
-            doc = parser.parseFromString(response, 'text/html'),
-            tbl = $(doc).find('.ipbtable');
-          tbl.each(function () {
-            if ($(this).data('post')) {
-              const span = $(this).find('tbody tr').eq(1).find('td').eq(1).find('.postcolor span');
-              let versionFound = false;
-              span.each(function () {
-                // версии приложений
-                if ($(this).attr('style') === 'font-size:12pt;line-height:100%' &&
-                  $(this).html().toLowerCase().includes('верси')) {
-                  versionFound = true;
+    // Кнопка массового скрытия
+    hideBtn.on('click', () => {
+      hideBtn.hide();
+      saveToHideName.forEach((name, i) => {
+        GM_setValue(name, saveToHideVer[i]);
+      });
+      _tbl.hide();
+      _cnt.html(0);
+      _tbody.empty();
+    });
 
-                  const replaceVer = parseVersion($(this).html());
-                  const $name = $(name[i]);
-                  const $nameHtml = $name.html();
-                  const altName = $nameHtml.replace(/<\/?strong>/g, '');
-                  if ($nameHtml.includes('<strong>')) {
-                    checkAndUpdateVersion(replaceVer, altName, url);
-                  } else {
-                    checkAndUpdateVersion(replaceVer, $nameHtml, url);
-                  }
-                  updateHtml($name, replaceVer);
-                  return false; // break the span loop
-                }
-              });
-              if (!versionFound) return false; // break the tbl loop
-            }
-          });
-        }).fail(() => {
-          console.log('onerror');
-        }).always(() => {
-          if (++counter === trLength) {
-            // вешаем обработчик событий строки (появление/скрытие кноки "Скрыть")
-            addEvent();
-            // скрытие строки с обновленным приложением
-            hideApp();
-          }
-        });
-      }
-      // переопределяем стиль для кнопок
-      const _s = `
+    // переопределяем стиль для кнопок
+    const _s = `
 .myBtn {
     display: inline-block;
     font-family: arial,sans-serif;
@@ -1478,10 +1600,9 @@ function handleShowNewVersions(URL) {
     border: 1px solid #7d7d7d !important;
     background: #6d6d6d linear-gradient(#6d6d6d, #525252) !important;
 }`;
-      GM_addStyle(_s);
+    GM_addStyle(_s);
 
-      $('#navstrip').append(_span);
-      _span.html(`
+    const $container = $('<span>', { id: 'version_notif-container' }).html(`
   <br/><br/>Обновлений: <span id="_cnt" style="color: red;">${count}</span>
   <input id="hideBtn" class="myBtn" type="button" value="Скрыть обновления" style="display: none;" />
   <br/>
@@ -1496,8 +1617,9 @@ function handleShowNewVersions(URL) {
     <tbody></tbody>
   </table>
 `);
+    $('#navstrip').append($container);
 
-      const s = `
+    const s = `
 #_tbl th {
     color: brown;
     background-color: white;
@@ -1516,22 +1638,7 @@ function handleShowNewVersions(URL) {
 #_tbl .one, .two {
     border-right: 1px solid
 }`;
-      GM_addStyle(s);
-      // кнопка скрытия обновлений вручную
-      const hideBtn = $('#hideBtn');
-      hideBtn.on('click', () => {
-        hideBtn.css('display', 'none');
-        // сразу сохраняем обновленные версии в память, чтобы при следующем обновлении не всплыли в таблице обновлений
-        for (let i = 0; i < saveToHideName.length; i++) {
-          GM_setValue(saveToHideName[i], saveToHideVer[i])
-        }
-        // скрываем таблицу с обновлениями и обнуляем счетчик
-        _tbl.css('display', 'none');
-        count = 0;
-        _cnt.html(count);
-        _tbody.find('tr').remove();
-      });
-    }
+    GM_addStyle(s);
   }
 }
 
@@ -2384,9 +2491,9 @@ ready(async () => {
     margin-left: -1px;
 }
 .night .myDiv {
-    border-color: #395179;
-    background: #3A4F6C;
-    color: #9e9e9e;
+    border-color: var(--blue-dark);
+    background: var(--accent-header);
+    color: var(--text-muted);
 }
 .myDiv p {
     border: initial !important;
@@ -2400,7 +2507,7 @@ ready(async () => {
     border: 1px solid lightblue;
 }
 .night .addInfo {
-    border-color: #395179;
+    border-color: var(--blue-dark);
 }
 .addInfo:hover .myDiv {
     display: block;
