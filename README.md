@@ -20,3 +20,26 @@
 
 ![topic](https://raw.githubusercontent.com/IamR3m/4pda-dark-mode/main/screenshots/topic.png)
 
+## Contribution
+
+### Версионирование
+
+Перед началом работы поднять версию скрипта вызовом:
+
+```bash
+.github/increment_version.sh <major|minor|patch>
+```
+
+Это обновит `@version` в `.user.js` и синхронизирует метаданные в `.meta.js`.
+
+### Pull Requests
+
+- **Title**: версия в формате `v.0.0.0` (например `v.0.13.5`)
+- **Description**: changelog списком через дефис
+
+```markdown
+- добавлены новые CSS-переменные
+- переименованы .myBtn → .version-btn
+- исправлены цвета в warn-блоках
+```
+

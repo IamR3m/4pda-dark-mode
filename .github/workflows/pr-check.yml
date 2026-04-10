@@ -1,0 +1,31 @@
+name: PR Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+    paths:
+      - '*.user.js'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR Title
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          
+          if ! echo "$TITLE" | grep -qE '^v\.[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "✗ PR title должен быть в формате v.0.0.0 (например: v.0.13.5)"
+            exit 1
+          fi
+          echo "✓ PR title: $TITLE"
+
+      - name: Check PR Description
+        run: |
+          BODY="${{ github.event.pull_request.body }}"
+          
+          if ! echo "$BODY" | grep -qE '^- '; then
+            echo "✗ PR description должен содержать changelog списком (каждый пункт с '-')"
+            exit 1
+          fi
+          echo "✓ PR description содержит changelog"
